@@ -1,0 +1,29 @@
+server:
+  port: 9301
+
+mybatis:
+  type-aliases-package: com.blockgod.springcloud.domain
+  mapper-locations: classpath:mapper/**/**.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+mapper:
+  mappers: com.mbr.admin.common.dao.TkMapper
+  not-empty: false
+  identity: MYSQL
+
+base_image: http://192.168.31.57:9002/upload
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+ribbon:
+  ReadTimeout: 6000
+  ConnectTimeout: 60000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+
+

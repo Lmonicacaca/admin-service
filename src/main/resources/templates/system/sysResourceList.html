@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh_cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>资源列表</title>
+    <link href="static/tools/fancytree/skin-bootstrap/ui.fancytree.css" rel="stylesheet" class="skinswitcher" />
+</head>
+<body>
+
+<!-- BEGIN EXAMPLE TABLE PORTLET-->
+<div class="portlet box grey-cascade" style="width: 99%">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-globe"></i>资源列表
+        </div>
+        <div class="tools">
+        </div>
+    </div>
+    <div class="portlet-body" style="font-size: 14px">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <button type="button" id="add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增
+                        </button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="update" class="btn green">
+                            修改
+                        </button>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" id="delete" class="btn red">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover fancytree-fade-expander" id="dataTables-example">
+            <thead>
+            <tr>
+                <th>资源名称</th>
+                <th>资源描述</th>
+                <th>资源路径</th>
+                <th>是否可用</th>
+                <th>排序号</th>
+                <th>等级</th>
+                <th>创建时间</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+
+<div id="addWin" style="display: none;width: 99%" class="portlet-body form">
+    <form role="form" th:action="@{/resource/addOrUpdateResource}" th:method="post" id="form" class="form-horizontal">
+        <input type="hidden" value="" name="id" id="resourcesId" />
+        <input type="hidden" value="" name="resourceParent" id="resource_parent" />
+        <div class="form-body">
+            <div class="form-group" style="display: none" id="resource_parentDiv">
+                <label class="control-label col-md-3">上级资源 <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <select name="resourceParentUpdate" id="resource_parentSelect" class="form-control">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">资源名称<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="resourceName" id="resource_name" placeholder="资源名称" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">资源描述<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="resourceDesc" placeholder="资源描述" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">资源路径<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="resourcePath" placeholder="资源路径" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">资源级别<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="resourceLevel" placeholder="资源级别 数字类型" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">资源图标
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="resourceIcon" placeholder="资源图标"
+                               value="fa fa-edit fa-fw" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">排序编号
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="orderNo" placeholder="排序编号 数字类型" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">是否可用
+                </label>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <select name="enable" id="enable" class="form-control">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="static/tools/fancytree/jquery.fancytree.js"></script>
+<script src="static/tools/fancytree/jquery.fancytree.dnd.js"></script>
+<script src="static/tools/fancytree/jquery.fancytree.edit.js"></script>
+<script src="static/tools/fancytree/jquery.fancytree.glyph.js"></script>
+<script src="static/tools/fancytree/jquery.fancytree.table.js"></script>
+<script src="static/tools/fancytree/jquery.fancytree.wide.js"></script>
+<script src="static/modules/system/sysResourceList.js"></script>
+<script src="static/assets/global/plugins/moment.min.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        sysResource.init();
+    });
+</script>
+</body>
+</html>
