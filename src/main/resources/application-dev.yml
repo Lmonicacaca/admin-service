@@ -1,7 +1,7 @@
 server:
   port: 9300
 
-
+image_url: http://47.100.47.200:9907
 
 
 
