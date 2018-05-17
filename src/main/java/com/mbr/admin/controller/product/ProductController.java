@@ -63,4 +63,14 @@ public class ProductController extends BaseController{
         return baseResult;
     }
 
+
+    @RequestMapping(value = "deleteById", method = RequestMethod.POST)
+    @ResponseBody
+    public BaseResult<Product> deleteById(HttpServletRequest request, Long id){
+
+        BaseResult productBaseResult = productFeign.deleteById(id);
+
+
+        return productBaseResult;
+    }
 }

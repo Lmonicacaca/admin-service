@@ -24,9 +24,9 @@ var product = function () {
             //操作按钮
             "aTargets": [10],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"btn btn-success\" name =\"detail\" href=\"javascript:;\"> 查看 </a> " +
-                        "<a class=\"btn btn-success\" name =\"edit\" href=\"javascript:;\"> 修改 </a> " +
-                        "<a class=\"btn btn-danger\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                return "<a class=\"detail\" name =\"detail\" href=\"javascript:;\"> 查看 </a> " +
+                        "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a> " +
+                        "<a class=\"delete\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         },{
             "aTargets": [3],
@@ -81,55 +81,63 @@ var product = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("coin/delete?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("product/deleteById?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
 
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
                         dataTable.fnReloadAjax();
+                        layer.close(index);
                     }
                 });
             });
         });
         //查看
         $("#dataTables-example tbody").on("click", "a[name='detail']", function () {
-            var table = $('#dataTables-example').DataTable();
-            var d = table.row($(this).parents('tr')).data();
-            layer.open({
-                area: ['900px','800px'],
-                shade: [0.8, '#393D49'],
-                title: "详细信息",
-                type: 1,
-                content: $("#detail"),
-                btn: [ '关闭'],
-                success: function (layero, index) {
-                    var param = {"id": d.id};
-                    var csrf = $("#csrfId");
-                    var csrfName = csrf.attr('name');
-                    $.post("product/queryById?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
-                        if (data.code == 200) {
-                            var da = data.data;
-                            $("#coinNameDetail").text(da.coinName);
-                            $("#coinTypeDetail").text(da.coinType==0?"主链币":"代币");
-                            $("#coinAvatarUrlDetail").attr("src",da.coinAvatarUrl);
-                            $("#coinDescriptionDetail").text(da.coinDescription);
-                            $("#coinErc20Detail").text(da.coinErc20=="0"?"否":"是");
-                            $("#onlineStatusDetail").text(da.onlineStatus=="0"?"是":"否");
-                            $("#chainTypeDetail").text(da.chainType);
-                            $("#tokenAddressDetail").text(da.tokenAddress);
-                            $("#coinDecimalsDetail").text(da.coinDecimals);
-                            $("#orderNoDetail").text(da.orderNo);
-                            $("#isForceShowDetail").text(da.isForceShow=="0"?"是":"否");
-                            $("#merchantShowDetail").text(da.merchantShow?"是":"否");
-                            $("#createTimeDetail").text(moment(da.createTime).format('YYYY-MM-DD HH:mm:ss'));
-                            $("#updateTimeDetail").text(moment(da.updateTime).format('YYYY-MM-DD HH:mm:ss'));
-                        }
-                    });
-                },
-                yes: function (layero, i) {
-                    layer.close(i);
-                }
-            });
+            if(index == 0) {
+                index++;
+                var table = $('#dataTables-example').DataTable();
+                var d = table.row($(this).parents('tr')).data();
+                layer.open({
+                    area: ['900px', '800px'],
+                    shade: [0.8, '#393D49'],
+                    title: "详细信息",
+                    type: 1,
+                    content: $("#detail"),
+                    btn: ['关闭'],
+                    success: function (layero, index) {
+                        var param = {"id": d.id};
+                        var csrf = $("#csrfId");
+                        var csrfName = csrf.attr('name');
+                        $.post("product/queryById?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                            if (data.code == 200) {
+                                var da = data.data;
+                                $("#coinNameDetail").text(da.coinName);
+                                $("#coinTypeDetail").text(da.coinType == 0 ? "主链币" : "代币");
+                                $("#coinAvatarUrlDetail").attr("src", da.coinAvatarUrl);
+                                $("#coinDescriptionDetail").text(da.coinDescription);
+                                $("#coinErc20Detail").text(da.coinErc20 == "0" ? "否" : "是");
+                                $("#onlineStatusDetail").text(da.onlineStatus == "0" ? "是" : "否");
+                                $("#chainTypeDetail").text(da.chainType);
+                                $("#tokenAddressDetail").text(da.tokenAddress);
+                                $("#coinDecimalsDetail").text(da.coinDecimals);
+                                $("#orderNoDetail").text(da.orderNo);
+                                $("#isForceShowDetail").text(da.isForceShow == "0" ? "是" : "否");
+                                $("#merchantShowDetail").text(da.merchantShow ? "是" : "否");
+                                $("#createTimeDetail").text(moment(da.createTime).format('YYYY-MM-DD HH:mm:ss'));
+                                $("#updateTimeDetail").text(moment(da.updateTime).format('YYYY-MM-DD HH:mm:ss'));
+                            }
+                        });
+                    },
+                    yes: function (layero, i) {
+                        layer.closeAll();
+                        index = 0;
+                    }, cancel: function (layero, i) {
+                        layer.closeAll();
+                        index = 0;
+                    }
+                });
+            }
         });
         
         

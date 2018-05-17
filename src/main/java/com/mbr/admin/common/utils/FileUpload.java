@@ -8,6 +8,8 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -15,29 +17,40 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
+@Component
 public class FileUpload {
+
+    @Value("${image_url}")
+    private String image_url ;
     /**
      * 中转文件
      *
      *            上传的文件
      * @return 响应结果
      */
-    public static String httpClientUploadFile(List<MultipartFile> fileList,String origin,Long userId) {
-        final String remote_url = "http://47.100.18.6:9998/uploadFile/"+origin+"/"+userId;// 第三方服务器请求地址
+    public String httpClientUploadFile(Map<String, MultipartFile> mapFiles) {
+       // final String remote_url = "http://localhost:9105/coin/upload/";// 第三方服务器请求地址
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String result = "";
         try {
-            HttpPost httpPost = new HttpPost(remote_url);
+            HttpPost httpPost = new HttpPost(image_url);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            for(MultipartFile file:fileList) {
-                String fileName = file.getOriginalFilename();
-                builder.addBinaryBody("file", file.getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
-                builder.addTextBody("filename", fileName);// 类似浏览器表单提交，对应input的name和value
+
+            for(Map.Entry<String, MultipartFile> entry : mapFiles.entrySet()){
+                String fileName = entry.getValue().getOriginalFilename();
+                builder.addBinaryBody(entry.getKey(), entry.getValue().getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
+
+               // builder.addTextBody("filename",fileName);// 类似浏览器表单提交，对应input的name和value
+
             }
+
+//            for(MultipartFile file:fileList) {
+//                String fileName = file.getOriginalFilename();
+//                builder.addBinaryBody("file", file.getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
+//                builder.addTextBody("filename", fileName);// 类似浏览器表单提交，对应input的name和value
+//            }
             HttpEntity entity = builder.build();
             httpPost.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPost);// 执行提交
@@ -60,19 +73,20 @@ public class FileUpload {
         return result;
     }
 
-    public static List<MultipartFile> getFile(HttpServletRequest request){
-        List<MultipartFile> list = new ArrayList<>();
+    public Map<String, MultipartFile> getFile(HttpServletRequest request){
         CommonsMultipartResolver cmr = new CommonsMultipartResolver(request.getServletContext());
         if (cmr.isMultipart(request)) {
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) (request);
-            Iterator<String> files = mRequest.getFileNames();
+            Map<String, MultipartFile> map = mRequest.getFileMap();
+            return map;
+            /*Iterator<String> files = mRequest.getFileNames();
             while (files.hasNext()) {
                 MultipartFile mFile = mRequest.getFile(files.next());
                 if (mFile != null) {
                     list.add(mFile);
                 }
-            }
+            }*/
         }
-        return  list;
+        return  null;
     }
 }
