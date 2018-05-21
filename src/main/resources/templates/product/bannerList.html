@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>广告管理</title>
+</head>
+<body>
+<!--  Begin:搜索框  -->
+<div class="portlet box grey-cascade" style="width: 99%">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-gift"></i>查询条件
+        </div>
+        <div class="tools">
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <br />
+        <form class="form-horizontal" id="querys">
+            <div class="col-sm-3" style="margin-left:-20px;">
+                <label class="control-label col-md-5">url：</label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="url" name="url" id="urlQuery" th:autofocus="true" />
+                    <input style="display: none;" name="other" id="other" />
+                </div>
+            </div>
+            <button type="button" id="query" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>查询
+            </button>
+        </form>
+        <br/>
+    </div>
+</div>
+<!--  End:搜索框  -->
+
+<!-- BEGIN:列表栏 -->
+<div class="portlet box grey-cascade" style="width: 99%">
+
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-globe"></i>广告管理
+        </div>
+        <div class="tools">
+        </div>
+    </div>
+    <div class="portlet-body" style="font-size: 14px">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <button type="button" id="add" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>新增</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>url</th>
+                <th>图片</th>
+                <th>类型</th>
+                <th>排序</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<!-- End:列表栏-->
+
+<div id="addWin" style="display: none;width: 99%" class="portlet-body form">
+    <form role="form" th:action="@{/banner/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate" enctype="multipart/form-data">
+        <input type="hidden" value="" name="id" id="bannerId" />
+        <input type="hidden" value="" name="orderBy" id="orderBy" />
+        <input type="hidden" name="image" id="image" value="" />
+        <div class="form-body">
+            <div class="form-group">
+                <label class="control-label col-md-3">url<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="url" name="url" placeholder="请输入url" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">图片 <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input type="file" name="simage" id="simage" style="background: transparent"/><br />
+
+                </div>
+            </div>
+            <div class="form-group" id="passwordPwd">
+                <label class="control-label col-md-3">类型 <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="type" id="type">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--  验收身份 -->
+<input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<script src="static/modules/product/banner.js" type="text/javascript"></script>
+<script>
+    jQuery(document).ready(function() {
+        banner.init();
+    });
+</script>
+
+</body>
+</html>

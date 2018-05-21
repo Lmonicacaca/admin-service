@@ -4,4 +4,8 @@ server:
 image_url: http://47.100.47.200:9907
 
 
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
 
