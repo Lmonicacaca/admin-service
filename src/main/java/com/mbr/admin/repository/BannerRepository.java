@@ -12,8 +12,6 @@ import java.util.Map;
 @Repository
 public interface BannerRepository extends MongoRepository<Banner,Long> {
 
-   /* //根据url和状态查找所有的banner
-    public List<Banner> find(Query query, Class clazz);*/
 
     //根据ID删除广告信息
     @Override

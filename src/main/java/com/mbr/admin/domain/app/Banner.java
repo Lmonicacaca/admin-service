@@ -13,6 +13,7 @@ public class Banner {
     private Date createTime;
     private int status;// 0 显示 1 不显示
     private int type;// 1 是余额，2 是 商家 3 支付
+    private String channel;//渠道号
 
     /**
      * @return the id
@@ -120,6 +121,14 @@ public class Banner {
         this.type = type;
     }
 
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     @Override
     public String toString() {
         return "Banner{" +
@@ -130,6 +139,7 @@ public class Banner {
                 ", createTime=" + createTime +
                 ", status=" + status +
                 ", type=" + type +
+                ", channel=" + channel +
                 '}';
     }
 }

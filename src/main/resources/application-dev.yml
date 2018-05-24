@@ -3,7 +3,7 @@ server:
 
 image_url: http://47.100.47.200:9907
 
-
+channel: 73088886094000
 spring:
   data:
     mongodb:

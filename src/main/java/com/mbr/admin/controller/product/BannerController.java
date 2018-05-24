@@ -98,15 +98,24 @@ public class BannerController extends BaseController {
         return list;
     }
 
+
+    @RequestMapping("queryChannel")
+    @ResponseBody
+    public List<Map<String,String>> queryChannel(){
+
+        return bannerManager.queryChannel();
+    }
+
     //保存或更新banner
     @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)
     @ResponseBody
-    public Object addOrUpdate(Banner banner,HttpServletRequest request){
-        System.out.println(banner);
+    public Object addOrUpdate(Banner banner,HttpServletRequest request,String simage){
+        System.out.println(banner+"simage:"+simage);
         Long id = banner.getId();
         if(id == null){
             id=new TimestampPkGenerator().next(getClass());
             banner.setId(id);
+            banner.setCreateTime(new Date());
         }
         int count = bannerManager.countAll();
         int orderBy = banner.getOrderBy();
@@ -114,6 +123,7 @@ public class BannerController extends BaseController {
             orderBy = count%3==0?1:count%3;
         }
         Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
+        System.out.println("mapFiles:"+mapFiles);
         if(mapFiles!=null){
             String json = fileUpload.httpClientUploadFile(mapFiles);
             Map map = JSONObject.toJavaObject(JSON.parseObject(json), Map.class);
@@ -126,17 +136,16 @@ public class BannerController extends BaseController {
             }
         }
         else {
-            banner.setImage(banner.getImage());
+            banner.setImage(simage);
         }
 
-        banner.setCreateTime(new Date());
         banner.setOrderBy(orderBy);
         System.out.println(banner);
-        Banner saveOrUpdate = bannerManager.saveOrUpdate(banner);
+//        Banner saveOrUpdate = bannerManager.saveOrUpdate(banner);
 
-        if(saveOrUpdate != null){
-            return success();
-        }
+//        if(saveOrUpdate != null){
+//            return success();
+//        }
         return failed("添加广告失败");
     }
 

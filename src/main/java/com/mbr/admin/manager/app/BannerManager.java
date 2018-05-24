@@ -11,4 +11,6 @@ public interface BannerManager {
         public Banner queryById(Long id);
         public int countAll();
         public Banner saveOrUpdate(Banner banner);
+
+        public List<Map<String,String>> queryChannel();
 }

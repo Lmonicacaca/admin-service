@@ -58,6 +58,7 @@
             <thead>
             <tr>
                 <th>序号</th>
+                <th>渠道号</th>
                 <th>url</th>
                 <th>图片</th>
                 <th>类型</th>
@@ -74,9 +75,10 @@
 
 <div id="addWin" style="display: none;width: 99%" class="portlet-body form">
     <form role="form" th:action="@{/banner/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate" enctype="multipart/form-data">
-        <input type="hidden" value="" name="id" id="bannerId" />
+        <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="orderBy" id="orderBy" />
-        <input type="hidden" name="image" id="image" value="" />
+        <input type="hidden" name="simage" id="simage" value="" />
+        <!--<input type="hidden" name="createTime" id="createTime" value="" />-->
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">url<span class="required">* </span>
@@ -89,8 +91,7 @@
                 <label class="control-label col-md-3">图片 <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
-                    <input type="file" name="simage" id="simage" style="background: transparent"/><br />
-
+                    <input type="file" name="image" id="image" style="background: transparent"/><br />
                 </div>
             </div>
             <div class="form-group" id="passwordPwd">
@@ -102,7 +103,12 @@
                 </div>
             </div>
             <div class="form-group">
-
+                <label class="control-label col-md-3">渠道号： <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="channel" id="channel">
+                    </select>
+                </div>
             </div>
         </div>
     </form>

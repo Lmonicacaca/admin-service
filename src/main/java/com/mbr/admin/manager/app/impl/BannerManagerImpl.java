@@ -1,8 +1,10 @@
 package com.mbr.admin.manager.app.impl;
 
 import com.mbr.admin.domain.app.Banner;
+import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.manager.app.BannerManager;
 import com.mbr.admin.repository.BannerRepository;
+import com.mbr.admin.repository.ChannelRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,8 @@ public class BannerManagerImpl implements BannerManager {
 
     @Autowired
     private BannerRepository bannerRepository;
+    @Autowired
+    private ChannelRepository channelRepository;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -58,5 +62,18 @@ public class BannerManagerImpl implements BannerManager {
     @Override
     public Banner saveOrUpdate(Banner banner) {
         return bannerRepository.save(banner);
+    }
+
+    @Override
+    public List<Map<String, String>> queryChannel() {
+        List<Map<String,String>> list = new ArrayList<>();
+        List<Channel> channelList = channelRepository.findAllByStatus(0);
+        for(int i=0;i<channelList.size();i++){
+            Map<String,String> map = new HashMap<>();
+            map.put("id",channelList.get(i).getId());
+            map.put("text",channelList.get(i).getId());
+            list.add(map);
+        }
+        return list;
     }
 }
