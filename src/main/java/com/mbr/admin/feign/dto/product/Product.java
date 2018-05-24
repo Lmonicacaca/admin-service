@@ -27,9 +27,8 @@ public class Product {
     /**币精度**/
     private Integer  coinDecimals;
 
-    private Integer orderNo;//排序
-    private Integer isForceShow; //是否强制显示 0 显示 1 非显示
-    private boolean merchantShow;//是否显示商家配送界面
+    private Integer gasLimit;
+
 
     public Long getId() {
         return id;
@@ -127,27 +126,11 @@ public class Product {
         this.coinDecimals = coinDecimals;
     }
 
-    public Integer getOrderNo() {
-        return orderNo;
+    public Integer getGasLimit() {
+        return gasLimit;
     }
 
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Integer getIsForceShow() {
-        return isForceShow;
-    }
-
-    public void setIsForceShow(Integer isForceShow) {
-        this.isForceShow = isForceShow;
-    }
-
-    public boolean isMerchantShow() {
-        return merchantShow;
-    }
-
-    public void setMerchantShow(boolean merchantShow) {
-        this.merchantShow = merchantShow;
+    public void setGasLimit(Integer gasLimit) {
+        this.gasLimit = gasLimit;
     }
 }
