@@ -114,7 +114,8 @@ var banner = function () {
                         $("#id").val(d.id);
                         $("#orderBy").val(d.orderBy);
                         $("#simage").val(d.image);
-                        // $("#createTime").val(d.createTime);
+                       /* var date = new Date(d.createTime)
+                        $("#createTime").val(date);*/
                         var typeName="";
                         switch(d.type){
                             case 1:typeName = "余额";break;

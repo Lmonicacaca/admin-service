@@ -26,11 +26,8 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
     @Select("update merchant_coin set status=#{status} where id=#{id}")
     void updateById(MerchantCoin merchantCoin);
 
-  @Select("select * from merchant_coin where id=#{id}")
-  MerchantCoin selectByPrimaryKey(@Param(value = "id")Object id);
-
-  @Override
-  int updateByPrimaryKey(MerchantCoin merchantCoin);
+    @Select("select count(*) from merchant_coin")
+    public int getCount();
 
 
 

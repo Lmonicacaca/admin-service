@@ -9,6 +9,8 @@ var recharge = function () {
             {"mData": "address"},
             {"mData": "tokenAddress"},
             {"mData": "status"},
+            {"mData": "createUserName"},
+            {"mData": "updateUserName"},
             {"mData": "createTime"},
             {"mData": "updateTime"},
             {"mData": null}
@@ -25,7 +27,7 @@ var recharge = function () {
             }
         },
             {
-                "aTargets": [7],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
                     if(a!=null||a!=""){
                         var date = new Date(a);
@@ -35,7 +37,7 @@ var recharge = function () {
                 }
             },
             {
-                "aTargets": [8],
+                "aTargets": [10],
                 "mRender": function (a, b, c, d) {
                     if(a!=null&&a!=""){
                         var date = new Date(a);
@@ -47,7 +49,7 @@ var recharge = function () {
                 }
             },
             {
-            "aTargets": [9],
+            "aTargets": [11],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
@@ -91,12 +93,15 @@ var recharge = function () {
                 var param = {"id": d.id};
                 $.post("merchantCoin/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
+                        $("#showMerchant").css("display","none");
+                        $("#createUser").css("display","none");
                         var d = data.data;
                         $("#address").val(d.address);
                         $("#merchantId").val(d.merchantId)
                         $("#id").val(d.id)
-                       /* $("#merchantId").val(d.merchantId);
-                        $("#createTime").val(d.createTime);*/
+                        $("#status").val(d.status)
+                        var date = new Date(d.createTime)
+                        $("#createTime").val(date)
                         var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
@@ -145,7 +150,16 @@ var recharge = function () {
     //添加用户
     var add =function () {
         $("#add").bind("click",function () {
-            $("#userId").val("");
+            $("#address").val("");
+            $("#merchantId").val("")
+            $("#id").val("")
+            $("#status").val("")
+
+            $("#createTime").val(new Date);
+            $("#showMerchant").css("display","block");
+            $("#createUser").css("display","block");
+            $("#channel").html("")
+            $("#coinId").html("")
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -158,6 +172,7 @@ var recharge = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadCoin();
+                    loadCreateUser();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -219,39 +234,59 @@ var recharge = function () {
             }
         });
     };
+    var loadCreateUser = function () {
+        $('#createUserName').select2({
+            placeholder: "请选择创建者",
+            allowClear: true,
+            ajax: {
+                url: "merchantCoin/queryUser",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
    var validateForm = function () {
         var validate = $('#form').validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                username: {
+                createUserName:{
                     required: true
                 },
-                name: {
+                merchantId:{
                     required: true
                 },
-                password: {
+                address: {
+                    required: true
+                },
+                channel: {
+                    required: true
+                },
+                coinId: {
                     required: true,
-                    minlength: 6,
-                    maxlength: 10
-                },
-                roleId: {
-                    required: true
+
                 }
             },
             messages: {
-                username: {
-                    required: "用户名不能为空!"
+                createUserName:{
+                    required: "创建者不能为空!"
                 },
-                name: {
-                    required: "姓名不能为空!"
+                merchantId:{
+                    required: "商户id不能为空!"
                 },
-                password: {
-                    required: "密码不能为空!"
+                address: {
+                    required: "地址不能为空!"
                 },
-                roleId: {
-                    required: "角色不能为空!"
+                channel: {
+                    required: "渠道号不能为空!"
+                },
+                coinId: {
+                    required: "币种不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

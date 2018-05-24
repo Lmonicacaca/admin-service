@@ -1,9 +1,11 @@
 package com.mbr.admin.manager.merchant.impl;
 
 import com.mbr.admin.dao.merchant.MerchantCoinDao;
+import com.mbr.admin.dao.system.SysUsersDao;
 import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.domain.merchant.MerchantCoin;
 import com.mbr.admin.domain.merchant.Product;
+import com.mbr.admin.domain.system.SysUsers;
 import com.mbr.admin.manager.merchant.MerchantCoinManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.ProductRepository;
@@ -25,6 +27,8 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     private ProductRepository productRepository;
     @Resource
     private ChannelRepository channelRepository;
+    @Resource
+    private SysUsersDao sysUsersDao;
     @Override
     public List<MerchantCoin> queryList(String merchantId,String channel) {
 
@@ -77,4 +81,31 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     public int updataMerchantCoin(MerchantCoin merchantCoin) {
         return merchantCoinDao.updateByPrimaryKey(merchantCoin);
     }
+
+    @Override
+    public List<Map<String ,Object>> queryUser() {
+
+        List<Map<String ,Object>> list = new ArrayList<>();
+        List<SysUsers> sysUsersList = sysUsersDao.selectAll();
+        for(int i=0;i<sysUsersList.size();i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",sysUsersList.get(i).getUsername());
+            map.put("text",sysUsersList.get(i).getUsername());
+            list.add(map);
+        }
+        return list;
+    }
+
+    @Override
+    public int getMerchantCoinCount() {
+
+        return merchantCoinDao.getCount();
+    }
+
+    @Override
+    public int saveMerchantCoin(MerchantCoin merchantCoin) {
+        return merchantCoinDao.insert(merchantCoin);
+    }
+
+
 }

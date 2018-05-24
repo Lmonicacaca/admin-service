@@ -7,8 +7,10 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.merchant.MerchantCoin;
 import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.manager.merchant.MerchantCoinManager;
+import com.mbr.admin.manager.security.SecurityUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -90,17 +92,39 @@ public class MerchantCoinController extends BaseController {
             merchantCoin.setTokenAddress(coin.getTokenAddress());
             merchantCoin.setCoinName(coin.getCoinName());
             merchantCoin.setUpdateTime(new Date());
+            SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            merchantCoin.setUpdateUserName(securityUserDetails.getUsername());
             int i = merchantCoinManager.updataMerchantCoin(merchantCoin);
 
             if(i>0){
                 return success();
             }else{
-                return failed();
+                return failed("更新失败");
             }
 
+        }else{
+
+            merchantCoin.setStatus(0);
+            long coinId = merchantCoin.getCoinId();
+            Product coin = merchantCoinManager.findCoinById(coinId);
+            merchantCoin.setCoinName(coin.getCoinName());
+            merchantCoin.setTokenAddress(coin.getTokenAddress());
+            long id = merchantCoinManager.getMerchantCoinCount()+1;
+            merchantCoin.setId(id);
+            System.out.println(merchantCoin);
+            int i = merchantCoinManager.saveMerchantCoin(merchantCoin);
+            if(i>0){
+                return success();
+            }else{
+                return failed("添加失败");
+            }
         }
 
-        System.out.println(merchantCoin);
-        return null;
+    }
+
+    @RequestMapping("queryUser")
+    @ResponseBody
+    public List<Map<String,Object>> queryUser(){
+        return merchantCoinManager.queryUser();
     }
 }

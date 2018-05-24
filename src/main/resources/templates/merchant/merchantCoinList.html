@@ -63,6 +63,8 @@
                 <th>转出地址</th>
                 <th>币种地址</th>
                 <th>是否可用</th>
+                <th>创建者</th>
+                <th>更新者</th>
                 <th>创建时间</th>
                 <th>更新时间</th>
                 <th> 操作 </th>
@@ -75,11 +77,24 @@
 
 <div id="addWin" style="display: none;width: 99%" class="portlet-body form">
     <form role="form" th:action="@{/merchantCoin/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
-        <!--<input type="hidden" value="" name="createTime" id="createTime" />
-        <input type="hidden" value="" name="merchantId" id="merchantId" />-->
-        <input type="hidden" value="" name="merchantId" id="merchantId" />
+        <input type="hidden" value="" name="status" id="status" />
         <input type="hidden" value="" name="id" id="id" />
+        <input type="hidden" value="" name="createTime" id="createTime" />
         <div class="form-body">
+            <div class="form-group" id="createUser" style="display: none">
+                <label class="control-label col-md-3">创建者<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="createUserName" id="createUserName"></select>
+                </div>
+            </div>
+            <div class="form-group" id="showMerchant" style="display: none">
+                <label class="control-label col-md-3">商户号<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input class="form-control" type="text" value="" name="merchantId" id="merchantId" placeholder="请输入商户号"/>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-3">地址<span class="required">* </span>
                 </label>
@@ -94,7 +109,7 @@
                     <select class="form-control" name="channel" id="channel"></select>
                 </div>
             </div>
-            <div class="form-group" id="passwordPwd">
+            <div class="form-group">
                 <label class="control-label col-md-3">币种 <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
@@ -104,6 +119,7 @@
         </div>
     </form>
 </div>
+
 
 <input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <script src="static/modules/merchant/merchantCoinList.js" type="text/javascript"></script>

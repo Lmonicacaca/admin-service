@@ -60,13 +60,10 @@
                 <th>序号</th>
                 <th>币简称</th>
                 <th>币全称</th>
-                <th>允许交易</th>
                 <th>类型</th>
                 <th>合约地址</th>
                 <th>精度</th>
-                <th>强制显示</th>
-                <th>商家配置</th>
-                <th>排序</th>
+                <th>gasLimit</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -77,146 +74,101 @@
 <!-- End:列表栏-->
 <!--  END:新增和修改  -->
 <div id="win" style="display: none;width: 99%" class="portlet-body form">
-    <form role="form"  th:method="post" th:action="@{/coin/add}" id="form" class="form-horizontal" enctype="multipart/form-data">
-        <input type="hidden"  name="coinInfoId" id="coinInfoId" />
+    <form role="form"  th:method="post" th:action="@{/product/addOrUpdate}" id="form" class="form-horizontal" enctype="multipart/form-data">
+        <input type="hidden" name="id" id="coinId"/>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">货币名称
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">币名称：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="coinName" id="coinName" placeholder="请输入货币名称" />
+                    <input type="text" class="form-control" name="coinName" id="coinName" placeholder="请输入币名称" />
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">币种精度
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">币种类型：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="coinDecimals" id="coinDecimals" placeholder="请输入币种精度" onkeyup="value=value.replace(/[^\d]/g,'') "/>
+                    <select id="coinType" name="coinType" placeholder="请输入币种类型" style="width: 100px">
+                        <option value="0">主链币</option>
+                        <option value="1">代币</option>
+                    </select>
+
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">货币图标URL1
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">币LOGO：</label>
                 <div class="col-md-8">
-                    <img src="" style="background:#2f2f2f;" name="coinAvatarUrlEdit" id="coinAvatarUrlEdit"  />
-                    <input type="file" name="coinAvatarUrl" id="coinAvatarUrl"  />
+                    <input type="file" name="coinAvatarUrlFile" id="coinAvatarUrl"/>
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">货币图标URL2
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">币全称：</label>
                 <div class="col-md-8">
-                    <img src="" style="background:#2f2f2f;" name="coinAvatarUrlEdit1" id="coinAvatarUrlEdit1" />
-                    <input type="file" name="coinAvatarUrl1" id="coinAvatarUrl1"  />
+                    <input type="text" class="form-control" name="coinDescription" id="coinDescription" placeholder="请输入币全称" />
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">代币合约地址
-                    <span class="required"> </span>
-                </label>
+                <label class="control-label col-md-3">是否ERC20：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="tokenAddress" id="tokenAddress" placeholder="请输入代币合约地址" th:autofocus="true" onkeyup="value=value.replace(/[\W]/g,'') " ng-pattern="/[^a-zA-Z]/"/>
+                    <select id="coinErc20" name="coinErc20" placeholder="请选择ERC20" style="width: 100px">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+
                 </div>
             </div>
         </div>
+
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">提现手续费
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">链类型：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="withdrawFeeRate" id="withdrawFeeRate" placeholder="请输入提现手续费" onkeyup="value=value.replace(/[^\d.]/g,'') "/>
-                </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">交易手续费%
-                    <span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" name="transactionFeeRate" id="transactionFeeRate" placeholder="请输入交易手续费" onkeyup="value=value.replace(/[^\d.]/g,'') "/>
-                </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">币种类型
-                    <span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <select naem="coinType" id="coinType" class="form-control">
-                        <option value="1">主链币</option>
-                        <option value="2">代币类</option>
+                    <select id="chainType" name="chainType" placeholder="请选择链类型" style="width: 100px">
+                        <option value="ETH">ETH</option>
+                        <option value="ERC20">ERC20</option>
+                        <option value="BTC">BTC</option>
+
                     </select>
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">链类型
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">合约地址：</label>
                 <div class="col-md-8">
-                    <select naem="chainType" id="chainType" class="form-control">
-                        <option value="1">ETH</option>
-                        <option value="2">BTC</option>
-                    </select>
+                    <input type="text" class="form-control" name="tokenAddress" id="tokenAddress" placeholder="请输入合约地址" />
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">类型
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">币精度：</label>
                 <div class="col-md-8">
-                    <select naem="type" id="type" class="form-control">
-                        <option value="1">虚拟货币</option>
-                        <option value="2">法定货币</option>
-                    </select>
+                    <input type="text" class="form-control" name="coinDecimals" id="coinDecimals" placeholder="请输入币精度" />
+
                 </div>
             </div>
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">允许交易
-                    <span class="required">* </span>
-                </label>
+                <label class="control-label col-md-3">gasLimit：</label>
                 <div class="col-md-8">
-                    <input type="checkbox" id="onlineStatus" name="onlineStatus" style="width:39px;height: 36px" />
+                    <input type="text" class="form-control" name="gasLimit" id="gasLimit" placeholder="请输入gasLimit" />
                 </div>
             </div>
         </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">货币描述语
-                    <span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <textarea style="resize: none;" id="coinDescription" name="coinDescription" class="form-control" rows="5"></textarea>
-                </div>
-            </div>
-        </div>-->
     </form>
 </div>
 
 <!--  END:新增和修改  -->
 <div id="detail" style="display: none;width: 99%" class="portlet-body form">
     <form role="form" class="form-horizontal">
-        <input type="hidden"  name="coinInfoId" id="coinInfoIds" />
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">币名称：</label>
@@ -267,16 +219,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">是否允许交易：</label>
-                <div class="col-md-8">
-                    <label class="control-label">
-                    <span id="onlineStatusDetail"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
+
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">链类型：</label>
@@ -309,31 +252,10 @@
         </div>
         <div class="form-body">
             <div class="form-group">
-                <label class="control-label col-md-3">序号：</label>
+                <label class="control-label col-md-3">gasLimit：</label>
                 <div class="col-md-8">
                     <label class="control-label">
-                    <span id="orderNoDetail"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">是否强制显示：</label>
-
-                <div class="col-md-8">
-                    <label class="control-label">
-                    <span id="isForceShowDetail"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label col-md-3">是否显示商家配置界面：</label>
-                <div class="col-md-8">
-                    <label class="control-label">
-                    <span id="merchantShowDetail"></span>
+                        <span id="gasLimitDetail"></span>
                     </label>
                 </div>
             </div>
