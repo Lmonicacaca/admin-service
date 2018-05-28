@@ -113,7 +113,7 @@ var banner = function () {
                         $("#url").val(d.url);
                         $("#id").val(d.id);
                         $("#orderBy").val(d.orderBy);
-                        $("#simage").val(d.image);
+                        // $("#simage").val(d.image);
                        /* var date = new Date(d.createTime)
                         $("#createTime").val(date);*/
                         var typeName="";

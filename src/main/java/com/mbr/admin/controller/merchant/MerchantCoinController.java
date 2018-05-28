@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.merchant.MerchantCoin;
 import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.manager.merchant.MerchantCoinManager;
@@ -86,14 +87,20 @@ public class MerchantCoinController extends BaseController {
     @ResponseBody
     public Object addOrUpdate(MerchantCoin merchantCoin){
         if(merchantCoin.getId()!=null){
-            System.out.println(merchantCoin);
             long coinId = merchantCoin.getCoinId();
+            //查找是否存在相同的地址和合约地址
+            MerchantCoin merchantCoinExit = merchantCoinManager.selectMerchantCoinByAddrAndCoinId(merchantCoin.getAddress(), coinId);
+            if(merchantCoinExit != null){
+                return failed("已存在相同的充值地址");
+            }
             Product coin = merchantCoinManager.findCoinById(coinId);
             merchantCoin.setTokenAddress(coin.getTokenAddress());
             merchantCoin.setCoinName(coin.getCoinName());
             merchantCoin.setUpdateTime(new Date());
             SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             merchantCoin.setUpdateUserName(securityUserDetails.getUsername());
+
+
             int i = merchantCoinManager.updataMerchantCoin(merchantCoin);
 
             if(i>0){
@@ -103,13 +110,17 @@ public class MerchantCoinController extends BaseController {
             }
 
         }else{
-
-            merchantCoin.setStatus(0);
             long coinId = merchantCoin.getCoinId();
+            //查找是否存在相同的地址和合约地址
+            MerchantCoin merchantCoinExit = merchantCoinManager.selectMerchantCoinByAddrAndCoinId(merchantCoin.getAddress(), coinId);
+            if(merchantCoinExit != null){
+                return failed("已存在相同的充值地址");
+            }
+            merchantCoin.setStatus(0);
             Product coin = merchantCoinManager.findCoinById(coinId);
             merchantCoin.setCoinName(coin.getCoinName());
             merchantCoin.setTokenAddress(coin.getTokenAddress());
-            long id = merchantCoinManager.getMerchantCoinCount()+1;
+            long id = new TimestampPkGenerator().next(getClass());
             merchantCoin.setId(id);
             System.out.println(merchantCoin);
             int i = merchantCoinManager.saveMerchantCoin(merchantCoin);

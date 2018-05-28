@@ -26,8 +26,9 @@ public interface MerchantCoinManager {
 
     public List<Map<String ,Object>> queryUser();
 
-    public int getMerchantCoinCount();
 
     public int saveMerchantCoin(MerchantCoin merchantCoin);
+
+    public MerchantCoin selectMerchantCoinByAddrAndCoinId(String Address,Long coinId);
 
 }

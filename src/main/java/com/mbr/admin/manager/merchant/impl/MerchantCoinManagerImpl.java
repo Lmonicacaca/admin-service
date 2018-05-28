@@ -97,14 +97,13 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     }
 
     @Override
-    public int getMerchantCoinCount() {
-
-        return merchantCoinDao.getCount();
+    public int saveMerchantCoin(MerchantCoin merchantCoin) {
+        return merchantCoinDao.insert(merchantCoin);
     }
 
     @Override
-    public int saveMerchantCoin(MerchantCoin merchantCoin) {
-        return merchantCoinDao.insert(merchantCoin);
+    public MerchantCoin selectMerchantCoinByAddrAndCoinId(String address, Long coinId) {
+        return merchantCoinDao.selectByAddressAndCoinId(address,coinId);
     }
 
 

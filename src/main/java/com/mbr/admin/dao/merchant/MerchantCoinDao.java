@@ -12,10 +12,10 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
   @Select("<script>" +
             "select * from merchant_coin "+
             "<where>"+
-                "<if test=\"merchantId!=null and merchantId!=''\">" +
+                "<if test=\"merchantId!=null and merchantId !=''\">" +
                     " and merchant_id=#{merchantId}"+
                 "</if>"+
-                "<if test=\"channel!=null and channel!=''\">" +
+                "<if test=\"channel!=null and channel !=''\">" +
                 " and channel=#{channel}"+
                 "</if>"+
                 "and status=0"+
@@ -29,6 +29,8 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
     @Select("select count(*) from merchant_coin")
     public int getCount();
 
+    @Select("select * from merchant_coin where coin_id=#{coinId} and address=#{address}")
+    public MerchantCoin selectByAddressAndCoinId(@Param(value = "address") String address,@Param(value = "coinId")Long coinId);
 
 
 }

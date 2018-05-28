@@ -1,4 +1,4 @@
-var merchantCoin = function () {
+var withDraw = function () {
     var index =0;
     var loadData = function () {
         var aoColumns = [
@@ -9,8 +9,6 @@ var merchantCoin = function () {
             {"mData": "address"},
             {"mData": "tokenAddress"},
             {"mData": "status"},
-            {"mData": "createUserName"},
-            {"mData": "updateUserName"},
             {"mData": "createTime"},
             {"mData": "updateTime"},
             {"mData": null}
@@ -27,7 +25,7 @@ var merchantCoin = function () {
             }
         },
             {
-                "aTargets": [9],
+                "aTargets": [7],
                 "mRender": function (a, b, c, d) {
                     if(a!=null||a!=""){
                         var date = new Date(a);
@@ -37,7 +35,7 @@ var merchantCoin = function () {
                 }
             },
             {
-                "aTargets": [10],
+                "aTargets": [8],
                 "mRender": function (a, b, c, d) {
                     if(a!=null&&a!=""){
                         var date = new Date(a);
@@ -49,18 +47,18 @@ var merchantCoin = function () {
                 }
             },
             {
-            "aTargets": [11],
+            "aTargets": [9],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
-        initPageTable(t, "merchantCoin/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initPageTable(t, "withDraw/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
-        var merchant_Id = $("#merchant_Id").val();
-        if (assertNotNullStr(merchant_Id)) condition.merchant_Id = merchant_Id;
+        var merchantidSearch = $("#merchantidSearch").val();
+        if (assertNotNullStr(merchantidSearch)) condition.merchantidSearch = merchantidSearch;
         var channelSearch = $("#channelSearch").val();
         if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
     };
@@ -73,7 +71,7 @@ var merchantCoin = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("merchantCoin/deleteMerchantCoin?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("withDraw/deleteWithDraw?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
@@ -91,18 +89,18 @@ var merchantCoin = function () {
                 var csrf = $("#csrfId");
                 var csrfName = csrf.attr('name');
                 var param = {"id": d.id};
-                $.post("merchantCoin/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
+                $.post("withDraw/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
-                        $("#showMerchant").css("display","none");
-                        $("#createUser").css("display","none");
+                        $("#showMerchantId").css("display","none");
                         var d = data.data;
                         $("#address").val(d.address);
-                        $("#merchantId").val(d.merchantId)
-                        $("#id").val(d.id)
-                        $("#status").val(d.status)
-                        var date = new Date(d.createTime)
-                        $("#createTime").val(date)
-                        var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
+                        $("#id").val(d.id);
+                        $("#merchantId").val(d.merchantId);
+                        if(d.createTime!=null){
+                            var date = new Date(d.createTime)
+                            $("#createTime").val(date)
+                        }
+                        var optionChannel= "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
@@ -150,15 +148,11 @@ var merchantCoin = function () {
     //添加用户
     var add =function () {
         $("#add").bind("click",function () {
-            $("#address").val("");
-            $("#merchantId").val("")
-            $("#id").val("")
-            $("#status").val("")
+            $("#showMerchantId").css("display","block");
+            $("#id").val("");
             $("#createTime").val(new Date);
-            $("#showMerchant").css("display","block");
-            $("#createUser").css("display","block");
-            $("#channel").html("")
-            $("#coinId").html("")
+            $("#channel").html("");
+            $("#coinId").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -171,7 +165,6 @@ var merchantCoin = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadCoin();
-                    loadCreateUser();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -208,7 +201,7 @@ var merchantCoin = function () {
             placeholder: "请选择渠道号",
             allowClear: true,
             ajax: {
-                url: "merchantCoin/queryChannel",
+                url: "withDraw/queryChannel",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -223,22 +216,7 @@ var merchantCoin = function () {
             placeholder: "请选择币种",
             allowClear: true,
             ajax: {
-                url: "merchantCoin/queryCoin",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
-    var loadCreateUser = function () {
-        $('#createUserName').select2({
-            placeholder: "请选择创建者",
-            allowClear: true,
-            ajax: {
-                url: "merchantCoin/queryUser",
+                url: "withDraw/queryCoin",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -254,9 +232,6 @@ var merchantCoin = function () {
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                createUserName:{
-                    required: true
-                },
                 merchantId:{
                     required: true
                 },
@@ -272,11 +247,8 @@ var merchantCoin = function () {
                 }
             },
             messages: {
-                createUserName:{
-                    required: "创建者不能为空!"
-                },
                 merchantId:{
-                    required: "商户id不能为空!"
+                    required: "商户号不能为空!"
                 },
                 address: {
                     required: "地址不能为空!"

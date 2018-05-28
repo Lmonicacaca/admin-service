@@ -10,7 +10,7 @@ public class MerchantCoin  extends BaseEntity{
     @Column(name = "coin_id")
     private long coinId;
     @Column(name = "merchant_id")
-    private long merchantId;
+    private String merchantId;
     @Column(name = "address")
     private String address;
     @Column(name = "token_address")
@@ -30,11 +30,11 @@ public class MerchantCoin  extends BaseEntity{
         this.coinId = coinId;
     }
 
-    public long getMerchantId() {
+    public String getMerchantId() {
         return merchantId;
     }
 
-    public void setMerchantId(long merchantId) {
+    public void setMerchantId(String merchantId) {
         this.merchantId = merchantId;
     }
 
