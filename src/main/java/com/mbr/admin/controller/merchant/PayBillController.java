@@ -35,20 +35,6 @@ public class PayBillController extends BaseController {
         return result;
     }
 
-    @RequestMapping("deletePay")
-    @ResponseBody
-    public Object deletePay(Long id){
-        if(id == null){
-            return super.failed("ID 为空！");
-        }
-        int i = payManager.deleteById(id);
-        if(i>0){
-            return success();
-        }else{
-            return failed("删除失败");
-        }
-    }
-
 
 
 }

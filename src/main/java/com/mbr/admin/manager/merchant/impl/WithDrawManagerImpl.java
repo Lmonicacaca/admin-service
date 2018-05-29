@@ -48,7 +48,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
 
     @Override
     public void deleteById(Long id) {
-         withDrawDao.updateStatusById(id);
+         withDrawDao.deleteById(id);
     }
 
     @Override

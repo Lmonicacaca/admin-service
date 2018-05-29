@@ -43,8 +43,9 @@ public class WithDrawController extends BaseController {
         if(id==null){
             return failed("ID为空");
         }
-         withDrawManager.deleteById(id);
-        return success();
+        withDrawManager.deleteById(id);
+       return success();
+
 
     }
 

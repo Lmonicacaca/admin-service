@@ -10,6 +10,7 @@ var banner = function () {
             {"mData": "orderBy"},
             {"mData": "createTime"},
             {"mData": null}
+
         ];
         var aoColumnDefs = [{
             "aTargets": [3],
@@ -36,11 +37,9 @@ var banner = function () {
             }
         },
             {
-                //操作按钮
                 "aTargets": [7],
                 "mRender": function (a, b, c, d) {
-                    return "<a class=\"btn btn-success\" name =\"edit\" href=\"javascript:;\"> 修改 </a> " +
-                        "<a class=\"btn btn-danger\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                    return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
                 }
             }];
         var t = $("#dataTables-example");
@@ -81,23 +80,7 @@ var banner = function () {
             })
         });
 
-        //删除
-        $("#dataTables-example tbody").on("click", "a[name='delete']", function () {
-            var table = $('#dataTables-example').DataTable();
-            var d = table.row($(this).parents('tr')).data();
-            var param = {"id": d.id};
-            var csrf = $("#csrfId");
-            var csrfName = csrf.attr('name');
-            layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("banner/deleteBanner?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
-                    if (data.code == 200) {
-                        layer.msg("删除成功");
-                        var dataTable = $("#dataTables-example").dataTable();
-                        dataTable.fnReloadAjax();
-                    }
-                });
-            });
-        });
+
         // 编辑
         $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
             if(index ==0) {
@@ -113,9 +96,7 @@ var banner = function () {
                         $("#url").val(d.url);
                         $("#id").val(d.id);
                         $("#orderBy").val(d.orderBy);
-                        // $("#simage").val(d.image);
-                       /* var date = new Date(d.createTime)
-                        $("#createTime").val(date);*/
+                        $("#simage").val(d.image);
                         var typeName="";
                         switch(d.type){
                             case 1:typeName = "余额";break;
@@ -125,7 +106,6 @@ var banner = function () {
                         var optionType = "<option value='" + d.type + "' selected='selected'>" + typeName + "</option>";
                         $("#type").empty();
                         $("#type").append(optionType);
-
                         var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
@@ -173,7 +153,9 @@ var banner = function () {
         $("#add").bind("click",function () {
             $("#id").val("");
             $("#orderBy").val("");
-
+            $("#simage").val("");
+            $("#channel").html("");
+            $("#type").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -188,7 +170,7 @@ var banner = function () {
                     loadChannel();
                 },
                 yes: function (layero, index) {
-                    if ($("#form").valid()) {
+
                         $("#form").ajaxSubmit({
                             success: function (d) {
                                 if (d.code == 200) {
@@ -201,7 +183,7 @@ var banner = function () {
                                 }
                             }
                         })
-                    }
+
                 },
                 cancel: function (index, layero) {
                     layer.close(index);

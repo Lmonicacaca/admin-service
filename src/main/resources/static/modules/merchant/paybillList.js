@@ -16,8 +16,7 @@ var paybillList = function () {
             {"mData": "tokenAddr"},
             {"mData": "status"},
             {"mData": "createTime"},
-            {"mData": "lastUpdateTime"},
-            {"mData": null}
+            {"mData": "lastUpdateTime"}
         ];
         var aoColumnDefs = [{
             "aTargets": [12],
@@ -53,12 +52,7 @@ var paybillList = function () {
                     }
 
                 }
-            },{
-            "aTargets": [15],
-            "mRender": function (a, b, c, d) {
-                return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
-            }
-        }];
+            }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
         initPageTable(t, "payBill/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);

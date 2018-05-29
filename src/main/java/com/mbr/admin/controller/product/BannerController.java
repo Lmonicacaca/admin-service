@@ -110,42 +110,37 @@ public class BannerController extends BaseController {
     @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)
     @ResponseBody
     public Object addOrUpdate(Banner banner,HttpServletRequest request,String simage){
-        System.out.println(banner+"simage:"+simage);
         Long id = banner.getId();
-        if(id == null){
-            id=new TimestampPkGenerator().next(getClass());
-            banner.setId(id);
-            banner.setCreateTime(new Date());
-        }
         int count = bannerManager.countAll();
         int orderBy = banner.getOrderBy();
         if(orderBy == 0){
             orderBy = count%3==0?1:count%3;
         }
+        if(id == null){
+            id=new TimestampPkGenerator().next(getClass());
+            banner.setId(id);
+
+        }
         Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
-        System.out.println("mapFiles:"+mapFiles);
-        if(mapFiles!=null){
+        if(mapFiles.size()!=0){
             String json = fileUpload.httpClientUploadFile(mapFiles);
             Map map = JSONObject.toJavaObject(JSON.parseObject(json), Map.class);
             if((Integer)map.get("code")==200){
                 Map<String,String> mapRequest = (Map<String,String>)map.get("data");
                 for (Map.Entry<String,String> entry:mapRequest.entrySet()) {
                     banner.setImage(entry.getValue());
-
                 }
             }
         }
         else {
             banner.setImage(simage);
         }
-
         banner.setOrderBy(orderBy);
-        System.out.println(banner);
-//        Banner saveOrUpdate = bannerManager.saveOrUpdate(banner);
-
-//        if(saveOrUpdate != null){
-//            return success();
-//        }
+        banner.setCreateTime(new Date());
+        Banner saveOrUpdate = bannerManager.saveOrUpdate(banner);
+        if(saveOrUpdate != null){
+            return success();
+        }
         return failed("添加广告失败");
     }
 

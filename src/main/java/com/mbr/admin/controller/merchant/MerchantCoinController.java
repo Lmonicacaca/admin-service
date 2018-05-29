@@ -63,11 +63,16 @@ public class MerchantCoinController extends BaseController {
     @RequestMapping("deleteMerchantCoin")
     @ResponseBody
     public Object deleteMerchantCoin(Long id){
-        MerchantCoin merchantCoin = merchantCoinManager.selectById(id);
-        merchantCoin.setStatus(1);
-        merchantCoinManager.updateById(merchantCoin);
+        if(id == null){
+            return failed("ID为空");
+        }
+        int i = merchantCoinManager.deleteById(id);
+        if(i>0){
+            return success();
+        }else{
+            return failed();
+        }
 
-        return success();
     }
 
     @RequestMapping("queryCoin")

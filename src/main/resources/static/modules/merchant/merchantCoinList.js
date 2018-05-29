@@ -15,23 +15,60 @@ var merchantCoin = function () {
             {"mData": "updateTime"},
             {"mData": null}
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+
+            {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },
+            {
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==0){
-                    return "是";
+                    return "可用";
                 }else{
-                    return "否";
+                    return "不可用";
                 }
 
             }
         },
             {
+                "aTargets": [7],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },
+            {
+                "aTargets": [8],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },
+            {
                 "aTargets": [9],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
+                    if(a!=null){
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }else{
+                        return "";
                     }
 
                 }
@@ -39,11 +76,11 @@ var merchantCoin = function () {
             {
                 "aTargets": [10],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null&&a!=""){
+                    if(a!=null){
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
                     }else{
-                        return a;
+                        return "";
                     }
 
                 }

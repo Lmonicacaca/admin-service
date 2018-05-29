@@ -40,9 +40,10 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         return merchantCoinDao.selectByPrimaryKey(id);
     }
 
+
     @Override
-    public void updateById(MerchantCoin merchantCoin) {
-        merchantCoinDao.updateById(merchantCoin);
+    public int deleteById(Long id) {
+        return merchantCoinDao.deleteByPrimaryKey(id);
     }
 
     @Override

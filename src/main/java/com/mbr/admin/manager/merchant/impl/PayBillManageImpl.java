@@ -17,9 +17,4 @@ public class PayBillManageImpl implements PayBillManager {
     public List<PayBill> queryAllPayBill(String merchantId, String fromAddr, String toAddr,int billType) {
         return payDao.queryAllPayBill(merchantId,fromAddr,toAddr,billType);
     }
-
-    @Override
-    public int deleteById(Long id) {
-        return payDao.deleteByPrimaryKey(id);
-    }
 }

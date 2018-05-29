@@ -14,7 +14,8 @@ public interface MerchantCoinManager {
 
     public MerchantCoin selectById(Long id);
 
-    public void updateById(MerchantCoin merchantCoin);
+
+    public int deleteById(Long id);
 
     public List<Map<String,String>> findAllProduct();
 

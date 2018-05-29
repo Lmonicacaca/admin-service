@@ -2,6 +2,7 @@ package com.mbr.admin.dao.merchant;
 
 import com.mbr.admin.common.dao.TkMapper;
 import com.mbr.admin.domain.merchant.WithDraw;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -24,8 +25,8 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
     public List<WithDraw> queryList(@Param(value = "merchantId") String merchantId, @Param(value = "channel")String channel);
 
 
-    @Select("update withdraw set status=1 where id=#{id}")
-    public void updateStatusById(@Param(value = "id")Long id);
+    @Delete("delete from withdraw where id=#{id}")
+    public void deleteById(@Param(value = "id")Long id);
 
     @Select("select * from withdraw where id=#{id}")
     public WithDraw selectById(Long id);
