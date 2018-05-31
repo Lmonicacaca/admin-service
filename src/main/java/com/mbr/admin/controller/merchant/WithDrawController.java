@@ -75,7 +75,6 @@ public class WithDrawController extends BaseController {
     public Object addOrUpdate(WithDraw withDraw){
         if(withDraw.getId()!=null){
             withDraw.setUpdateTime(new Date());
-            System.out.println(withDraw);
             int i = withDrawManager.updateById(withDraw);
             if(i>0){
                 return success();
@@ -86,7 +85,6 @@ public class WithDrawController extends BaseController {
         else{
             Long id = new TimestampPkGenerator().next(getClass());
             withDraw.setId(id);
-            System.out.println(withDraw);
             int i = withDrawManager.saveWithDraw(withDraw);
             if (i > 0) {
                 return success();

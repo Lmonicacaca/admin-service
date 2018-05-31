@@ -127,7 +127,6 @@ public class MerchantCoinController extends BaseController {
             merchantCoin.setTokenAddress(coin.getTokenAddress());
             long id = new TimestampPkGenerator().next(getClass());
             merchantCoin.setId(id);
-            System.out.println(merchantCoin);
             int i = merchantCoinManager.saveMerchantCoin(merchantCoin);
             if(i>0){
                 return success();
