@@ -11,6 +11,7 @@ var notification = function () {
             {"mData": "deviceId"},
             {"mData": "pushId"},
             {"mData": "createTime"},
+            {"mData": "isRead"},
             {"mData": null}
         ];
         var aoColumnDefs = [{
@@ -77,8 +78,19 @@ var notification = function () {
                     }
 
                 }
+            },
+            {
+                "aTargets": [9],
+                "mRender": function (a, b, c, d) {
+                    if(a==0){
+                        return "已读";
+                    }else{
+                        return "未读";
+                    }
+
+                }
             },{
-            "aTargets": [9],
+            "aTargets": [10],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a>";
             }
