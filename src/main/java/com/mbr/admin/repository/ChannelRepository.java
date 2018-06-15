@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ChannelRepository extends MongoRepository<Channel,Long>{
 
-    List<Channel> findAllByStatus(int status);
+    public List<Channel> findAllByStatus(int status);
+
 }

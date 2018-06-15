@@ -6,12 +6,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @ComponentScan("com.mbr.admin")
 @MapperScan("com.mbr.admin.dao")
 @EnableEurekaClient
 @EnableFeignClients
+@EnableTransactionManagement
 public class AdminApplication {
 
 	public static void main(String[] args) {

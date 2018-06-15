@@ -10,6 +10,7 @@ public class Channel {
     private String systemName;
     private String merchantId;
     private Date createTime;
+    private String channel;
     private int status;
 
     public String getId() {
@@ -50,5 +51,25 @@ public class Channel {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "id='" + id + '\'' +
+                ", systemName='" + systemName + '\'' +
+                ", merchantId='" + merchantId + '\'' +
+                ", createTime=" + createTime +
+                ", channel='" + channel + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
