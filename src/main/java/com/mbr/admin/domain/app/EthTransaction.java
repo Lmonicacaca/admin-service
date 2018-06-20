@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class EthTransaction {
-    private Long id;
+    private String id;
     private String createTime;
     private String updateTime;
     private Integer status;
@@ -17,7 +17,7 @@ public class EthTransaction {
     private String height;
     private boolean isErc20;
     private String tokenAddress;
-    private String coinId;
+    private Long coinId;
     private String hash;
     private Integer noce;
     private String blockHash;
@@ -37,11 +37,11 @@ public class EthTransaction {
     private String signedTx;
     private Integer decimals;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -125,11 +125,11 @@ public class EthTransaction {
         this.tokenAddress = tokenAddress;
     }
 
-    public String getCoinId() {
+    public Long getCoinId() {
         return coinId;
     }
 
-    public void setCoinId(String coinId) {
+    public void setCoinId(Long coinId) {
         this.coinId = coinId;
     }
 

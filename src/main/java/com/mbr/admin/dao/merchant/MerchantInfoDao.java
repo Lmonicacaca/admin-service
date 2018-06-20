@@ -37,4 +37,8 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
 
     @Select("select rsa_private from merchant_info where id=#{id}")
     public String queryRsaPrivate(@Param("id")String id);
+
+    //查看商户资源表中有无对应的商户
+    @Select("select * from merchant_vs_resource where merchant_id=#{id}")
+    public List<MerchantInfo> queryMerchantInfoFromMVR(@Param("id")String id);
 }

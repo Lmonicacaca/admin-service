@@ -47,14 +47,14 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
 
         for(int i=0;i<ethTransactionList.size();i++) {
             Map<String, Object> map = new HashMap<>();
-            Product coin = productRepository.findById(Long.parseLong(ethTransactionList.get(i).getCoinId()));
+            Product coin = productRepository.findById(ethTransactionList.get(i).getCoinId());
             map.put("id", ethTransactionList.get(i).getTo());
             map.put("orderId", ethTransactionList.get(i).getOrderId());
             map.put("txStatus", ethTransactionList.get(i).getTxStatus());
             map.put("from", ethTransactionList.get(i).getFrom());
             map.put("to", ethTransactionList.get(i).getTo());
             String value = ethTransactionList.get(i).getValue();
-            int coinDecimals = coin.getCoinDecimals();
+//            int coinDecimals = coin.getCoinDecimals();
            /* if (!value.equals("0")) {
                 map.put("value", value.substring(0, value.length() - coinDecimals));
             }

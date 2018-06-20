@@ -44,11 +44,11 @@ var ethTransaction = function () {
     };
     var __queryHandler =function (condition) {
         var orderIdSearch = $("#orderIdSearch").val();
-        var fromSearch = $("#fromSearch").val();
-        var toSearch = $("#toSearch").val();
+       /* var fromSearch = $("#fromSearch").val();
+        var toSearch = $("#toSearch").val();*/
         if (assertNotNullStr(orderIdSearch)) condition.orderIdSearch = orderIdSearch;
-        if (assertNotNullStr(fromSearch)) condition.fromSearch = fromSearch;
-        if (assertNotNullStr(toSearch)) condition.fromSearch = toSearch;
+       /* if (assertNotNullStr(fromSearch)) condition.fromSearch = fromSearch;
+        if (assertNotNullStr(toSearch)) condition.fromSearch = toSearch;*/
     };
     var __initHandler =function () {
 

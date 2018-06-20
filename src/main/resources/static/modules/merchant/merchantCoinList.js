@@ -16,7 +16,17 @@ var merchantCoin = function () {
             {"mData": null}
         ];
         var aoColumnDefs = [
+            {
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
 
+                }
+            },
             {
                 "aTargets": [5],
                 "mRender": function (a, b, c, d) {

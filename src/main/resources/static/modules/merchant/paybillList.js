@@ -18,7 +18,48 @@ var paybillList = function () {
             {"mData": "createTime"},
             {"mData": "lastUpdateTime"}
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                "aTargets": [1],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
+                "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
             "aTargets": [12],
             "mRender": function (a, b, c, d) {
                 if(a==0){

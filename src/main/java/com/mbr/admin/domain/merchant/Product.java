@@ -21,6 +21,7 @@ public class Product {
     private int coinErc20;
     private boolean merchantShow;
     private String gasLimit;
+    private boolean def;
 
     public String getId() {
         return id;
@@ -140,5 +141,13 @@ public class Product {
 
     public void setGasLimit(String gasLimit) {
         this.gasLimit = gasLimit;
+    }
+
+    public boolean isDef() {
+        return def;
+    }
+
+    public void setDef(boolean def) {
+        this.def = def;
     }
 }

@@ -25,6 +25,16 @@ var merchantInfo = function () {
                 }
             },
             {
+                "aTargets": [3],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
                 "aTargets": [4],
                 "mRender": function (a, b, c, d) {
                     return "<a class=\"edit\" name =\"rsaPublic\" href=\"javascript:;\">公钥</a>";

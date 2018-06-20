@@ -164,13 +164,12 @@ var banner = function () {
                 content: $("#addWin"),
                 btn: ['添加','关闭'],
                 success: function (layero, index) {
-                    $("#form")[0].reset();
                     validateForm().resetForm();
                     loadType();
                     loadChannel();
                 },
                 yes: function (layero, index) {
-
+                    if ($('#form').valid()) {
                         $("#form").ajaxSubmit({
                             success: function (d) {
                                 if (d.code == 200) {
@@ -183,6 +182,8 @@ var banner = function () {
                                 }
                             }
                         })
+                        // dopost();
+                    }
 
                 },
                 cancel: function (index, layero) {
@@ -192,6 +193,18 @@ var banner = function () {
 
         })
     };
+
+    var dopost = function(){
+        $.ajax({
+            url:getRootPath()+"/banner/addOrUpdate",
+            type:"post",
+            dataType:"json",
+            data:$('#form').serialize(),
+            success:function(data){
+                alert(data)
+            }
+        })
+    }
 
     var query = function () {
         //查询按钮

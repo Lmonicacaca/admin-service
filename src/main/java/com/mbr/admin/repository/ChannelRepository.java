@@ -9,4 +9,6 @@ public interface ChannelRepository extends MongoRepository<Channel,Long>{
 
     public List<Channel> findAllByStatus(int status);
 
+//    public List<Channel> fin();
+
 }

@@ -179,7 +179,7 @@ var notification = function () {
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加用户",
+                title: "添加公告",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
@@ -200,7 +200,7 @@ var notification = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("当前用户已存在");
+                                    layer.msg("添加公告失败");
                                 }
                             }
                         })

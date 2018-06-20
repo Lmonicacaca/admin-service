@@ -9,6 +9,7 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.Banner;
+import com.mbr.admin.domain.app.Vo.BannerVo;
 import com.mbr.admin.manager.app.BannerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +28,12 @@ import java.util.*;
 @RequestMapping(value = "banner")
 public class BannerController extends BaseController {
     private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Value("${image_url}")
     private String image_url ;
     @Autowired
     private BannerManager bannerManager;
 
-    @Autowired
-    private FileUpload fileUpload;
 
     //链接页面
     @RequestMapping(value = "initPage",method = RequestMethod.POST)
@@ -83,19 +83,7 @@ public class BannerController extends BaseController {
     @RequestMapping(value = "queryBannerType",method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String,Object>> queryBannerType(){
-
-        List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-        List<String> listText = new ArrayList<>();
-        listText.add("余额");
-        listText.add("商家");
-        listText.add("支付");
-        for(int i=1;i<=3;i++){
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",i);
-            map.put("text",listText.get(i-1));
-            list.add(map);
-        }
-        return list;
+        return bannerManager.queryBannerType();
     }
 
 
@@ -107,37 +95,11 @@ public class BannerController extends BaseController {
     }
 
     //保存或更新banner
-    @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)
+    @RequestMapping(value = "addOrUpdate")
     @ResponseBody
-    public Object addOrUpdate(Banner banner,HttpServletRequest request,String simage){
-        Long id = banner.getId();
-        int count = bannerManager.countAll();
-        int orderBy = banner.getOrderBy();
-        if(orderBy == 0){
-            orderBy = count%3==0?1:count%3;
-        }
-        if(id == null){
-            id=new TimestampPkGenerator().next(getClass());
-            banner.setId(id);
-
-        }
-        Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
-        if(mapFiles.size()!=0){
-            String json = fileUpload.httpClientUploadFile(mapFiles);
-            Map map = JSONObject.toJavaObject(JSON.parseObject(json), Map.class);
-            if((Integer)map.get("code")==200){
-                Map<String,String> mapRequest = (Map<String,String>)map.get("data");
-                for (Map.Entry<String,String> entry:mapRequest.entrySet()) {
-                    banner.setImage(entry.getValue());
-                }
-            }
-        }
-        else {
-            banner.setImage(simage);
-        }
-        banner.setOrderBy(orderBy);
-        banner.setCreateTime(new Date());
-        Banner saveOrUpdate = bannerManager.saveOrUpdate(banner);
+    public Object addOrUpdate(BannerVo bannerVo, HttpServletRequest request){
+        System.out.println(bannerVo);
+        Banner saveOrUpdate = bannerManager.saveOrUpdate(request,bannerVo);
         if(saveOrUpdate != null){
             return success();
         }
