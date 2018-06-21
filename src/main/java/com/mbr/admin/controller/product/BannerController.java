@@ -89,7 +89,7 @@ public class BannerController extends BaseController {
 
     @RequestMapping("queryChannel")
     @ResponseBody
-    public List<Map<String,String>> queryChannel(){
+    public List<Map<String,Object>> queryChannel(){
 
         return bannerManager.queryChannel();
     }

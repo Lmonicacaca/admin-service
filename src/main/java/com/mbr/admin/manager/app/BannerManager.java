@@ -14,7 +14,7 @@ public interface BannerManager {
         public int countAll();
         public Banner saveOrUpdate(HttpServletRequest request, BannerVo bannerVo);
 
-        public List<Map<String,String>> queryChannel();
+        public List<Map<String,Object>> queryChannel();
 
         public List<Map<String,Object>> queryBannerType();
 }

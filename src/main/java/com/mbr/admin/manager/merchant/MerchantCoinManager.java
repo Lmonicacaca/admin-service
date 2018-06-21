@@ -19,7 +19,7 @@ public interface MerchantCoinManager {
 
     public List<Map<String,String>> findAllProduct();
 
-    public List<Map<String,String>> findAllChannel();
+    public List<Map<String,Object>> findAllChannel();
 
     public Product findCoinById(Long id);
 

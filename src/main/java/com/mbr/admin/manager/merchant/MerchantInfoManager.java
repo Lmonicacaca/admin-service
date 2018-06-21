@@ -22,4 +22,8 @@ public interface MerchantInfoManager {
     public String queryRsaPublic(String id);
 
     public String queryRsaPrivate(String id);
+
+    public MerchantInfo queryById(String id);
+
+    public int updateChannelById(String channel,String id);
 }

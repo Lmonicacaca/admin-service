@@ -4,6 +4,7 @@ import com.mbr.admin.dao.merchant.WithDrawDao;
 import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.domain.merchant.WithDraw;
+import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.WithDrawManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.ProductRepository;
@@ -21,7 +22,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
     @Resource
     private WithDrawDao withDrawDao;
     @Resource
-    private ChannelRepository channelRepository;
+    private ChannelManager channelManager;
     @Resource
     private ProductRepository productRepository;
     @Override
@@ -72,15 +73,8 @@ public class WithDrawManagerImpl implements WithDrawManager {
 
     @Override
     public List<Map<String, Object>> queryChannel() {
-        List<Channel> channelList = channelRepository.findAllByStatus(0);
-        List<Map<String,Object>> list = new ArrayList<>();
-        for(int i=0;i<channelList.size();i++){
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",channelList.get(i).getId());
-            map.put("text",channelList.get(i).getId());
-            list.add(map);
-        }
-        return list;
+
+        return channelManager.findAllChannel();
     }
 
     @Override

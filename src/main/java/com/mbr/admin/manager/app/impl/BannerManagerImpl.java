@@ -8,6 +8,7 @@ import com.mbr.admin.domain.app.Banner;
 import com.mbr.admin.domain.app.Vo.BannerVo;
 import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.manager.app.BannerManager;
+import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.BannerRepository;
 import com.mbr.admin.repository.ChannelRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ public class BannerManagerImpl implements BannerManager {
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
-    private ChannelRepository channelRepository;
+    private ChannelManager channelManager;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -113,16 +114,9 @@ public class BannerManagerImpl implements BannerManager {
     }
 
     @Override
-    public List<Map<String, String>> queryChannel() {
-        List<Map<String,String>> list = new ArrayList<>();
-        List<Channel> channelList = channelRepository.findAllByStatus(0);
-        for(int i=0;i<channelList.size();i++){
-            Map<String,String> map = new HashMap<>();
-            map.put("id",channelList.get(i).getChannel());
-            map.put("text",channelList.get(i).getChannel());
-            list.add(map);
-        }
-        return list;
+    public List<Map<String, Object>> queryChannel() {
+
+        return channelManager.findAllChannel();
     }
 
     @Override

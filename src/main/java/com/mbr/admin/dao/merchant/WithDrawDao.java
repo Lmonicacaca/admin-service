@@ -2,9 +2,7 @@ package com.mbr.admin.dao.merchant;
 
 import com.mbr.admin.common.dao.TkMapper;
 import com.mbr.admin.domain.merchant.WithDraw;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -34,5 +32,14 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
     @Select("select * from withdraw where address=#{address} and coin_id=#{coinId}")
     public WithDraw selectByAddrAndCoinId(@Param(value = "address")String address,@Param(value = "coinId")Long coinId);
 
+
+    @Insert("insert into withdraw values(#{withDraw.id},#{withDraw.createTime},#{withDraw.address},null,null,#{withDraw.merchantId},#{withDraw.coinId},#{withDraw.status},#{withDraw.channel})")
+    public int insertWithdraw(@Param("withDraw") WithDraw withDraw);
+
+    @Select("select * from withdraw where merchant_id=#{merchantId} and coin_id=#{coinId}")
+    public WithDraw queryWithdraw(@Param("merchantId")String merchantId,@Param("coinId")String coinId);
+
+    @Update("update withdraw set channel=#{channel},address = #{address} where merchant_id=#{merchantId} and coin_id=#{coinId}")
+    public int updateWithdraw(@Param("merchantId")String merchantId,@Param("coinId")String coinId,@Param("channel")String channel,@Param("address")String address);
 
 }

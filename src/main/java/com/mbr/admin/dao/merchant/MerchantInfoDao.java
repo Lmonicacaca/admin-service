@@ -41,4 +41,7 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
     //查看商户资源表中有无对应的商户
     @Select("select * from merchant_vs_resource where merchant_id=#{id}")
     public List<MerchantInfo> queryMerchantInfoFromMVR(@Param("id")String id);
+
+    @Select("select * from merchant_info where id=#{id}")
+    public MerchantInfo queryById(@Param("id")String id);
 }

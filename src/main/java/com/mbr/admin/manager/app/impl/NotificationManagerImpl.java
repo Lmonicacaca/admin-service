@@ -3,6 +3,7 @@ package com.mbr.admin.manager.app.impl;
 import com.mbr.admin.domain.app.Notification;
 import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.manager.app.NotificationManager;
+import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.NotificationRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ public class NotificationManagerImpl implements NotificationManager {
     @Resource
     private NotificationRepository notificationRepository;
     @Resource
-    private ChannelRepository channelRepository;
+    private ChannelManager channelManager;
 
     @Override
     public List<Notification> queryList(int type, int transfer) {
@@ -66,15 +67,8 @@ public class NotificationManagerImpl implements NotificationManager {
 
     @Override
     public List<Map<String, Object>> queryChannel() {
-        List<Channel> channelList = channelRepository.findAllByStatus(0);
-        List<Map<String,Object>> list = new ArrayList<>();
-        for(int j=0;j<channelList.size();j++){
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",channelList.get(j).getId());
-            map.put("text",channelList.get(j).getId());
-            list.add(map);
-        }
-        return list;
+
+        return channelManager.findAllChannel();
     }
 
     @Override

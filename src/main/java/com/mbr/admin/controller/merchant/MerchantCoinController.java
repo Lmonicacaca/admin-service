@@ -85,7 +85,7 @@ public class MerchantCoinController extends BaseController {
     @RequestMapping("queryChannel")
     @ResponseBody
     public Object queryChannel(){
-        List<Map<String,String>> allChannel = merchantCoinManager.findAllChannel();
+        List<Map<String,Object>> allChannel = merchantCoinManager.findAllChannel();
         return allChannel;
     }
     @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)

@@ -6,6 +6,7 @@ import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.domain.merchant.MerchantCoin;
 import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.domain.system.SysUsers;
+import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantCoinManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.ProductRepository;
@@ -26,7 +27,7 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     @Resource
     private ProductRepository productRepository;
     @Resource
-    private ChannelRepository channelRepository;
+    private ChannelManager channelManager;
     @Resource
     private SysUsersDao sysUsersDao;
     @Override
@@ -61,16 +62,9 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     }
 
     @Override
-    public List<Map<String, String>> findAllChannel() {
-        List<Map<String,String>> list = new ArrayList<>();
-        List<Channel> channelList = channelRepository.findAllByStatus(0);
-        for(int i=0;i<channelList.size();i++){
-            Map<String,String> map = new HashMap<>();
-            map.put("id",channelList.get(i).getId());
-            map.put("text",channelList.get(i).getId());
-            list.add(map);
-        }
-        return list;
+    public List<Map<String, Object>> findAllChannel() {
+
+        return channelManager.findAllChannel();
     }
 
     @Override
