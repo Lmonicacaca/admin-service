@@ -36,37 +36,6 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
         return result;
     }
 
-    @RequestMapping("queryChannel")
-    @ResponseBody
-    public Object queryChannel(){
-        return merchantInfoManager.queryChannel();
-    }
-
-    //审核商户，为商户设置渠道号
-    @RequestMapping("auditMerchant")
-    @ResponseBody
-    public Object auditMerchant(MerchantInfo merchantInfo){
-        System.out.println(merchantInfo);
-        //判断商户是否填写渠道号
-        if(merchantInfo.getChannel()==null||merchantInfo.getChannel()==""){
-            try{
-                String result = merchantInfoManager.saveChannelForMerchant(merchantInfo);
-                return success();
-            }catch (Exception e){
-                return failed(e.getMessage());
-            }
-
-        }
-        else{
-            try{
-                String result = merchantInfoManager.updateChannelForMerchant(merchantInfo);
-                return success();
-            }catch (Exception e){
-                return failed(e.getMessage());
-            }
-
-        }
-    }
     @RequestMapping("deleteMerchant")
     @ResponseBody
     public Object deleteMerchant(String id){

@@ -78,7 +78,7 @@ var merchantInfo = function () {
             {
             "aTargets": [9],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"edit\" name=\"auditMerchant\" href=\"javascript:;\">审核</a> <a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
@@ -159,57 +159,6 @@ var merchantInfo = function () {
                 });
             });
         });
-        //审核用户
-        $("#dataTables-example tbody").on("click", "a[name='auditMerchant']", function () {
-            if(index ==0) {
-                index ++;
-                var table = $('#dataTables-example').DataTable();
-                var d = table.row($(this).parents('tr')).data();
-                var csrf = $("#csrfId");
-                var csrfName = csrf.attr('name');
-                var param = {"id": d.id};
-                var channel =d.channel;
-                if(channel==null){
-                    channel = ""
-                }
-                var option = "<option value='" + channel + "' selected='selected'>" + channel + "</option>";
-                $("#channel").empty();
-                $("#channel").append(option);
-                $("#name").val(d.name);
-                $("#id").val(d.id);
-                layer.open({
-                    area: '800px',
-                    shade: [0.8, '#393D49'],
-                    title: "审核商户",
-                    type: 1,
-                    content: $("#auditMercahnt"),
-                    btn: ['通过',"取消"],
-                    success: function (layero, index) {
-                        loadChannel();
-                    },
-                    yes: function (i, layero) {
-                        if ($('#auditForm').valid()) {
-                            $("#auditForm").ajaxSubmit({
-                                success: function (d) {
-                                    if (d.code == 200) {
-                                        var dataTable = $("#dataTables-example").dataTable();
-                                        dataTable.fnReloadAjax();
-                                        layer.close(i);
-                                    } else {
-                                        layer.msg("审核失败");
-                                    }
-                                }
-                            });
-                        }
-                        index = 0;
-                    },
-                    cancel: function (i, layero) {
-                        layer.close(i);
-                        index = 0;
-                    }
-                });
-            }
-        });
     };
     var query = function () {
         //查询按钮
@@ -218,21 +167,6 @@ var merchantInfo = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
-            allowClear: true,
-            ajax: {
-                url: "merchantInfo/queryChannel",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
 
    var  assertNotNullStr = function(/**Any Object*/obj) {
         if (( typeof obj == "undefined") || (obj == null) || (obj === "null") || (obj === "undefined") || (obj === ""))

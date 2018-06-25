@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.AuditMerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantCoinTmpDao;
@@ -57,7 +58,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     }
 
     @Override
-    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws Exception {
+    @Transactional(rollbackFor = AuditMerchantException.class)
+    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException {
         //查询出商户信息
         MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
         if(merchantInfo!=null){
@@ -133,32 +135,33 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                                if(channelInsert!=null){
                                    return "success";
                                }else{
-                                   throw new RuntimeException("渠道号添加势失败");
+                                   throw new AuditMerchantException("渠道号添加势失败");
                                }
                            }else{
-                               throw new RuntimeException("商户资源配置失败");
+                               throw new AuditMerchantException("商户资源配置失败");
                            }
                         }else{
-                            throw new RuntimeException("商户提现地址添加失败");
+                            throw new AuditMerchantException("商户提现地址添加失败");
                         }
                     }else{
-                        throw new RuntimeException("商户支付地址添加失败");
+                        throw new AuditMerchantException("商户支付地址添加失败");
                     }
 
                 }else{
-                    throw new RuntimeException("更新商户渠道号失败");
+                    throw new AuditMerchantException("更新商户渠道号失败");
                 }
             }else {
-                throw new RuntimeException("更新临时表失败");
+                throw new AuditMerchantException("更新临时表失败");
             }
         }else{
-            throw new Exception("商户信息不存在");
+            throw new AuditMerchantException("商户信息不存在");
         }
 
     }
 
     @Override
-    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws Exception {
+    @Transactional(rollbackFor = AuditMerchantException.class)
+    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException {
         //查询出商户信息
         MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
         if(merchantInfo!=null){
@@ -222,22 +225,22 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                             if(k>0){
                                 return "success";
                             }else{
-                                throw new RuntimeException("商户资源配置失败");
+                                throw new AuditMerchantException("商户资源配置失败");
                             }
                         }else{
-                            throw new RuntimeException("商户提现地址添加失败");
+                            throw new AuditMerchantException("商户提现地址添加失败");
                         }
                     }else{
-                        throw new RuntimeException("商户支付地址添加失败");
+                        throw new AuditMerchantException("商户支付地址添加失败");
                     }
                 }else{
-                    throw new RuntimeException("更新商户渠道号失败");
+                    throw new AuditMerchantException("更新商户渠道号失败");
                 }
             }else {
-                throw new RuntimeException("更新临时表失败");
+                throw new AuditMerchantException("更新临时表失败");
             }
         }else{
-            throw new Exception("商户信息不存在");
+            throw new AuditMerchantException("商户信息不存在");
         }
 
     }

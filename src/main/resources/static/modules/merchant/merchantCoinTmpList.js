@@ -123,7 +123,7 @@ var merchantCoinTmp = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("审核失败，请重新审核");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
@@ -142,7 +142,7 @@ var merchantCoinTmp = function () {
                                             dataTable.fnReloadAjax();
                                             layer.close(i);
                                         } else {
-                                            layer.msg("审核失败，请重新审核");
+                                            layer.msg(d.message);
                                         }
                                     }
 

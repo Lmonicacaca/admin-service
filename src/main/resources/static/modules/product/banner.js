@@ -152,7 +152,7 @@ var banner = function () {
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
-            $("#orderBy").val("");
+            $("#orderBy").val(0);
             $("#simage").val("");
             $("#channel").html("");
             $("#type").html("");
@@ -182,7 +182,6 @@ var banner = function () {
                                 }
                             }
                         })
-                        // dopost();
                     }
 
                 },
@@ -194,17 +193,6 @@ var banner = function () {
         })
     };
 
-    var dopost = function(){
-        $.ajax({
-            url:getRootPath()+"/banner/addOrUpdate",
-            type:"post",
-            dataType:"json",
-            data:$('#form').serialize(),
-            success:function(data){
-                alert(data)
-            }
-        })
-    }
 
     var query = function () {
         //查询按钮

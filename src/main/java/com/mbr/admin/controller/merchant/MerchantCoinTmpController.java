@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.AuditMerchantException;
 import com.mbr.admin.domain.merchant.MerchantCoinTmp;
 import com.mbr.admin.manager.merchant.MerchantCoinTmpManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,16 +62,17 @@ public class MerchantCoinTmpController extends BaseController {
             try{
                 merchantCoinTmpManager.auditMerchantNoChannel(merchantCoinTmp);
                 return success();
-            }catch (Exception e){
-                return failed("审核失败，请重新审核");
+            }catch (AuditMerchantException e){
+
+                return failed(e.getMessage());
             }
 
         }else {
             try{
                  merchantCoinTmpManager.auditMercahntWithChannel(merchantCoinTmp);
                 return success();
-            }catch (Exception e){
-                return failed("审核失败，请重新审核");
+            }catch (AuditMerchantException e){
+                return failed(e.getMessage());
             }
 
         }
