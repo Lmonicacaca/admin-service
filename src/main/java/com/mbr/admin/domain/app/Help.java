@@ -2,16 +2,14 @@ package com.mbr.admin.domain.app;
 
 import lombok.Data;
 
-import java.util.Date;
 
 @Data
-public class PrivacyPolicyAndAbout {
+public class Help {
     private Long id;
     private String content;
-    private Date createTime;
-    private  int type;
-    private String channel;
+    private String title;
     private String language;
+    private String createTime;
 
     public Long getId() {
         return id;
@@ -29,28 +27,12 @@ public class PrivacyPolicyAndAbout {
         this.content = content;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getTitle() {
+        return title;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getChannel() {
-        return channel;
-    }
-
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getLanguage() {
@@ -61,15 +43,22 @@ public class PrivacyPolicyAndAbout {
         this.language = language;
     }
 
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
-        return "PrivacyPolicyAndAbout{" +
+        return "Help{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
-                ", createTime='" + createTime + '\'' +
-                ", type=" + type +
-                ", channel='" + channel + '\'' +
+                ", title='" + title + '\'' +
                 ", language='" + language + '\'' +
+                ", createTime=" + createTime +
                 '}';
     }
 }

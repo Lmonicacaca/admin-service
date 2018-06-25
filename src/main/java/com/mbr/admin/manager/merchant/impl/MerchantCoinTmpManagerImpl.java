@@ -83,20 +83,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                     MerchantCoin merchantCoin1 = merchantCoinDao.queryCoin(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
                     int merchantCoinInsert = 0;
                     if(merchantCoin1==null){
-                        //添加MerchantCoin
-                        MerchantCoin merchantCoin = new MerchantCoin();
-                        merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
-                        merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-                        merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
-                        merchantCoin.setStatus(0);
-                        SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
-                        merchantCoin.setCreateUserName(securityUserDetails.getUsername());
-                        merchantCoin.setCreateTime(new Date());
-                        merchantCoin.setAddress(merchantCoinTmp.getRechargeAddress());
-                        merchantCoin.setTokenAddress(merchantCoinTmp.getTokenAddress());
-                        merchantCoin.setCoinName(merchantCoinTmp.getCoinName());
-                        merchantCoin.setChannel(channelNumber);
-                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(merchantCoin);
+
+                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(createMerchantCoin(merchantCoinTmp,channelNumber));
                     }else{
                         merchantCoinInsert =  merchantCoinDao.updateCoin(merchantCoinTmp.getMerchantId(),channelNumber, merchantCoinTmp.getCoinId(),merchantCoinTmp.getRechargeAddress());
                     }
@@ -106,16 +94,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                         WithDraw withDraw1 = withDrawDao.queryWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
                         int withdrawInsert = 0;
                         if(withDraw1==null){
-                            //添加withdraw
-                            WithDraw withDraw = new WithDraw();
-                            withDraw.setId(new TimestampPkGenerator().next(getClass()));
-                            withDraw.setCreateTime(new Date());
-                            withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
-                            withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
-                            withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-                            withDraw.setStatus(0);
-                            withDraw.setChannel(channelNumber);
-                            withdrawInsert = withDrawDao.insertWithdraw(withDraw);
+                            withdrawInsert = withDrawDao.insertWithdraw(createWithdraw(merchantCoinTmp,channelNumber));
                         }else{
                             withdrawInsert=withDrawDao.updateWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId(),channelNumber,merchantCoinTmp.getWithdrawAddress());
                         }
@@ -176,19 +155,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                     int merchantCoinInsert = 0;
                     if(merchantCoin1==null){
                         //添加MerchantCoin
-                        MerchantCoin merchantCoin = new MerchantCoin();
-                        merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
-                        merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-                        merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
-                        merchantCoin.setStatus(0);
-                        SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
-                        merchantCoin.setCreateUserName(securityUserDetails.getUsername());
-                        merchantCoin.setCreateTime(new Date());
-                        merchantCoin.setAddress(merchantCoinTmp.getRechargeAddress());
-                        merchantCoin.setTokenAddress(merchantCoinTmp.getTokenAddress());
-                        merchantCoin.setCoinName(merchantCoinTmp.getCoinName());
-                        merchantCoin.setChannel(merchantCoinTmp.getChannel());
-                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(merchantCoin);
+                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(createMerchantCoin(merchantCoinTmp,null));
                     }else{
                         merchantCoinInsert =  merchantCoinDao.updateCoin(merchantCoinTmp.getMerchantId(),merchantCoinTmp.getChannel(), merchantCoinTmp.getCoinId(),merchantCoinTmp.getRechargeAddress());
                     }
@@ -199,16 +166,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                         int withdrawInsert = 0;
 
                         if(withDraw1==null){
-                            //添加withdraw
-                            WithDraw withDraw = new WithDraw();
-                            withDraw.setId(new TimestampPkGenerator().next(getClass()));
-                            withDraw.setCreateTime(new Date());
-                            withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
-                            withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
-                            withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-                            withDraw.setStatus(0);
-                            withDraw.setChannel(merchantCoinTmp.getChannel());
-                            withdrawInsert = withDrawDao.insertWithdraw(withDraw);
+                            withdrawInsert = withDrawDao.insertWithdraw(createWithdraw(merchantCoinTmp,null));
                         }else{
                             withdrawInsert=withDrawDao.updateWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId(),merchantCoinTmp.getChannel(),merchantCoinTmp.getWithdrawAddress());
                         }
@@ -249,6 +207,48 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     public int auditMercahntNotPass(String id,int status) {
 
         return merchantCoinTmpDao.updateStatusNotPass(status,id);
+
+    }
+
+    //创建提现对象
+    public WithDraw createWithdraw(MerchantCoinTmp merchantCoinTmp,String channel){
+        //添加withdraw
+        WithDraw withDraw = new WithDraw();
+        withDraw.setId(new TimestampPkGenerator().next(getClass()));
+        withDraw.setCreateTime(new Date());
+        withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
+        withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
+        withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
+        withDraw.setStatus(0);
+        if(channel==null||channel==""){
+            withDraw.setChannel(merchantCoinTmp.getChannel());
+        }else{
+            withDraw.setChannel(channel);
+        }
+
+        return withDraw;
+    }
+
+    //创建充值对象
+    public MerchantCoin createMerchantCoin(MerchantCoinTmp merchantCoinTmp,String channel){
+        MerchantCoin merchantCoin = new MerchantCoin();
+        merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
+        merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
+        merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
+        merchantCoin.setStatus(0);
+        SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+        merchantCoin.setCreateUserName(securityUserDetails.getUsername());
+        merchantCoin.setCreateTime(new Date());
+        merchantCoin.setAddress(merchantCoinTmp.getRechargeAddress());
+        merchantCoin.setTokenAddress(merchantCoinTmp.getTokenAddress());
+        merchantCoin.setCoinName(merchantCoinTmp.getCoinName());
+        if(channel==null||channel==""){
+            merchantCoin.setChannel(merchantCoinTmp.getChannel());
+        }else{
+            merchantCoin.setChannel(channel);
+        }
+
+        return merchantCoin;
     }
 
     /**

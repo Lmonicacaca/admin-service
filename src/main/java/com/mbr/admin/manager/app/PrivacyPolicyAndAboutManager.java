@@ -9,11 +9,13 @@ public interface PrivacyPolicyAndAboutManager {
 
     public List<PrivacyPolicyAndAbout> queryList(String channel);
 
-    public List<Channel> queryChannel();
+    public Object queryChannel();
+
+    public Object queryType();
+
+    public int addOrUpdate(PrivacyPolicyAndAbout privacyPolicyAndAbout);
 
     public void deletePrivacyPolicyAndAbout(Long id);
 
     public PrivacyPolicyAndAbout queryById(Long id);
-
-    public void updateById(PrivacyPolicyAndAbout privacyPolicyAndAbout);
 }

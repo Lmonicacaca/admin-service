@@ -29,44 +29,51 @@ public class PrivacyPolicyAndAboutController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String channel){
+    public Object queryList(HttpServletRequest request,String channelSearch){
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<PrivacyPolicyAndAbout> privacyPolicyAndAboutList = privacyPolicyAndAboutManager.queryList(channel);//查询所有状态码为0的信息
+        List<PrivacyPolicyAndAbout> privacyPolicyAndAboutList = privacyPolicyAndAboutManager.queryList(channelSearch);//查询所有状态码为0的信息
         PageResultDto result = new PageResultDto<PrivacyPolicyAndAbout>(new PageInfo<PrivacyPolicyAndAbout>(privacyPolicyAndAboutList));
         return result;
     }
-    @RequestMapping(value = "queryChannel",method = RequestMethod.POST)
+
+    @RequestMapping("queryChannel")
     @ResponseBody
     public Object queryChannel(){
         return privacyPolicyAndAboutManager.queryChannel();
     }
+    @RequestMapping("queryType")
+    @ResponseBody
+    public Object queryType(){
+        return privacyPolicyAndAboutManager.queryType();
 
-    @RequestMapping(value = "deletePrivacyPolicyAndAbout",method = RequestMethod.POST)
+    }
+
+    @RequestMapping("addOrUpdate")
+    @ResponseBody
+    public Object addOrUpdate(PrivacyPolicyAndAbout privacyPolicyAndAbout){
+        System.out.println(privacyPolicyAndAbout);
+        int i = privacyPolicyAndAboutManager.addOrUpdate(privacyPolicyAndAbout);
+        if(i>0){
+            return success();
+        }
+        return failed();
+    }
+    @RequestMapping("deletePrivacyPolicyAndAbout")
     @ResponseBody
     public Object deletePrivacyPolicyAndAbout(Long id){
         privacyPolicyAndAboutManager.deletePrivacyPolicyAndAbout(id);
         return success();
     }
-
-    @RequestMapping(value = "queryById",method = RequestMethod.POST)
+    @RequestMapping("queryById")
     @ResponseBody
     public Object queryById(Long id){
         if(id==null){
             return failed("ID不能为空");
         }
         PrivacyPolicyAndAbout privacyPolicyAndAbout = privacyPolicyAndAboutManager.queryById(id);
-        return success(privacyPolicyAndAbout);
-    }
-
-    @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)
-    @ResponseBody
-    public Object addOrUpdate(PrivacyPolicyAndAbout privacyPolicyAndAbout){
-        if(privacyPolicyAndAbout.getId()!=null){
-            privacyPolicyAndAboutManager.updateById(privacyPolicyAndAbout);
-            return success();
-        }else{
-
+        if(privacyPolicyAndAbout!=null){
+            return success(privacyPolicyAndAbout);
         }
-        return null;
+        return failed();
     }
 }

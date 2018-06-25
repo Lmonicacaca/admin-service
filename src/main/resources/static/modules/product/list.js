@@ -17,8 +17,21 @@ var product = function () {
 
         ];
         //数据的格式化处理: aTargets=表示你要处理的行数,从0开始
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                //操作按钮
+
+                "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                   if(a==null||a==""){
+                       return "";
+                   }else{
+                       return a;
+                   }
+                }
+            }, {
             //操作按钮
+
             "aTargets": [7],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"detail\" name =\"detail\" href=\"javascript:;\"> 查看 </a> " +
