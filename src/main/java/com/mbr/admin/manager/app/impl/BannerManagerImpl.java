@@ -109,7 +109,6 @@ public class BannerManagerImpl implements BannerManager {
             banner.setImage(bannerVo.getSimage());
         }
 
-        System.out.println(banner);
         return bannerRepository.save(banner);
     }
 

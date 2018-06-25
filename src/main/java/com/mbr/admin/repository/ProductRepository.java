@@ -11,4 +11,6 @@ public interface ProductRepository extends MongoRepository<Product,Long> {
     List<Product> findAllByOnlineStatus(int onlineStatus);
 
     Product findById(Long id);
+
+    Product findByCoinNameAndTokenAddress(String coinName,String tokenAddress);
 }
