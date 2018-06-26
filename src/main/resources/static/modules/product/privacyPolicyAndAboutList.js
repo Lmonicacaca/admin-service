@@ -191,8 +191,19 @@ var privacyPolicyAndAbout = function () {
         });
     };
     var loadType = function () {
-        $('#type').append("<option value='0'>隐私协议</option>")
-        $('#type').append("<option value='1'>关于我们</option>")
+        $('#type').select2({
+            placeholder: "请选择类型",
+            allowClear: true,
+            ajax: {
+                url: "privacyPolicyAndAbout/queryType",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
     };
    var validateForm = function () {
         var validate = $('#form').validate({

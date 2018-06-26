@@ -50,10 +50,10 @@ public class PrivacyPolicyAndAboutManagerImpl implements PrivacyPolicyAndAboutMa
     public Object queryType() {
         List<Map<String,Object>> list = new ArrayList<>();
         Map<String,Object> map1 = new HashMap<>();
-        map1.put("id",0);
+        map1.put("id","0");
         map1.put("text","隐私协议");
         Map<String,Object> map2 = new HashMap<>();
-        map2.put("id",1);
+        map2.put("id","1");
         map2.put("text","关于我们");
         list.add(map1);
         list.add(map2);
