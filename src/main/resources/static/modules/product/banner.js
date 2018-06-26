@@ -245,10 +245,6 @@ var banner = function () {
                     required:true,
                     url:true
                 },
-                image: {
-                     required:true,
-                    accept:"JPEG|PNG|GIF"
-                },
                 type: {
                     required: true
                 },
@@ -260,10 +256,6 @@ var banner = function () {
                 url: {
                     required:"url不能为空",
                     url: "url格式有误"
-                },
-                image: {
-                    required:"图片不能为空",
-                    accept:"图片格式有误"
                 },
                 type: {
                     required: "类型不能为空!"

@@ -7,6 +7,7 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.app.ProductApply;
 import com.mbr.admin.manager.app.AuditProductManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +18,9 @@ import java.util.List;
 @Controller
 @RequestMapping("auditProduct")
 public class AuditProductController extends BaseController {
+
+    @Value("${image_url}")
+    private String image_url ;
 
     @Autowired
     private AuditProductManager auditProductManager;

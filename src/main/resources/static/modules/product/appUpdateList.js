@@ -1,46 +1,96 @@
-var privacyPolicyAndAbout = function () {
+var appUpdate = function () {
     var index =0;
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "channel"},
-            {"mData": "type"},
+            {"mData": "appUpdateType"},
+            {"mData": "url"},
+            {"mData": "plistUrl"},
+            {"mData": "version"},
+            {"mData": "iosLogo"},
             {"mData": "content"},
-            {"mData": "language"},
+            {"mData": "force"},
             {"mData": "createTime"},
+            {"mData": "updateTime"},
             {"mData": null}
         ];
         var aoColumnDefs = [{
-            "aTargets": [2],
+            "aTargets": [1],
             "mRender": function (a, b, c, d) {
-                if(a==0){
-                    return "隐私协议";
+                if(a==null||a==""){
+                    return "";
                 }else{
-                    return "关于我们";
+                    return a;
+                }
+
+            }
+        },
+            {
+                "aTargets": [3],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else {
+                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>APP下载</a>"
+                    }
+                }
+            },{
+            "aTargets": [4],
+            "mRender": function (a, b, c, d) {
+                if(a==null||a==""){
+                    return "";
+                }else{
+                    return "<a class=\"edit\" href='"+a+"' title='"+a+"'>配置文件下载</a>"
                 }
 
             }
         },{
-            "aTargets": [5],
+            "aTargets": [6],
             "mRender": function (a, b, c, d) {
-                var date = new Date(a);
-                return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                if(a==null||a==""){
+                    return "";
+                }else{
+                    return "<img src='"+a+"' style='max-height: 50px'/>"
+                }
+
             }
         },
             {
-                "aTargets": [6],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
-                    return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }
+
                 }
-            }];
+            },
+            {
+                "aTargets": [10],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }
+                }
+            },{
+            "aTargets": [11],
+            "mRender": function (a, b, c, d) {
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+            }
+        }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
-        initPageTable(t, "privacyPolicyAndAbout/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initPageTable(t, "appUpdate/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
-        var channelSearch = $("#channelSearch").val();
-        if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
-
+        var versionSearch = $("#versionSearch").val();
+        if (assertNotNullStr(versionSearch)) condition.versionSearch = versionSearch;
     };
     var __initHandler =function () {
         //删除
@@ -51,7 +101,7 @@ var privacyPolicyAndAbout = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("privacyPolicyAndAbout/deletePrivacyPolicyAndAbout?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("appUpdate/deleteAppUpdate?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
@@ -69,24 +119,32 @@ var privacyPolicyAndAbout = function () {
                 var csrf = $("#csrfId");
                 var csrfName = csrf.attr('name');
                 var param = {"id": d.id};
-                $.post("privacyPolicyAndAbout/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
+                $.post("appUpdate/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
                         var d = data.data;
                         $("#id").val(d.id);
+                        $("#oldImg").val(d.iosLogo);
+                        $("#oldPlistUrl").val(d.plistUrl);
+                        $("#oldUrl").val(d.url);
+                        $("#version").val(d.version);
                         $("#content").val(d.content);
-                        $("#language").val(d.language);
-                        var typeName = "";
-                        if(d.type==0){
-                            typeName = "隐私协议"
-                        }else{
-                            typeName = "关于我们"
-                        }
-                        var optionType = "<option value='" + d.type + "' selected='selected'>" + typeName + "</option>";
-                        $("#type").empty();
-                        $("#type").append(optionType);
-                        var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
+                        $("#url").val("");
+                        $("#plistUrl").val("");
+                        $("#iosLogo").val("");
+                        var time = new Date(d.createTime);
+                        $("#createTime").val(time);
                         $("#channel").empty();
-                        $("#channel").append(optionChannel);
+                        if(d.channel!=null&&d.channel!=""){
+                            var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
+                            $("#channel").append(optionChannel);
+                        }
+                        var optionForce = "<option value='" + d.force + "' selected='selected'>" + d.force + "</option>";
+                        $("#force").empty();
+                        $("#force").append(optionForce);
+                        var optionType = "<option value='" + d.appUpdateType + "' selected='selected'>" + d.appUpdateType + "</option>";
+                        $("#appUpdateType").empty();
+                        $("#appUpdateType").append(optionType);
+
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -96,7 +154,8 @@ var privacyPolicyAndAbout = function () {
                             btn: ['确定'],
                             success: function (layero, index) {
                                 loadChannel();
-                                loadType();
+                                loadAppUpdateType();
+                                loadForce();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -123,27 +182,33 @@ var privacyPolicyAndAbout = function () {
                 });
             }
         });
-
     };
-    //添加隐私协议
+    //添加用户
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
-            $("#content").val("");
-            $("#language").val("");
+            $("#createTime").val(new Date());
             $("#channel").html("");
-            $("#type").html("");
+            $("#appUpdateType").html("");
+            $("#url").val("");
+            $("#plistUrl").val("");
+            $("#version").val("");
+            $("#iosLogo").val("");
+            $("#content").val("");
+            $("#force").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加隐私协议",
+                title: "添加更新版本",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
                 success: function (layero, index) {
                     validateForm().resetForm();
                     loadChannel();
-                    loadType();
+                    loadAppUpdateType();
+                    loadForce();
+                    changeType();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -155,7 +220,7 @@ var privacyPolicyAndAbout = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("当前用户已存在");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -180,7 +245,7 @@ var privacyPolicyAndAbout = function () {
             placeholder: "请选择渠道号",
             allowClear: true,
             ajax: {
-                url: "privacyPolicyAndAbout/queryChannel",
+                url: "appUpdate/queryChannel",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -190,41 +255,87 @@ var privacyPolicyAndAbout = function () {
             }
         });
     };
-    var loadType = function () {
-        $('#type').append("<option value='0'>隐私协议</option>")
-        $('#type').append("<option value='1'>关于我们</option>")
+    var loadAppUpdateType = function () {
+        $('#appUpdateType').select2({
+            placeholder: "请选择类型",
+            allowClear: true,
+            ajax: {
+                url: "appUpdate/queryType",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
     };
+    var loadForce = function () {
+        $('#force').select2({
+            placeholder: "请选择是否强制更新",
+            allowClear: true,
+            ajax: {
+                url: "appUpdate/queryForce",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
+
+    var changeType = function(){
+
+        $("#appUpdateType").bind("change",function(){
+            if($(this).val()=="Android"){
+                $("#showPlistUrl").css("display","none");
+                $("#showIosLogo").css("display","none");
+            }else{
+                $("#showPlistUrl").css("display","block");
+                $("#showIosLogo").css("display","block");
+            }
+        })
+    };
+
    var validateForm = function () {
         var validate = $('#form').validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                channel: {
+                appUpdateType: {
                     required: true
                 },
-                type: {
+                url:{
                     required: true
                 },
-                content: {
+                pListUrl:{
                     required: true
                 },
-                language: {
+                version: {
+                    required: true
+                },
+                force: {
                     required: true
                 }
             },
             messages: {
-                channel: {
-                    required: "渠道号不能为空!"
-                },
-                type: {
+                appUpdateType: {
                     required: "类型不能为空!"
                 },
-                content: {
-                    required: "内容不能为空!"
+                url:{
+                    required: "安装包不能为空"
                 },
-                language: {
-                    required: "语言不能为空!"
+                pListUrl:{
+                    required: "配置文件不能为空"
+                },
+                version: {
+                    required: "版本号不能为空!"
+                },
+                force: {
+                    required: "是否强制更新不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs
@@ -261,15 +372,6 @@ var privacyPolicyAndAbout = function () {
             return false;
         return true;
     };
-
-    function getRootPath(){
-        var strFullPath=window.document.location.href;
-        var strPath=window.document.location.pathname;
-        var pos=strFullPath.indexOf(strPath);
-        var prePath=strFullPath.substring(0,pos);
-        var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);
-        return(prePath+postPath);
-    }
 
     return {
         init:function () {
