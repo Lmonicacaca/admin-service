@@ -12,10 +12,27 @@ var banner = function () {
             {"mData": null}
 
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a!=null&&a!=""){
+                        return "<a target='_blank' class=\"edit\" href='"+a+"'>"+a+"</a>";
+                    }else{
+                        return "";
+                    }
+
+                }
+            },
+            {
             "aTargets": [3],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"edit\" name =\"img\" href=\"javascript:;\">"+a+"</a>";
+                if(a!=null&&a!=""){
+                    return "<a class=\"edit\" name =\"img\" href=\"javascript:;\">"+a+"</a>";
+                }else{
+                    return "";
+                }
+
             }
         },{
             "aTargets": [4],
@@ -32,8 +49,13 @@ var banner = function () {
         },{
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
-                var date = new Date(a);
-                return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                if(a!=null&&a!=""){
+                    var date = new Date(a);
+                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                }else{
+                    return "";
+                }
+
             }
         },
             {

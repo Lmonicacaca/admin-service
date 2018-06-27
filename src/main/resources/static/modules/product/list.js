@@ -9,6 +9,7 @@ var product = function () {
             {"mData": "id"},
             {"mData": "coinName"},
             {"mData": "coinDescription"},
+            {"mData": "coinAvatarUrl"},
             {"mData": "chainType"},
             {"mData": "tokenAddress"},
             {"mData": "coinDecimals"},
@@ -21,7 +22,18 @@ var product = function () {
             {
                 //操作按钮
 
-                "aTargets": [6],
+                "aTargets": [3],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else{
+                        return "<img src='"+a+"' style='max-height: 50px'/>";
+                    }
+                }
+            },{
+                //操作按钮
+
+                "aTargets": [7],
                 "mRender": function (a, b, c, d) {
                    if(a==null||a==""){
                        return "";
@@ -32,10 +44,9 @@ var product = function () {
             }, {
             //操作按钮
 
-            "aTargets": [7],
+            "aTargets": [8],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"detail\" name =\"detail\" href=\"javascript:;\"> 查看 </a> " +
-                        "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a> " +
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a> " +
                         "<a class=\"delete\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
@@ -73,52 +84,6 @@ var product = function () {
                 });
             });
         });
-        //查看
-        $("#dataTables-example tbody").on("click", "a[name='detail']", function () {
-            if(index == 0) {
-                index++;
-                var table = $('#dataTables-example').DataTable();
-                var d = table.row($(this).parents('tr')).data();
-                layer.open({
-                    area: ['900px', '800px'],
-                    shade: [0.8, '#393D49'],
-                    title: "详细信息",
-                    type: 1,
-                    content: $("#detail"),
-                    btn: ['关闭'],
-                    success: function (layero, index) {
-                        var param = {"id": d.id};
-                        var csrf = $("#csrfId");
-                        var csrfName = csrf.attr('name');
-                        $.post("product/queryById?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
-                            if (data.code == 200) {
-                                var da = data.data;
-                                $("#coinNameDetail").text(da.coinName);
-                                $("#coinTypeDetail").text(da.coinType == 0 ? "主链币" : "代币");
-                                $("#coinAvatarUrlDetail").attr("src", da.coinAvatarUrl);
-                                $("#coinDescriptionDetail").text(da.coinDescription);
-                                $("#coinErc20Detail").text(da.coinErc20 == "0" ? "否" : "是");
-                                $("#chainTypeDetail").text(da.chainType);
-                                $("#tokenAddressDetail").text(da.tokenAddress);
-                                $("#coinDecimalsDetail").text(da.coinDecimals);
-                                $("#gasLimitDetail").text(da.gasLimit);
-                                $("#createTimeDetail").text(moment(da.createTime).format('YYYY-MM-DD HH:mm:ss'));
-                                $("#updateTimeDetail").text(moment(da.updateTime).format('YYYY-MM-DD HH:mm:ss'));
-                            }
-                        });
-                        index = 0;
-                    },
-                    yes: function (i, layero) {
-                        layer.closeAll();
-                        index = 0;
-                    }, cancel: function (i, layero) {
-                        layer.closeAll();
-                        index = 0;
-                    }
-                });
-            }
-        });
-        
         
         //修改
         $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
@@ -128,7 +93,7 @@ var product = function () {
                 var table = $('#dataTables-example').DataTable();
                 var d = table.row($(this).parents('tr')).data();
                 layer.open({
-                    area: ['900px', '800px'],
+                    area: '800px',
                     shade: [0.8, '#393D49'],
                     title: "修改",
                     type: 1,
@@ -146,6 +111,8 @@ var product = function () {
                         $("#tokenAddress").val(d.tokenAddress);
                         $("#coinDecimals").val(d.coinDecimals);
                         $("#gasLimit").val(d.gasLimit);
+                        $("#oldLogo").val(d.coinAvatarUrl);
+
                     },
                     yes: function (i, layero) {
                         if ($('#form').valid()) {
@@ -156,7 +123,7 @@ var product = function () {
                                         dataTable.fnReloadAjax();
                                         layer.close(i);
                                     } else {
-                                        layer.msg("更新数据失败");
+                                        layer.msg(d.message);
                                     }
                                 }
                             });
@@ -178,14 +145,13 @@ var product = function () {
     };
     //添加
     var add =function () {
-
             $("#add").bind("click", function () {
                 var v = validateForm();
                 $("#coinId").val("");
                 layer.open({
-                    area: ['900px', '800px'],
+                    area:  '800px',
                     shade: [0.8, '#393D49'],
-                    title: "添加用户",
+                    title: "添加币种",
                     type: 1,
                     content: $("#win"),
                     btn: ['添加', '关闭'],

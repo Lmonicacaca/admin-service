@@ -1,11 +1,10 @@
 package com.mbr.admin.dao.merchant;
 
 import com.mbr.admin.common.dao.TkMapper;
+import com.mbr.admin.domain.merchant.MerchantResource;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import com.mbr.admin.domain.merchant.Vo.MerchantVsResourceVo;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -24,4 +23,28 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
 
     @Update("update merchant_vs_resource set channel=#{channel} where merchant_id=#{merchantId}")
     public int updateChannel(@Param("merchantId")String merchantId,@Param("channel")String channel);
+
+
+    @Select("<script>" +
+            "select mvr.id,mr.status,mvr.merchant_id as merchantId,mvr.resource_id as resourceId,mvr.create_time as createTime,mvr.update_time as updateTime," +
+            "mvr.create_user_name as createUserName,mvr.update_user_name as updateUserName,mvr.channel,mr.url from merchant_resource as mr,merchant_vs_resource as mvr " +
+            "where mr.id=mvr.resource_id"+
+            "<if test=\"merchantId!=null and merchantId!=''\">" +
+            "and mvr.merchant_id = #{merchantId}"+
+            "</if>"+
+            "</script>")
+    public List<MerchantVsResourceVo> queryList(@Param("merchantId")String merchantId);
+
+
+    @Delete("delete from merchant_vs_resource where id=#{id}")
+    public int deleteMerchantVsResource(@Param("id")String id);
+
+    @Select("select * from merchant_resource")
+    public List<MerchantResource> queryAllMerchantResource();
+
+    @Insert("insert into merchant_vs_resource values(null,#{mvr.merchantId},#{mvr.resourceId},#{mvr.status},#{mvr.createTime},null,#{mvr.createUserName},null,#{mvr.channel})")
+    public int insertMerchantVsResource(@Param("mvr")MerchantVsResource mvr);
+
+    @Select("select * from merchant_vs_resource where merchant_id=#{merchantId} and resource_id = #{resourceId}")
+    public Object queryMerchantVsResourceByCondition(@Param("merchantId")String merchantId,@Param("resourceId")Long resourceId);
  }

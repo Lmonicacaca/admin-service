@@ -3,17 +3,15 @@ var paybillList = function () {
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
-            {"mData": "industry"},
             {"mData": "channel"},
             {"mData": "merchantId"},
             {"mData": "refBizNo"},
-            {"mData": "goodsType"},
-            {"mData": "goodsTag"},
             {"mData": "coinId"},
             {"mData": "amount"},
             {"mData": "fromAddr"},
             {"mData": "toAddr"},
             {"mData": "tokenAddr"},
+            {"mData": "billType"},
             {"mData": "status"},
             {"mData": "createTime"},
             {"mData": "lastUpdateTime"}
@@ -38,29 +36,19 @@ var paybillList = function () {
                         return a;
                     }
                 }
-            },
-            {
-                "aTargets": [5],
+            },   {
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
+                    if(a==0){
+                        return "提现";
+                    }else {
+                        return "支付"
                     }
+
                 }
             },
             {
-                "aTargets": [6],
-                "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-                }
-            },
-            {
-            "aTargets": [12],
+            "aTargets": [10],
             "mRender": function (a, b, c, d) {
                 if(a==0){
                     return "初始";
@@ -75,7 +63,7 @@ var paybillList = function () {
             }
         },
             {
-                "aTargets": [13],
+                "aTargets": [11],
                 "mRender": function (a, b, c, d) {
                     if(a!=null||a!=""){
                         var date = new Date(a);
@@ -85,7 +73,7 @@ var paybillList = function () {
                 }
             },
             {
-                "aTargets": [14],
+                "aTargets": [12],
                 "mRender": function (a, b, c, d) {
                     if(a!=null||a!=""){
                         var date = new Date(a);

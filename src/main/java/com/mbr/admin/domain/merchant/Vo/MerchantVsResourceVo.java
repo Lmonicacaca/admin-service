@@ -1,35 +1,24 @@
-package com.mbr.admin.domain.merchant;
+package com.mbr.admin.domain.merchant.Vo;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name = "merchant_vs_resource")
-public class MerchantVsResource {
-    @Column(name = "id")
-    private String id;
-    @Column(name = "merchant_id")
+public class MerchantVsResourceVo {
+    private Integer id;
     private String merchantId;
-    @Column(name = "resource_id")
-    private Long resourceId;
-    @Column(name = "status")
-    private int status;
-    @Column(name = "create_time")
+    private String resourceId;
+    private Integer status;
     private Date createTime;
-    @Column(name = "update_time")
     private Date updateTime;
-    @Column(name = "create_user_name")
     private String createUserName;
-    @Column(name = "update_user_name")
     private String updateUserName;
-    @Column(name = "channel")
     private String channel;
+    private String url;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -41,19 +30,19 @@ public class MerchantVsResource {
         this.merchantId = merchantId;
     }
 
-    public Long getResourceId() {
+    public String getResourceId() {
         return resourceId;
     }
 
-    public void setResourceId(Long resourceId) {
+    public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -97,10 +86,18 @@ public class MerchantVsResource {
         this.channel = channel;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
-        return "MerchantVsResource{" +
-                "id='" + id + '\'' +
+        return "MerchantVsResourceVo{" +
+                "id=" + id +
                 ", merchantId='" + merchantId + '\'' +
                 ", resourceId='" + resourceId + '\'' +
                 ", status=" + status +
@@ -109,6 +106,7 @@ public class MerchantVsResource {
                 ", createUserName='" + createUserName + '\'' +
                 ", updateUserName='" + updateUserName + '\'' +
                 ", channel='" + channel + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

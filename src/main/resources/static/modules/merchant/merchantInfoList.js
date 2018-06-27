@@ -5,7 +5,8 @@ var merchantInfo = function () {
             {"mData": "id"},
             {"mData": "channel"},
             {"mData": "name"},
-            {"mData": "address"},
+            {"mData": "logoBill"},
+            {"mData": "website"},
             {"mData": "rsaPublic"},
             {"mData": "rsaPrivate"},
             {"mData": "audit"},
@@ -30,24 +31,44 @@ var merchantInfo = function () {
                     if(a==null){
                         return "";
                     }else{
-                        return a;
+                        return "<img src='"+a+"' style='max-height: 50px'/>";
                     }
                 }
             },
             {
                 "aTargets": [4],
                 "mRender": function (a, b, c, d) {
-                    return "<a class=\"edit\" name =\"rsaPublic\" href=\"javascript:;\">公钥</a>";
+                    if(a==null){
+                        return "";
+                    }else{
+                        return "<a href='"+a+"' target='_blank'>网站</a>";
+                    }
                 }
             },
             {
                 "aTargets": [5],
                 "mRender": function (a, b, c, d) {
-                    return "<a class=\"edit\" name =\"rsaPrivate\" href=\"javascript:;\">私钥</a>";
+                    if(a!=null&&a!=""){
+                        return "<a class=\"edit\" name =\"rsaPublic\" href=\"javascript:;\">公钥</a>";
+                    }else{
+                        return "";
+                    }
+
                 }
             },
             {
                 "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                    if(a!=null&&a!=""){
+                        return "<a class=\"edit\" name =\"rsaPrivate\" href=\"javascript:;\">私钥</a>";
+                    }else{
+                        return ""
+                    }
+
+                }
+            },
+            {
+                "aTargets": [7],
                 "mRender": function (a, b, c, d) {
                     if(a==0){
                         return "未审核"
@@ -59,7 +80,7 @@ var merchantInfo = function () {
                 }
             },
             {
-                "aTargets": [7],
+                "aTargets": [8],
                 "mRender": function (a, b, c, d) {
                     if(a==0){
                         return "可用"
@@ -69,14 +90,14 @@ var merchantInfo = function () {
                 }
             },
             {
-                "aTargets": [8],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
                     var date = new Date(a);
                     return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
                 }
             },
             {
-            "aTargets": [9],
+            "aTargets": [10],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }

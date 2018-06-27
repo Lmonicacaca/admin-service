@@ -12,12 +12,12 @@ import java.util.List;
 public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
 
     @Select("<script>" +
-            "select * from merchant_info"+
-            /*"<where>" +
+            "select * from merchant_info "+
+            "<where>" +
                 "<if test=\"nameSearch!=null and nameSearch!=''\">" +
                     "and name like '%${nameSearch}%'"+
                 "</if>"+
-            "</where>"+*/
+            "</where>"+
             "</script>")
     public List<MerchantInfo> queryList(@Param("nameSearch") String nameSearch);
 

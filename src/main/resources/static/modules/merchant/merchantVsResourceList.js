@@ -1,66 +1,71 @@
-var withDraw = function () {
+var merchantVsResource = function () {
     var index =0;
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
-            {"mData": "merchantId"},
             {"mData": "channel"},
-            {"mData": "coinName"},
-            {"mData": "address"},
-            {"mData": "tokenAddress"},
-            {"mData": "status"},
+            {"mData": "merchantId"},
+            {"mData": "url"},
+            {"mData": "createUserName"},
             {"mData": "createTime"},
-            {"mData": "updateTime"},
+            {"mData": "status"},
             {"mData": null}
         ];
         var aoColumnDefs = [{
-            "aTargets": [6],
+            "aTargets": [1],
             "mRender": function (a, b, c, d) {
-                if(a==0){
-                    return "是";
+                if(a==null||a.length==0){
+                    return "";
                 }else{
-                    return "否";
+                    return a;
                 }
 
             }
-        },
-            {
-                "aTargets": [7],
-                "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }
+        },{
+            "aTargets": [4],
+            "mRender": function (a, b, c, d) {
+                if(a==null||a.length==0){
+                    return "";
+                }else{
+                    return a;
+                }
+
+            }
+        },{
+            "aTargets": [5],
+            "mRender": function (a, b, c, d) {
+                if(a==null||a.length==0){
+                    return "";
+                }else{
+                    var date = new Date(a);
+                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
 
                 }
-            },
-            {
-                "aTargets": [8],
-                "mRender": function (a, b, c, d) {
-                    if(a!=null&&a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }else{
-                        return a;
-                    }
 
+            }
+        },{
+            "aTargets": [6],
+            "mRender": function (a, b, c, d) {
+                if(a==0){
+                    return "可以访问";
+                }else{
+                    return "不可访问";
                 }
-            },
-            {
-            "aTargets": [9],
+
+            }
+        },{
+            "aTargets": [7],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
-        initPageTable(t, "withDraw/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initPageTable(t, "merchantVsResource/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
-        var merchantidSearch = $("#merchantidSearch").val();
-        if (assertNotNullStr(merchantidSearch)) condition.merchantidSearch = merchantidSearch;
-        var channelSearch = $("#channelSearch").val();
-        if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
+        var merchantIdSearch = $("#merchantIdSearch").val();
+        if (assertNotNullStr(merchantIdSearch)) condition.merchantIdSearch = merchantIdSearch;
     };
     var __initHandler =function () {
         //删除
@@ -71,7 +76,7 @@ var withDraw = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("withDraw/deleteWithDraw?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("merchantVsResource/deleteMerchantVsResource?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
@@ -80,91 +85,24 @@ var withDraw = function () {
                 });
             });
         });
-        // 编辑
-        $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
-            if(index ==0) {
-                index ++;
-                var table = $('#dataTables-example').DataTable();
-                var d = table.row($(this).parents('tr')).data();
-                var csrf = $("#csrfId");
-                var csrfName = csrf.attr('name');
-                var param = {"id": d.id};
-                $.post("withDraw/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
-                    if (data.code == 200) {
-                        $("#showMerchantId").css("display","none");
-                        var d = data.data;
-                        $("#address").val(d.address);
-                        $("#id").val(d.id);
-                        $("#merchantId").val(d.merchantId);
-                        if(d.createTime!=null){
-                            var date = new Date(d.createTime)
-                            $("#createTime").val(date)
-                        }
-                        var optionChannel= "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
-                        $("#channel").empty();
-                        $("#channel").append(optionChannel);
-                        var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
-                        $("#coinId").empty();
-                        $("#coinId").append(optionCoin);
-                        layer.open({
-                            area: '800px',
-                            shade: [0.8, '#393D49'],
-                            title: "修改",
-                            type: 1,
-                            content: $("#addWin"),
-                            btn: ['确定'],
-                            success: function (layero, index) {
-                                loadChannel();
-                                loadCoin();
-                            },
-                            yes: function (i, layero) {
-                                if ($('#form').valid()) {
-                                    $("#form").ajaxSubmit({
-                                        success: function (d) {
-                                            if (d.code == 200) {
-                                                var dataTable = $("#dataTables-example").dataTable();
-                                                dataTable.fnReloadAjax();
-                                                layer.close(i);
-                                            } else {
-                                                layer.msg("更新数据失败");
-                                            }
-                                        }
-                                    });
-                                }
-                                index = 0;
-                            }
-                            /*,
-                            cancel: function (i, layero) {
-                                layer.close(i);
-                                index = 0;
-                            }*/
-                        });
-                    }
-                });
-            }
-        });
 
     };
-    //添加用户
+    //添加权限
     var add =function () {
         $("#add").bind("click",function () {
-            $("#showMerchantId").css("display","block");
             $("#id").val("");
-            $("#createTime").val(new Date);
-            $("#channel").html("");
-            $("#coinId").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加用户",
+                title: "添加权限",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
                 success: function (layero, index) {
                     $("#form")[0].reset();
                     validateForm().resetForm();
+                    loadUrl();
                     loadChannel();
-                    loadCoin();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -176,7 +114,7 @@ var withDraw = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("已存在相同的充值地址");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -196,12 +134,12 @@ var withDraw = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
+    var loadUrl = function () {
+        $('#resourceId').select2({
+            placeholder: "请选择权限",
             allowClear: true,
             ajax: {
-                url: "withDraw/queryChannel",
+                url: "merchantVsResource/queryUrl",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -211,12 +149,12 @@ var withDraw = function () {
             }
         });
     };
-    var loadCoin = function () {
-        $('#coinId').select2({
-            placeholder: "请选择币种",
+    var loadChannel = function () {
+        $('#channel').select2({
+            placeholder: "请选择渠道号",
             allowClear: true,
             ajax: {
-                url: "withDraw/queryCoin",
+                url: "merchantVsResource/queryChannel",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -232,32 +170,33 @@ var withDraw = function () {
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                merchantId:{
+                username: {
                     required: true
                 },
-                address: {
+                name: {
                     required: true
                 },
-                channel: {
-                    required: true
-                },
-                coinId: {
+                password: {
                     required: true,
-
+                    minlength: 6,
+                    maxlength: 10
+                },
+                roleId: {
+                    required: true
                 }
             },
             messages: {
-                merchantId:{
-                    required: "商户号不能为空!"
+                username: {
+                    required: "用户名不能为空!"
                 },
-                address: {
-                    required: "地址不能为空!"
+                name: {
+                    required: "姓名不能为空!"
                 },
-                channel: {
-                    required: "渠道号不能为空!"
+                password: {
+                    required: "密码不能为空!"
                 },
-                coinId: {
-                    required: "币种不能为空!"
+                roleId: {
+                    required: "角色不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

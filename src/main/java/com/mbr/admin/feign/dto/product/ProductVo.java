@@ -2,18 +2,13 @@ package com.mbr.admin.feign.dto.product;
 
 import java.util.Date;
 
-public class Product {
-
+public class ProductVo {
     private Long id;
-    private Date createTime;
-    private Date updateTime;
 
     /**币名称**/
     private String  coinName;
     /**币种类型，0是主链币，1是代币**/
     private Long coinType;
-    /**币logi**/
-    private String  coinAvatarUrl;
     /**币描述**/
     private String  coinDescription;
     /**是否erc20  1 是代币，0 是标准**/
@@ -26,12 +21,8 @@ public class Product {
     private String  tokenAddress;
     /**币精度**/
     private Integer  coinDecimals;
-
-    private Integer orderNo;//排序
-    private Integer isForceShow; //是否强制显示 0 显示 1 非显示
-    private boolean merchantShow;//是否显示商家配送界面
-
-    private boolean def;//是否为默认币种
+    private boolean def;
+    private String oldLogo;
     private String gasLimit;
     public Long getId() {
         return id;
@@ -39,22 +30,6 @@ public class Product {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getCoinName() {
@@ -71,14 +46,6 @@ public class Product {
 
     public void setCoinType(Long coinType) {
         this.coinType = coinType;
-    }
-
-    public String getCoinAvatarUrl() {
-        return coinAvatarUrl;
-    }
-
-    public void setCoinAvatarUrl(String coinAvatarUrl) {
-        this.coinAvatarUrl = coinAvatarUrl;
     }
 
     public String getCoinDescription() {
@@ -129,36 +96,20 @@ public class Product {
         this.coinDecimals = coinDecimals;
     }
 
-    public Integer getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(Integer orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Integer getIsForceShow() {
-        return isForceShow;
-    }
-
-    public void setIsForceShow(Integer isForceShow) {
-        this.isForceShow = isForceShow;
-    }
-
-    public boolean isMerchantShow() {
-        return merchantShow;
-    }
-
-    public void setMerchantShow(boolean merchantShow) {
-        this.merchantShow = merchantShow;
-    }
-
-    public boolean isDef() {
+    public boolean getDef() {
         return def;
     }
 
     public void setDef(boolean def) {
         this.def = def;
+    }
+
+    public String getOldLogo() {
+        return oldLogo;
+    }
+
+    public void setOldLogo(String oldLogo) {
+        this.oldLogo = oldLogo;
     }
 
     public String getGasLimit() {
@@ -171,23 +122,18 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "ProductVo{" +
                 "id=" + id +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 ", coinName='" + coinName + '\'' +
                 ", coinType=" + coinType +
-                ", coinAvatarUrl='" + coinAvatarUrl + '\'' +
                 ", coinDescription='" + coinDescription + '\'' +
                 ", coinErc20=" + coinErc20 +
                 ", onlineStatus=" + onlineStatus +
                 ", chainType='" + chainType + '\'' +
                 ", tokenAddress='" + tokenAddress + '\'' +
                 ", coinDecimals=" + coinDecimals +
-                ", orderNo=" + orderNo +
-                ", isForceShow=" + isForceShow +
-                ", merchantShow=" + merchantShow +
                 ", def=" + def +
+                ", oldLogo='" + oldLogo + '\'' +
                 ", gasLimit='" + gasLimit + '\'' +
                 '}';
     }

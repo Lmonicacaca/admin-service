@@ -1,115 +1,57 @@
-var merchantCoin = function () {
+var merchantNotice = function () {
     var index =0;
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
-            {"mData": "merchantId"},
-            {"mData": "channel"},
-            {"mData": "coinName"},
-            {"mData": "address"},
-            {"mData": "tokenAddress"},
-            {"mData": "status"},
+            {"mData": "title"},
+            {"mData": "content"},
+            {"mData": "noticeType"},
+            {"mData": "noticeTo"},
             {"mData": "createUserName"},
-            {"mData": "updateUserName"},
             {"mData": "createTime"},
-            {"mData": "updateTime"},
+            {"mData": "lang"},
             {"mData": null}
         ];
-        var aoColumnDefs = [
-            {
-                "aTargets": [2],
-                "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-
-                }
-            },
-            {
-                "aTargets": [5],
-                "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-
-                }
-            },
-            {
-            "aTargets": [6],
+        var aoColumnDefs = [{
+            "aTargets": [2],
             "mRender": function (a, b, c, d) {
-                if(a==0){
-                    return "可用";
+               return "<a class=\"edit\" name =\"content\" href=\"javascript:;\">内容</a>"
+            }
+        },{
+            "aTargets": [3],
+            "mRender": function (a, b, c, d) {
+                if(a==1){
+                    return "系统通知";
                 }else{
-                    return "不可用";
+                    return "奖金通知";
                 }
 
             }
-        },
-            {
-                "aTargets": [7],
-                "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-
-                }
-            },
-            {
-                "aTargets": [8],
-                "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-
-                }
-            },
-            {
-                "aTargets": [9],
-                "mRender": function (a, b, c, d) {
-                    if(a!=null){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }else{
-                        return "";
-                    }
-
-                }
-            },
-            {
-                "aTargets": [10],
-                "mRender": function (a, b, c, d) {
-                    if(a!=null){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }else{
-                        return "";
-                    }
-
-                }
-            },
-            {
-            "aTargets": [11],
+        },{
+            "aTargets": [6],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                if(a==null||a.length==0){
+                    return "";
+                }else{
+                    var date = new Date(a);
+                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+
+                }
+
+            }
+        },{
+            "aTargets": [8],
+            "mRender": function (a, b, c, d) {
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
-        initPageTable(t, "merchantCoin/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initPageTable(t, "merchantNotice/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
-        var merchant_Id = $("#merchant_Id").val();
-        if (assertNotNullStr(merchant_Id)) condition.merchant_Id = merchant_Id;
-        var channelSearch = $("#channelSearch").val();
-        if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
+        var titleSearch = $("#titleSearch").val();
+        if (assertNotNullStr(titleSearch)) condition.titleSearch = titleSearch;
     };
     var __initHandler =function () {
         //删除
@@ -120,7 +62,7 @@ var merchantCoin = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("merchantCoin/deleteMerchantCoin?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("sysUser/deleteUser?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
@@ -138,23 +80,16 @@ var merchantCoin = function () {
                 var csrf = $("#csrfId");
                 var csrfName = csrf.attr('name');
                 var param = {"id": d.id};
-                $.post("merchantCoin/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
+                $.post("sysUser/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
-                        $("#showMerchant").css("display","none");
-                        $("#createUser").css("display","none");
                         var d = data.data;
-                        $("#address").val(d.address);
-                        $("#merchantId").val(d.merchantId)
-                        $("#id").val(d.id)
-                        $("#status").val(d.status)
-                        var date = new Date(d.createTime)
-                        $("#createTime").val(date)
-                        var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
-                        $("#channel").empty();
-                        $("#channel").append(optionChannel);
-                        var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
-                        $("#coinId").empty();
-                        $("#coinId").append(optionCoin);
+                        $("#username").val(d.user.username);
+                        $("#name").val(d.user.name);
+                        $("#userId").val(d.user.id);
+                        $("#passwordPwd").hide();
+                        var option = "<option value='" + d.role.id + "' selected='selected'>" + d.role.roleName + "</option>";
+                        $("#roleId").empty();
+                        $("#roleId").append(option);
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -163,8 +98,7 @@ var merchantCoin = function () {
                             content: $("#addWin"),
                             btn: ['确定'],
                             success: function (layero, index) {
-                                loadChannel();
-                                loadCoin();
+                                loadRole();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -181,31 +115,38 @@ var merchantCoin = function () {
                                     });
                                 }
                                 index = 0;
-                            }
-                            /*,
+                            },
                             cancel: function (i, layero) {
                                 layer.close(i);
                                 index = 0;
-                            }*/
+                            }
                         });
                     }
                 });
             }
         });
+        //确认密码
+        $("#dataTables-example tbody").on("click", "a[name='restPwd']", function () {
+            var table = $('#dataTables-example').DataTable();
+            var d = table.row($(this).parents('tr')).data();
+            var csrf = $("#csrfId");
+            var csrfName = csrf.attr('name');
+            var param = {"id": d.id};
+            layer.confirm("此操作会重置密码为：666666，是否继续？", function (i) {
+                $.post("sysUser/resetPwd?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                    if(data.code==200){
+                        layer.msg("重置成功");
+                        layer.close(i);
+                    }
+                }, "json");
 
+            });
+        });
     };
     //添加用户
     var add =function () {
         $("#add").bind("click",function () {
-            $("#address").val("");
-            $("#merchantId").val("")
-            $("#id").val("")
-            $("#status").val("")
-            $("#createTime").val(new Date);
-            $("#showMerchant").css("display","block");
-            $("#createUser").css("display","block");
-            $("#channel").html("")
-            $("#coinId").html("")
+            $("#userId").val("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -216,9 +157,7 @@ var merchantCoin = function () {
                 success: function (layero, index) {
                     $("#form")[0].reset();
                     validateForm().resetForm();
-                    loadChannel();
-                    loadCoin();
-                    loadCreateUser();
+                    loadRole();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -230,7 +169,7 @@ var merchantCoin = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("已存在相同的充值地址");
+                                    layer.msg("当前用户已存在");
                                 }
                             }
                         })
@@ -250,42 +189,12 @@ var merchantCoin = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
+    var loadRole = function () {
+        $('#roleId').select2({
+            placeholder: "请选择角色",
             allowClear: true,
             ajax: {
-                url: "merchantCoin/queryChannel",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
-    var loadCoin = function () {
-        $('#coinId').select2({
-            placeholder: "请选择币种",
-            allowClear: true,
-            ajax: {
-                url: "merchantCoin/queryCoin",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
-    var loadCreateUser = function () {
-        $('#createUserName').select2({
-            placeholder: "请选择创建者",
-            allowClear: true,
-            ajax: {
-                url: "merchantCoin/queryUser",
+                url: "sysUser/querySysRole",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -301,38 +210,33 @@ var merchantCoin = function () {
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                createUserName:{
+                username: {
                     required: true
                 },
-                merchantId:{
+                name: {
                     required: true
                 },
-                address: {
-                    required: true
-                },
-                channel: {
-                    required: true
-                },
-                coinId: {
+                password: {
                     required: true,
-
+                    minlength: 6,
+                    maxlength: 10
+                },
+                roleId: {
+                    required: true
                 }
             },
             messages: {
-                createUserName:{
-                    required: "创建者不能为空!"
+                username: {
+                    required: "用户名不能为空!"
                 },
-                merchantId:{
-                    required: "商户id不能为空!"
+                name: {
+                    required: "姓名不能为空!"
                 },
-                address: {
-                    required: "地址不能为空!"
+                password: {
+                    required: "密码不能为空!"
                 },
-                channel: {
-                    required: "渠道号不能为空!"
-                },
-                coinId: {
-                    required: "币种不能为空!"
+                roleId: {
+                    required: "角色不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

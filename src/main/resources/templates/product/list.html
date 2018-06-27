@@ -60,6 +60,7 @@
                 <th>序号</th>
                 <th>币简称</th>
                 <th>币全称</th>
+                <th>币Logo</th>
                 <th>类型</th>
                 <th>合约地址</th>
                 <th>精度</th>
@@ -76,6 +77,7 @@
 <div id="win" style="display: none;width: 99%" class="portlet-body form">
     <form role="form"  th:method="post" th:action="@{/product/addOrUpdate}" id="form" class="form-horizontal" enctype="multipart/form-data">
         <input type="hidden" name="id" id="coinId"/>
+        <input type="hidden" name="oldLogo" id="oldLogo"/>
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">币名称：</label>
@@ -100,7 +102,7 @@
             <div class="form-group">
                 <label class="control-label col-md-3">币LOGO：</label>
                 <div class="col-md-8">
-                    <input type="file" name="coinAvatarUrlFile" id="coinAvatarUrl"/>
+                    <input type="file" name="file" id="file"/>
                 </div>
             </div>
         </div>
@@ -160,6 +162,17 @@
                 <label class="control-label col-md-3">gasLimit：</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="gasLimit" id="gasLimit" placeholder="请输入gasLimit" />
+                </div>
+            </div>
+        </div>
+        <div class="form-body">
+            <div class="form-group">
+                <label class="control-label col-md-3">是否为默认币种：</label>
+                <div class="col-md-8">
+                    <select id="def" name="def" style="width: 100px">
+                        <option value="true">是</option>
+                        <option value="false" selected="selected">否</option>
+                    </select>
                 </div>
             </div>
         </div>
