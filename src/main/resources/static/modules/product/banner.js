@@ -77,7 +77,24 @@ var banner = function () {
     };
 
     var __initHandler =function () {
-
+        //删除
+        $("#dataTables-example tbody").on("click", "a[name='delete']", function () {
+            var table = $('#dataTables-example').DataTable();
+            var d = table.row($(this).parents('tr')).data();
+            var param = {"id": d.id};
+            var csrf = $("#csrfId");
+            var csrfName = csrf.attr('name');
+            layer.confirm("你确定要删除该数据吗？", function (index) {
+                $.post("banner/deleteBanner?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                    if (data.code == 200) {
+                        layer.msg("删除成功");
+                        var dataTable = $("#dataTables-example").dataTable();
+                        dataTable.fnReloadAjax();
+                        layer.close(index);
+                    }
+                });
+            });
+        });
         //查看图片
         $("#dataTables-example tbody").on("click", "a[name='img']", function () {
             var urlImg = "";

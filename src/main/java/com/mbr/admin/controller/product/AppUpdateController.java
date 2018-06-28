@@ -61,17 +61,23 @@ public class AppUpdateController extends BaseController {
     public Object addOrUpdate(AppUpdateVo appUpdateVo,HttpServletRequest request,@RequestParam("file")MultipartFile[] multipartFiles){
         System.out.println(appUpdateVo);
         if(appUpdateVo.getAppUpdateType().equals("Android")){
-            if(!multipartFiles[0].getOriginalFilename().endsWith(".apk")){
-                return failed("安装包格式有误！");
+            if(multipartFiles.length>0){
+                if(!multipartFiles[0].getOriginalFilename().endsWith(".apk")){
+                    return failed("安装包格式有误！");
+                }
             }
+
         }
         if(appUpdateVo.getAppUpdateType().equals("IOS")){
-            if(!multipartFiles[0].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[0].getOriginalFilename().endsWith(".plist")){
-                return failed("安装包格式有误！");
+            if(multipartFiles.length>0){
+                if(!multipartFiles[0].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[0].getOriginalFilename().endsWith(".plist")){
+                    return failed("安装包格式有误！");
+                }
+                if(!multipartFiles[1].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[1].getOriginalFilename().endsWith(".plist")){
+                    return failed("安装包格式有误！");
+                }
             }
-            if(!multipartFiles[1].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[1].getOriginalFilename().endsWith(".plist")){
-                return failed("安装包格式有误！");
-            }
+
         }
         int i = appUpdateManager.addOrUpdate(appUpdateVo, request, multipartFiles);
         if(i>0){

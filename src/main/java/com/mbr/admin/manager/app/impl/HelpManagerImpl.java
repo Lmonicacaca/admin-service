@@ -26,7 +26,7 @@ public class HelpManagerImpl implements HelpManager {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(title!=null&&title!=""){
-            criteria.andOperator(Criteria.where("title").is(title));
+            criteria.andOperator(Criteria.where("title").regex(title));
         }
         query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(criteria);
