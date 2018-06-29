@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.9.RELEASE</version>
+		<version>1.5.10.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -24,11 +24,11 @@
 			<id>prod</id>
 			<properties>
 				<spring.profiles.active>prod</spring.profiles.active>
-				<logback.level>INFO</logback.level>
-				<eureka.client.service-url.defaultZone>http://eureka:eureka@172.31.224.243:9902/eureka/</eureka.client.service-url.defaultZone>
-				<spring.cloud.config.uri>http://172.31.224.243:9901</spring.cloud.config.uri>
+				<eureka.client.service-url.defaultZone>http://eureka:eureka@172.31.38.64:9902/eureka/</eureka.client.service-url.defaultZone>
+				<spring.cloud.config.uri>http://172.31.38.64:9901</spring.cloud.config.uri>
 				<spring.zipkin.base-url>http://47.100.47.200:9949/</spring.zipkin.base-url>
-				<spring.debug>false</spring.debug>
+				<spring.debug>true</spring.debug>
+				<logback.level>INFO</logback.level>
 			</properties>
 		</profile>
 
@@ -61,7 +61,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>Edgware.RELEASE</spring-cloud.version>
+		<spring-cloud.version>Edgware.SR2</spring-cloud.version>
 	</properties>
 
 	<dependencies>

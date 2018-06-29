@@ -1,6 +1,19 @@
 server:
   port: 9302
 
+image_url: https://api.cospay.io/upload
+
+channel: 73088886094000
+
+spring:
+  http:
+    multipart:
+      max-request-size: 100Mb
+      max-file-size: 100Mb
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
+
 mybatis:
   type-aliases-package: com.blockgod.springcloud.domain
   mapper-locations: classpath:mapper/**/**.xml
