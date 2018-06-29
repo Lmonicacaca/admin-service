@@ -17,15 +17,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class FileUpload {
-   @Value("${image_url}")
-    private String image_url ;
+
+    @Value("${remote_url}")
+    private String remote_url ;
     /**
      * 中转文件
      *
@@ -33,18 +31,18 @@ public class FileUpload {
      * @return 响应结果
      */
     public String httpClientUploadFile(Map<String, MultipartFile> mapFiles) {
-        // final String remote_url = "http://localhost:9105/coin/upload/";// 第三方服务器请求地址
+       // final String remote_url = "http://localhost:9105/coin/upload/";// 第三方服务器请求地址
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String result = "";
         try {
-            HttpPost httpPost = new HttpPost(image_url+"/upload");
+            HttpPost httpPost = new HttpPost(remote_url);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
             for(Map.Entry<String, MultipartFile> entry : mapFiles.entrySet()){
                 String fileName = entry.getValue().getOriginalFilename();
                 builder.addBinaryBody(entry.getKey(), entry.getValue().getInputStream(), ContentType.MULTIPART_FORM_DATA, fileName);// 文件流
 
-                // builder.addTextBody("filename",fileName);// 类似浏览器表单提交，对应input的name和value
+               // builder.addTextBody("filename",fileName);// 类似浏览器表单提交，对应input的name和value
 
             }
 
@@ -91,5 +89,4 @@ public class FileUpload {
         }
         return  null;
     }
-
 }
