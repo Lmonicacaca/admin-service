@@ -188,6 +188,21 @@ var sysUsers = function () {
             }
         });
     };
+    var loadRole = function () {
+        $('#roleId').select2({
+            placeholder: "请选择角色",
+            allowClear: true,
+            ajax: {
+                url: "sysUser/querySysRole",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
    var validateForm = function () {
         var validate = $('#form').validate({
             errorElement: 'span', //default input error message container

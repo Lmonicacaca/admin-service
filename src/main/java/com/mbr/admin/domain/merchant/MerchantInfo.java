@@ -26,8 +26,6 @@ public class MerchantInfo {
     private String createUserName;
     @Column(name = "update_user_name")
     private String updateUserName;
-    @Column(name = "audit")
-    private int audit;
     @Column(name = "status")
     private int status;
     @Column(name = "logo_intro")
@@ -121,13 +119,6 @@ public class MerchantInfo {
         this.updateUserName = updateUserName;
     }
 
-    public int getAudit() {
-        return audit;
-    }
-
-    public void setAudit(int audit) {
-        this.audit = audit;
-    }
 
     public int getStatus() {
         return status;
@@ -190,7 +181,6 @@ public class MerchantInfo {
                 ", updateTime=" + updateTime +
                 ", createUserName='" + createUserName + '\'' +
                 ", updateUserName='" + updateUserName + '\'' +
-                ", audit=" + audit +
                 ", status=" + status +
                 ", logoIntro='" + logoIntro + '\'' +
                 ", rsaPublic='" + rsaPublic + '\'' +

@@ -17,8 +17,8 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
             "<if test=\"channel!=null and channel !=''\">" +
             " and channel=#{channel}"+
             "</if>"+
-            "and status=0"+
             "</where>"+
+
             "</script>")
     public List<WithDraw> queryList(@Param(value = "merchantId") String merchantId, @Param(value = "channel")String channel);
 

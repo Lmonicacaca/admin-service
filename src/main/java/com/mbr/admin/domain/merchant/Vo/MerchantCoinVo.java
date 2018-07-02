@@ -1,39 +1,29 @@
-package com.mbr.admin.domain.merchant;
+package com.mbr.admin.domain.merchant.Vo;
 
-import com.mbr.admin.common.domain.BaseEntity;
-
-import javax.persistence.Column;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name="merchant_coin")
-public class MerchantCoin {
-    @Column(name = "id")
+public class MerchantCoinVo {
     private Long id;
-    @Column(name = "coin_id")
     private long coinId;
-    @Column(name = "merchant_id")
     private String merchantId;
-    @Column(name = "address")
     private String address;
-    @Column(name = "token_address")
     private String tokenAddress;
-    @Column(name = "coin_name")
     private String coinName;
-    @Column(name = "channel")
     private String channel;
-    @Column(name = "status")
     private Integer status;
-    @Column(name = "create_user_name")
     private String createUserName; //创建者
-    @Column(name = "create_time")
     private Date createTime; //创建时间
-    @Column(name = "update_user_name")
     private String updateUserName; //更新者
-    @Column(name = "update_time")
     private Date updateTime ;//更新时间
+    private String merchantName;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public long getCoinId() {
         return coinId;
@@ -50,7 +40,6 @@ public class MerchantCoin {
     public void setMerchantId(String merchantId) {
         this.merchantId = merchantId;
     }
-
 
     public String getAddress() {
         return address;
@@ -82,14 +71,6 @@ public class MerchantCoin {
 
     public void setChannel(String channel) {
         this.channel = channel;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Integer getStatus() {
@@ -132,9 +113,17 @@ public class MerchantCoin {
         this.updateTime = updateTime;
     }
 
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
     @Override
     public String toString() {
-        return "MerchantCoin{" +
+        return "MerchantCoinVo{" +
                 "id=" + id +
                 ", coinId=" + coinId +
                 ", merchantId='" + merchantId + '\'' +
@@ -147,6 +136,7 @@ public class MerchantCoin {
                 ", createTime=" + createTime +
                 ", updateUserName='" + updateUserName + '\'' +
                 ", updateTime=" + updateTime +
+                ", merchantName='" + merchantName + '\'' +
                 '}';
     }
 }

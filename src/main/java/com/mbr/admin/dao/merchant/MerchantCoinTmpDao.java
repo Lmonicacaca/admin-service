@@ -13,7 +13,7 @@ public interface MerchantCoinTmpDao extends TkMapper<MerchantCoinTmp> {
     @Select("<script>" +
             "select * from merchant_coin_tmp where status in (0,2)"+
             "<if test=\"merchantIdSearch!=null and merchantIdSearch!=''\">" +
-            "and merchant_id=#{merchantIdSearch}"+
+            " and merchant_id=#{merchantIdSearch}"+
             "</if>"+
             "</script>")
     public List<MerchantCoinTmp> queryList(@Param("merchantIdSearch") String merchantIdSearch);

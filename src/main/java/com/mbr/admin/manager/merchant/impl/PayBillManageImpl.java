@@ -14,7 +14,7 @@ public class PayBillManageImpl implements PayBillManager {
     @Resource
     private PayBillDao payDao;
     @Override
-    public List<PayBill> queryAllPayBill(String merchantId, String fromAddr, String toAddr,int billType) {
-        return payDao.queryAllPayBill(merchantId,fromAddr,toAddr,billType);
+    public List<PayBill> queryAllPayBill(String merchantId, String fromAddr, String toAddr,int billType,String merchantnameSearch,int status) {
+        return payDao.queryAllPayBill(merchantId,fromAddr,toAddr,billType,merchantnameSearch,status);
     }
 }

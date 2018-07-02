@@ -235,7 +235,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
         merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
         merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
-        merchantCoin.setStatus(0);
+        merchantCoin.setStatus(1);//已审核
         SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
         merchantCoin.setCreateUserName(securityUserDetails.getUsername());
         merchantCoin.setCreateTime(new Date());

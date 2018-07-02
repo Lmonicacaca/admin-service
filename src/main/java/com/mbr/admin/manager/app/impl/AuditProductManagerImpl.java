@@ -58,7 +58,7 @@ public class AuditProductManagerImpl implements AuditProductManager {
         if(productSerach==null){
             productId =  insertProduct(productApply);
         }else{
-            productId = productSerach.getId();
+            productId = productSerach.getId().toString();
         }
         if(productVsChannelRepository.findByChannelAndProductId(productApply.getChannel(),productId)==null){
             //添加币种vs渠道到对应表中
@@ -84,7 +84,7 @@ public class AuditProductManagerImpl implements AuditProductManager {
         Product product = new Product();
         String  productId = "";
         productId = new TimestampPkGenerator().next(getClass()).toString();
-        product.setId(productId);
+        product.setId(Long.parseLong(productId));
         product.setCreateTime(new Date());
         product.setCoinName(productApply.getCoinName());
         product.setCoinType(1);

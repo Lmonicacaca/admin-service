@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class Product {
-    private String id;
+    private Long id;
     private Date createTime;
     private String coinName;
     private int  coinType;
@@ -23,11 +23,11 @@ public class Product {
     private String gasLimit;
     private boolean def;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

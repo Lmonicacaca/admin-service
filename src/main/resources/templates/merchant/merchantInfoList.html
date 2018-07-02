@@ -19,6 +19,12 @@
         <br />
         <form class="form-horizontal">
             <div class="col-sm-4">
+                <label class="control-label col-md-4">商户ID：</label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="请输入商户ID" name="idSearch" id="idSearch" type="text" th:autofocus="true" />
+                </div>
+            </div>
+            <div class="col-sm-4">
                 <label class="control-label col-md-4">商户名：</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="请输入商户名" name="nameSearch" id="nameSearch" type="text" th:autofocus="true" />
@@ -43,7 +49,7 @@
         <div class="table-toolbar">
             <div class="row">
                 <div class="col-md-6">
-                    <!--<div class="btn-group"><button id="add" class="btn btn-primary"> 添加</button></div>-->
+                    <div class="btn-group"><button id="add" class="btn btn-primary"> 添加</button></div>
                 </div>
             </div>
         </div>
@@ -51,15 +57,16 @@
             <thead>
             <tr>
                 <th>序号</th>
-                <th>渠道号</th>
+                <th>商户id</th>
                 <th>商户名称</th>
                 <th>商户Logo</th>
                 <th>商户网站</th>
                 <th>公钥</th>
                 <th>私钥</th>
+                <th>是否显示在APP</th>
                 <th>审核状态</th>
-                <th>是否可用</th>
                 <th>创建时间</th>
+                <th>渠道号</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -69,18 +76,86 @@
 </div>
 
 
-<div id="auditMercahnt" style="display: none;width: 99%" class="portlet-body form">
-    <form role="form" th:action="@{/merchantInfo/auditMerchant}" th:method="post" id="auditForm" class="form-horizontal form-validate">
-        <input type="hidden" value="" name="name" id="name" />
-        <input type="hidden" value="" name="id" id="id" />
-    <div class="form-group">
-        <label class="control-label col-md-3">渠道号 <span class="required">* </span>
-        </label>
-        <div class="col-md-8">
-            <select class="form-control" name="channel" id="channel">
-            </select>
+<div id="addWin" style="display: none;width: 99%" class="portlet-body form">
+    <form role="form" th:action="@{/merchantInfo/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
+        <input type="hidden"  id="id" name="id" value=""/>
+        <input type="hidden"  id="oldImage" name="oldImage" value=""/>
+        <input type="hidden"  id="createUserName" name="createUserName" value=""/>
+        <input type="hidden"  id="createTime" name="createTime" value=""/>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户名 <span class="required">* </span>
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="name" name="name" placeholder="请输入商户名" />
+            </div>
         </div>
-    </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户全称
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="description" name="description" placeholder="请输入商户全称" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户地址
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="address" name="address" placeholder="请输入商户地址" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">渠道号 <span class="required">* </span>
+            </label>
+            <div class="col-md-8">
+                <select class="form-control" name="channel" id="channel">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户Logo
+            </label>
+            <div class="col-md-8">
+                <input type="file" class="form-control" data-required="1" id="file" name="file" accept="image/*"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户网站
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="website" name="website" placeholder="请输入网站地址" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户公钥 <span class="required">* </span>
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="rsaPublic" name="rsaPublic" placeholder="请输入公钥" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">商户私钥
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="rsaPrivate" name="rsaPrivate" placeholder="请输入私钥" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">是否显示在APP
+            </label>
+            <div class="col-md-8">
+                <select class="form-control" name="isShow" id="isShow">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">审核状态
+            </label>
+            <div class="col-md-8">
+                <select class="form-control" name="status" id="status">
+                </select>
+            </div>
+        </div>
+
     </form>
 </div>
 

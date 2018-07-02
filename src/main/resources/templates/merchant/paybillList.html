@@ -19,25 +19,53 @@
         <br />
         <form class="form-horizontal">
             <input type="hidden" name="billTypeSearch" id="billTypeSearch"  />
-            <div class="col-sm-3">
-                <label class="control-label col-md-5">商户ID：</label>
+            <div class="col-sm-4">
+                <label class="control-label col-md-4">商户ID：</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="商户ID" name="merchantidSearch" id="merchantidSearch" type="text" th:autofocus="true" />
                 </div>
             </div>
-            <div class="col-sm-3">
-                <label class="control-label col-md-6">转出地址：</label>
+            <div class="col-sm-4">
+                <label class="control-label col-md-4">商户名：</label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="商户名" name="merchantnameSearch" id="merchantnameSearch" type="text" th:autofocus="true" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <label class="control-label col-md-5">转出地址：</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="转出地址" name="fromAddrSearch" id="fromAddrSearch" type="text" th:autofocus="true" />
                 </div>
             </div>
-            <div class="col-sm-3">
-                <label class="control-label col-md-6">转入地址：</label>
+            <div class="col-sm-4" style="margin-left: -10px;margin-top: 10px">
+                <label class="control-label col-md-5">转入地址：</label>
                 <div class="input-group">
                     <input class="form-control" placeholder="转入地址" name="toAddrSearch" id="toAddrSearch" type="text" th:autofocus="true" />
                 </div>
             </div>
-            <button type="button" id="query" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>查询
+            <div class="col-sm-4" style="margin-left: -10px;margin-top: 10px">
+                <label class="control-label col-md-5">交易类型：</label>
+                <div class="input-group">
+                    <select id="billType" name="billType" class="form-control">
+                        <option value="-1">请选择交易类型</option>
+                        <option value="0">提现记录</option>
+                        <option value="1">支付记录</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4" style="margin-left: 20px;margin-top: 10px">
+                <label class="control-label col-md-5">交易状态：</label>
+                <div class="input-group">
+                    <select id="statusSearch" name="statusSearch" class="form-control">
+                        <option value="-1">请选择交易状态</option>
+                        <option value="0">初始</option>
+                        <option value="1">处理中</option>
+                        <option value="2">成功</option>
+                        <option value="3">失败</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" id="query" class="btn btn-primary" style="margin-top: 10px;margin-left: 25px"><i class="glyphicon glyphicon-search"></i>查询
             </button>
         </form>
         <br/>
@@ -56,10 +84,6 @@
         <div class="table-toolbar">
             <div class="row">
                 <div class="col-md-6">
-                    <select id="billType" name="billType" class="form-control">
-                        <option value="0">提现记录</option>
-                        <option value="1">支付记录</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -67,18 +91,19 @@
             <thead>
             <tr>
                 <th>序号</th>
-                <th>渠道号</th>
                 <th>商户名</th>
                 <th>业务编号</th>
                 <th>币种号</th>
-                <th>金额</th>
-                <th>转出地址</th>
-                <th>转入地址</th>
-                <th>合约地址</th>
-                <th>支付类型</th>
+                <th>交易类型</th>
                 <th>状态</th>
                 <th>创建时间</th>
                 <th>更新时间</th>
+                <th>金额</th>
+                <th>商户id</th>
+                <th>转出地址</th>
+                <th>转入地址</th>
+                <th>合约地址</th>
+                <th>渠道号</th>
             </tr>
             </thead>
             <tbody></tbody>

@@ -3,18 +3,19 @@ var paybillList = function () {
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
-            {"mData": "channel"},
-            {"mData": "merchantId"},
+            {"mData": "merchantName"},
             {"mData": "refBizNo"},
             {"mData": "coinId"},
-            {"mData": "amount"},
-            {"mData": "fromAddr"},
-            {"mData": "toAddr"},
-            {"mData": "tokenAddr"},
             {"mData": "billType"},
             {"mData": "status"},
             {"mData": "createTime"},
-            {"mData": "lastUpdateTime"}
+            {"mData": "lastUpdateTime"},
+            {"mData": "amount"},
+            {"mData": "merchantId"},
+            {"mData": "fromAddr"},
+            {"mData": "toAddr"},
+            {"mData": "tokenAddr"},
+            {"mData": "channel"}
         ];
         var aoColumnDefs = [
             {
@@ -36,8 +37,17 @@ var paybillList = function () {
                         return a;
                     }
                 }
-            },   {
-                "aTargets": [9],
+            }, {
+                "aTargets": [3],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            }, {
+                "aTargets": [4],
                 "mRender": function (a, b, c, d) {
                     if(a==0){
                         return "提现";
@@ -46,42 +56,90 @@ var paybillList = function () {
                     }
 
                 }
+            },  {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==0){
+                        return "初始";
+                    }else if(a==1){
+                        return "处理中";
+                    }else if(a==2){
+                        return "成功";
+                    }else if(a==3){
+                        return "失败";
+                    }
+
+                }
+            }, {
+                "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                    if(a!=null||a!=""){
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }
+
+                }
             },
             {
-            "aTargets": [10],
-            "mRender": function (a, b, c, d) {
-                if(a==0){
-                    return "初始";
-                }else if(a==1){
-                    return "处理中";
-                }else if(a==2){
-                    return "成功";
-                }else if(a==3){
-                    return "失败";
-                }
+                "aTargets": [7],
+                "mRender": function (a, b, c, d) {
+                    if(a!=null||a!=""){
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }
 
-            }
-        },
+                }
+            },
+            {
+                "aTargets": [9],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
+                "aTargets": [10],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
             {
                 "aTargets": [11],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
                     }
-
+                }
+            }, {
+                "aTargets": [12],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
                 }
             },
             {
-                "aTargets": [12],
+                "aTargets": [13],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
                     }
-
                 }
-            }];
+            }
+           ];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
         initPageTable(t, "payBill/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
@@ -91,10 +149,15 @@ var paybillList = function () {
         var fromAddrSearch = $("#fromAddrSearch").val();
         var toAddrSearch = $("#toAddrSearch").val();
         var billTypeSearch = $("#billType option:selected").val();
+        var statusSearch = $("#statusSearch option:selected").val();
+        var merchantnameSearch = $("#merchantnameSearch").val();
         if (assertNotNullStr(merchantidSearch)) condition.merchantidSearch = merchantidSearch;
         if (assertNotNullStr(fromAddrSearch)) condition.fromAddrSearch = fromAddrSearch;
         if (assertNotNullStr(toAddrSearch)) condition.channelSearch = toAddrSearch;
         if (assertNotNullStr(billTypeSearch)) condition.billTypeSearch = billTypeSearch;
+        if (assertNotNullStr(statusSearch)) condition.statusSearch = statusSearch;
+        if (assertNotNullStr(merchantnameSearch)) condition.merchantnameSearch = merchantnameSearch;
+
     };
     var __initHandler =function () {
         //删除

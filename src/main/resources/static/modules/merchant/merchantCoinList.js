@@ -4,20 +4,19 @@ var merchantCoin = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "merchantId"},
-            {"mData": "channel"},
+            {"mData": "merchantName"},
             {"mData": "coinName"},
             {"mData": "address"},
             {"mData": "tokenAddress"},
             {"mData": "status"},
             {"mData": "createUserName"},
-            {"mData": "updateUserName"},
             {"mData": "createTime"},
-            {"mData": "updateTime"},
+            {"mData": "channel"},
             {"mData": null}
         ];
         var aoColumnDefs = [
             {
-                "aTargets": [2],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
                     if(a==null){
                         return "";
@@ -42,9 +41,11 @@ var merchantCoin = function () {
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==0){
-                    return "可用";
+                    return "未审核";
+                }else if(a==1){
+                    return "审核通过";
                 }else{
-                    return "不可用";
+                    return "审核不通过"
                 }
 
             }
@@ -63,17 +64,6 @@ var merchantCoin = function () {
             {
                 "aTargets": [8],
                 "mRender": function (a, b, c, d) {
-                    if(a==null){
-                        return "";
-                    }else{
-                        return a;
-                    }
-
-                }
-            },
-            {
-                "aTargets": [9],
-                "mRender": function (a, b, c, d) {
                     if(a!=null){
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
@@ -84,21 +74,9 @@ var merchantCoin = function () {
                 }
             },
             {
-                "aTargets": [10],
-                "mRender": function (a, b, c, d) {
-                    if(a!=null){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }else{
-                        return "";
-                    }
-
-                }
-            },
-            {
-            "aTargets": [11],
+            "aTargets": [10],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
@@ -108,8 +86,8 @@ var merchantCoin = function () {
     var __queryHandler =function (condition) {
         var merchant_Id = $("#merchant_Id").val();
         if (assertNotNullStr(merchant_Id)) condition.merchant_Id = merchant_Id;
-        var channelSearch = $("#channelSearch").val();
-        if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
+        var nameSearch = $("#nameSearch").val();
+        if (assertNotNullStr(nameSearch)) condition.nameSearch = nameSearch;
     };
     var __initHandler =function () {
         //删除
@@ -140,13 +118,11 @@ var merchantCoin = function () {
                 var param = {"id": d.id};
                 $.post("merchantCoin/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
-                        $("#showMerchant").css("display","none");
-                        $("#createUser").css("display","none");
                         var d = data.data;
                         $("#address").val(d.address);
                         $("#merchantId").val(d.merchantId)
                         $("#id").val(d.id)
-                        $("#status").val(d.status)
+                        $("#createUserName").val(d.createUserName)
                         var date = new Date(d.createTime)
                         $("#createTime").val(date)
                         var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
@@ -155,6 +131,21 @@ var merchantCoin = function () {
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
+                        var status = "";
+                        if(d.status==0){
+                            status = "未审核"
+                        }else if(d.status ==1){
+                            status = "审核通过"
+                        }else{
+                            status = "审核不通过"
+                        }
+                        var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status + "</option>";
+                        $("#status").empty();
+                        $("#status").append(optionStatus);
+
+                        var optionMerchant = "<option value='" + d.merchantId + "' selected='selected'>" + d.merchantId + "</option>";
+                        $("#merchantId").empty();
+                        $("#merchantId").append(optionMerchant);
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -165,6 +156,8 @@ var merchantCoin = function () {
                             success: function (layero, index) {
                                 loadChannel();
                                 loadCoin();
+                                loadStatus();
+                                loadMerchantId();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -175,18 +168,18 @@ var merchantCoin = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
                                 }
                                 index = 0;
                             }
-                            /*,
+                            ,
                             cancel: function (i, layero) {
                                 layer.close(i);
                                 index = 0;
-                            }*/
+                            }
                         });
                     }
                 });
@@ -194,22 +187,21 @@ var merchantCoin = function () {
         });
 
     };
-    //添加用户
+    //添加数据
     var add =function () {
         $("#add").bind("click",function () {
             $("#address").val("");
             $("#merchantId").val("")
             $("#id").val("")
-            $("#status").val("")
+            $("#status").html("")
             $("#createTime").val(new Date);
-            $("#showMerchant").css("display","block");
-            $("#createUser").css("display","block");
             $("#channel").html("")
             $("#coinId").html("")
+            $("#createUserName").val("")
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加用户",
+                title: "添加商户充值信息",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
@@ -218,7 +210,8 @@ var merchantCoin = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadCoin();
-                    loadCreateUser();
+                    loadStatus();
+                    loadMerchantId();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -230,7 +223,7 @@ var merchantCoin = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("已存在相同的充值地址");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -280,12 +273,27 @@ var merchantCoin = function () {
             }
         });
     };
-    var loadCreateUser = function () {
-        $('#createUserName').select2({
-            placeholder: "请选择创建者",
+    var loadStatus = function () {
+        $('#status').select2({
+            placeholder: "请选择审核状态",
             allowClear: true,
             ajax: {
-                url: "merchantCoin/queryUser",
+                url: "merchantCoin/queryStatus",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
+    var loadMerchantId = function () {
+        $('#merchantId').select2({
+            placeholder: "请选择商户号",
+            allowClear: true,
+            ajax: {
+                url: "merchantCoin/queryMerchantId",
                 cache: true,
                 processResults: function (data) {
                     return {
@@ -301,16 +309,16 @@ var merchantCoin = function () {
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                createUserName:{
+                channel:{
                     required: true
                 },
                 merchantId:{
                     required: true
                 },
-                address: {
+                merchantName: {
                     required: true
                 },
-                channel: {
+                address: {
                     required: true
                 },
                 coinId: {
@@ -319,17 +327,17 @@ var merchantCoin = function () {
                 }
             },
             messages: {
-                createUserName:{
-                    required: "创建者不能为空!"
+                channel:{
+                    required: "渠道号不能为空!"
                 },
                 merchantId:{
                     required: "商户id不能为空!"
                 },
-                address: {
-                    required: "地址不能为空!"
+                merchantName: {
+                    required: "商户名不能为空!"
                 },
-                channel: {
-                    required: "渠道号不能为空!"
+                address: {
+                    required: "充值地址不能为空!"
                 },
                 coinId: {
                     required: "币种不能为空!"

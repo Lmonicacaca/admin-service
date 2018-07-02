@@ -7,6 +7,7 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.merchant.MerchantCoin;
 import com.mbr.admin.domain.merchant.Product;
+import com.mbr.admin.domain.merchant.Vo.MerchantCoinVo;
 import com.mbr.admin.manager.merchant.MerchantCoinManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,22 +40,22 @@ public class MerchantCoinController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String merchant_Id,String channelSearch){
+    public Object queryList(HttpServletRequest request,String merchant_Id,String nameSearch){
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<MerchantCoin> merchantCoins = merchantCoinManager.queryList(merchant_Id,channelSearch);
-        PageResultDto result = new PageResultDto<MerchantCoin>(new PageInfo<MerchantCoin>(merchantCoins));
+        List<MerchantCoinVo> merchantCoins = merchantCoinManager.queryList(merchant_Id,nameSearch);
+        PageResultDto result = new PageResultDto<MerchantCoinVo>(new PageInfo<MerchantCoinVo>(merchantCoins));
         return result;
     }
 
     @RequestMapping("queryById")
     @ResponseBody
-    public Object queryById(Long id){
+    public Object queryById(String id){
         if (id == null) {
             return super.failed("ID 为空！");
         }else{
-            MerchantCoin merchantCoin = merchantCoinManager.selectById(id);
-            if(merchantCoin !=null){
-                return success(merchantCoin);
+            MerchantCoinVo merchantCoinVo = merchantCoinManager.selectById(id);
+            if(merchantCoinVo !=null){
+                return success(merchantCoinVo);
             }else{
                 return failed("无相关记录");
             }
@@ -88,10 +89,40 @@ public class MerchantCoinController extends BaseController {
         List<Map<String,Object>> allChannel = merchantCoinManager.findAllChannel();
         return allChannel;
     }
+
+    @RequestMapping("queryStatus")
+    @ResponseBody
+    public Object queryStatus(){
+        List<Map<String,Object>> allStatus= merchantCoinManager.queryStatus();
+        return allStatus;
+    }
+    @RequestMapping("queryMerchantId")
+    @ResponseBody
+    public Object queryMerchantId(){
+        List<Map<String,Object>> allMerchantId= merchantCoinManager.queryMerchantId();
+        return allMerchantId;
+    }
+
     @RequestMapping(value = "addOrUpdate",method = RequestMethod.POST)
     @ResponseBody
-    public Object addOrUpdate(MerchantCoin merchantCoin){
-        if(merchantCoin.getId()!=null){
+    public Object addOrUpdate(MerchantCoinVo merchantCoinVo){
+        System.out.println(merchantCoinVo);
+        if(merchantCoinVo.getStatus()==null){
+            merchantCoinVo.setStatus(0);
+        }
+        String result = merchantCoinManager.addOrUpdate(merchantCoinVo);
+        if(result.equals("coinNotExist")){
+            return failed("币种不存在");
+        }else if(result.equals("insertFailed")){
+            return failed("插入数据失败");
+        }else if(result.equals("merchantCoinExist")){
+            return failed("已存在相同数据");
+        } else if(result.equals("updateFailed")){
+            return  failed("更新数据失败");
+        }else{
+            return success();
+        }
+        /*if(merchantCoin.getId()!=null){
             long coinId = merchantCoin.getCoinId();
             //查找是否存在相同的地址和合约地址
             MerchantCoin merchantCoinExit = merchantCoinManager.selectMerchantCoinByAddrAndCoinId(merchantCoin.getAddress(), coinId);
@@ -134,12 +165,7 @@ public class MerchantCoinController extends BaseController {
                 return failed("添加失败");
             }
         }
-
+*/
     }
 
-    @RequestMapping("queryUser")
-    @ResponseBody
-    public List<Map<String,Object>> queryUser(){
-        return merchantCoinManager.queryUser();
-    }
 }

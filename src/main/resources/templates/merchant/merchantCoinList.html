@@ -25,9 +25,9 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <label class="control-label col-md-5">渠道号：</label>
+                <label class="control-label col-md-5">商户名：</label>
                 <div class="input-group">
-                    <input class="form-control" placeholder="渠道号" name="channelSearch" id="channelSearch" type="text" th:autofocus="true" />
+                    <input class="form-control" placeholder="商户名" name="nameSearch" id="nameSearch" type="text" th:autofocus="true" />
                 </div>
             </div>
             <button type="button" id="query" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>查询
@@ -49,7 +49,7 @@
         <div class="table-toolbar">
             <div class="row">
                 <div class="col-md-6">
-                    <!--<div class="btn-group"><button id="add" class="btn btn-primary"> 添加</button></div>-->
+                    <div class="btn-group"><button id="add" class="btn btn-primary"> 添加</button></div>
                 </div>
             </div>
         </div>
@@ -58,15 +58,14 @@
             <tr>
                 <th>序号</th>
                 <th>商户号</th>
-                <th>渠道号</th>
+                <th>商户名</th>
                 <th>币种名</th>
                 <th>转入地址</th>
                 <th>合约地址</th>
-                <th>状态</th>
+                <th>审核状态</th>
                 <th>创建者</th>
-                <th>更新者</th>
                 <th>创建时间</th>
-                <th>更新时间</th>
+                <th>渠道号</th>
                 <th> 操作 </th>
             </tr>
             </thead>
@@ -77,31 +76,10 @@
 
 <div id="addWin" style="display: none;width: 99%" class="portlet-body form">
     <form role="form" th:action="@{/merchantCoin/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
-        <input type="hidden" value="" name="status" id="status" />
         <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="createTime" id="createTime" />
+        <input type="hidden" value="" name="createUserName" id="createUserName" />
         <div class="form-body">
-            <div class="form-group" id="createUser" style="display: none">
-                <label class="control-label col-md-3">创建者<span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <select class="form-control" name="createUserName" id="createUserName"></select>
-                </div>
-            </div>
-            <div class="form-group" id="showMerchant" style="display: none">
-                <label class="control-label col-md-3">商户号<span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <input class="form-control" type="text" value="" name="merchantId" id="merchantId" placeholder="请输入商户号"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3">地址<span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" data-required="1" id="address" name="address" placeholder="请输入地址" />
-                </div>
-            </div>
             <div class="form-group">
                 <label class="control-label col-md-3">渠道号<span class="required">* </span>
                 </label>
@@ -110,10 +88,31 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-3">商户号<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="merchantId" id="merchantId"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">充值地址<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" data-required="1" id="address" name="address" placeholder="请输入充值地址" />
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-3">币种 <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
                     <select class="form-control" name="coinId" id="coinId"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">审核状态
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="status" id="status"></select>
                 </div>
             </div>
         </div>
