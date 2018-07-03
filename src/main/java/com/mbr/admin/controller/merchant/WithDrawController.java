@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
+import com.mbr.admin.domain.merchant.Vo.WithDrawVo;
 import com.mbr.admin.domain.merchant.WithDraw;
 import com.mbr.admin.manager.merchant.WithDrawManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,10 @@ public class WithDrawController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String merchantidSearch,String channelSearch){
+    public Object queryList(HttpServletRequest request,String merchantidSearch,String merchantnameSearch){
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<Map<String, Object>> withDrawList = withDrawManager.queryList(merchantidSearch, channelSearch);
-        PageResultDto result = new PageResultDto<Map<String, Object>>(new PageInfo<Map<String, Object>>(withDrawList));
+        List<WithDrawVo> withDrawVoList = withDrawManager.queryList(merchantidSearch, merchantnameSearch);
+        PageResultDto result = new PageResultDto<WithDrawVo>(new PageInfo<WithDrawVo>(withDrawVoList));
         return result;
     }
 
@@ -55,8 +56,8 @@ public class WithDrawController extends BaseController {
         if(id==null){
             return failed("ID不能为空");
         }
-        Map<String, Object> map = withDrawManager.selectById(id);
-        return success(map);
+        Object withdraw = withDrawManager.selectById(id);
+        return success(withdraw);
     }
 
     @RequestMapping("queryChannel")
@@ -70,27 +71,33 @@ public class WithDrawController extends BaseController {
     public List<Map<String,Object>> queryCoin(){
         return withDrawManager.queryCoin();
     }
+
+    @RequestMapping("queryMerchant")
+    @ResponseBody
+    public List<Map<String,Object>> queryMerchant(){
+        return withDrawManager.queryMerchant();
+    }
+
+    @RequestMapping("queryStatus")
+    @ResponseBody
+    public List<Map<String,Object>> queryStatus(){
+        return withDrawManager.queryStatus();
+    }
+
+
     @RequestMapping("addOrUpdate")
     @ResponseBody
     public Object addOrUpdate(WithDraw withDraw){
-        if(withDraw.getId()!=null){
-            withDraw.setUpdateTime(new Date());
-            int i = withDrawManager.updateById(withDraw);
-            if(i>0){
-                return success();
-            }else{
-                return failed();
-            }
-        }
-        else{
-            Long id = new TimestampPkGenerator().next(getClass());
-            withDraw.setId(id);
-            int i = withDrawManager.saveWithDraw(withDraw);
-            if (i > 0) {
-                return success();
-            }else{
-                return failed();
-            }
+        System.out.println(withDraw);
+        String result = withDrawManager.addOrUpdate(withDraw);
+        if("withdrawExists".equals(result)){
+            return failed("已存在相同数据");
+        }else if("insertFailed".equals(result)){
+            return failed("添加数据失败");
+        }else if("updateFailed".equals(result)){
+            return failed("数据更新失败");
+        }else{
+            return success();
         }
     }
 

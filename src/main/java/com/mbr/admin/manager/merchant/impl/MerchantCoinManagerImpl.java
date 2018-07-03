@@ -46,7 +46,7 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
 
     @Override
     public int deleteById(Long id) {
-        return merchantCoinDao.deleteByPrimaryKey(id);
+        return merchantCoinDao.deleteById(id);
     }
 
     @Override
@@ -130,10 +130,14 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
             }
         }else{
             System.out.println(merchantCoin);
-            int i = merchantInfoDao.updateNameByMerchantId(merchantCoin.getMerchantId(), merchantCoinVo.getMerchantName());
 
-            merchantCoinDao.updateMerchantCoinById(merchantCoin,merchantCoin.getId().toString());
-            return "success";
+            int i = merchantCoinDao.updateMerchantCoinById(merchantCoin, merchantCoin.getId().toString());
+            if(i>0){
+                return "success";
+
+            }else{
+                return "updateFailed";
+            }
         }
     }
 

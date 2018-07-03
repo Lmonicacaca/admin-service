@@ -25,6 +25,16 @@ var merchantInfo = function () {
                         return a;
                     }
                 }
+            },{
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
             },
             {
                 "aTargets": [3],
@@ -190,8 +200,6 @@ var merchantInfo = function () {
 
     // 编辑
     $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
-        if(index ==0) {
-            index ++;
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
             var csrf = $("#csrfId");
@@ -271,7 +279,6 @@ var merchantInfo = function () {
                     });
                 }
             });
-        }
     });
     //添加商户
     var add =function () {

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.domain.app.Vo.EthTransactionVo;
 import com.mbr.admin.manager.app.EthTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,8 +30,8 @@ public class EthTransactionController extends BaseController {
     @ResponseBody
     public Object queryList(HttpServletRequest request,String orderIdSearch, String fromSearch, String toSearch){
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<Map<String,Object>> list = ethTransactionManager.queryList(orderIdSearch,fromSearch,toSearch);
-        PageResultDto result = new PageResultDto<Map<String,Object>>(new PageInfo<Map<String,Object>>(list));
+        List<EthTransactionVo> list = ethTransactionManager.queryList(orderIdSearch,fromSearch,toSearch);
+        PageResultDto result = new PageResultDto<EthTransactionVo>(new PageInfo<EthTransactionVo>(list));
 
         return result;
     }

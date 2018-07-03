@@ -47,58 +47,37 @@ var auditProduct = function () {
     };
     var __initHandler =function () {
         // 编辑
-        $("#dataTables-example tbody").on("click", "a[name='audit']", function () {
-            if(index ==0) {
-                index ++;
-                var table = $('#dataTables-example').DataTable();
-                var d = table.row($(this).parents('tr')).data();
-                var csrf = $("#csrfId");
-                var csrfName = csrf.attr('name');
-                var param = {"id": d.id};
-                $.post("auditProduct/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
-                    if (data.code == 200) {
-                        var d = data.data;
-                        $("#id").val(d.id);
-                        $("#coinName").val(d.coinName);
-                        $("#coinDescription").val(d.coinDescription);
-                        $("#tokenAddress").val(d.tokenAddress);
-                        $("#coinDecimals").val(d.coinDecimals);
-                        $("#channel").val(d.channel);
-                        $("#merchantName").val(d.merchantName);
-                        var time = new Date(d.createTime)
-                        $("#createTime").val(time);
-                        layer.open({
-                            area: '800px',
-                            shade: [0.8, '#393D49'],
-                            title: "审核币种",
-                            type: 1,
-                            content: $("#addWin"),
-                            btn: ['通过','不通过'],
-                            success: function (layero, index) {
-                            },
-                            yes: function (i, layero) {
-                                if ($('#form').valid()) {
-                                    $("#form").ajaxSubmit({
-                                        success: function (d) {
-                                            if (d.code == 200) {
-                                                var dataTable = $("#dataTables-example").dataTable();
-                                                dataTable.fnReloadAjax();
-                                                layer.close(i);
-                                            } else {
-                                                layer.msg("审核失败");
-                                            }
-                                        }
-                                    });
-                                }
-                                index = 0;
-                            },
-                            btn2: function (i, layero) {
-                                $.ajax({
-                                    url:getRootPath()+"/auditProduct/auditFailed",
-                                    type:"get",
-                                    dataType:"json",
-                                    data:"id="+d.id,
-                                    success:function (d) {
+        $("a[name='audit']").on("click", function () {
+            var table = $('#dataTables-example').DataTable();
+            var d = table.row($(this).parents('tr')).data();
+            var csrf = $("#csrfId");
+            var csrfName = csrf.attr('name');
+            var param = {"id": d.id};
+            $.post("auditProduct/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
+                if (data.code == 200) {
+                    var d = data.data;
+                    $("#id").val(d.id);
+                    $("#coinName").val(d.coinName);
+                    $("#coinDescription").val(d.coinDescription);
+                    $("#tokenAddress").val(d.tokenAddress);
+                    $("#coinDecimals").val(d.coinDecimals);
+                    $("#channel").val(d.channel);
+                    $("#merchantName").val(d.merchantName);
+                    var time = new Date(d.createTime)
+                    $("#createTime").val(time);
+                    layer.open({
+                        area: '800px',
+                        shade: [0.8, '#393D49'],
+                        title: "审核币种",
+                        type: 1,
+                        content: $("#addWin"),
+                        btn: ['通过','不通过'],
+                        success: function (layero, index) {
+                        },
+                        yes: function (i, layero) {
+                            if ($('#form').valid()) {
+                                $("#form").ajaxSubmit({
+                                    success: function (d) {
                                         if (d.code == 200) {
                                             var dataTable = $("#dataTables-example").dataTable();
                                             dataTable.fnReloadAjax();
@@ -107,12 +86,29 @@ var auditProduct = function () {
                                             layer.msg("审核失败");
                                         }
                                     }
-                                })
+                                });
                             }
-                        });
-                    }
-                });
-            }
+                        },
+                        btn2: function (i, layero) {
+                            $.ajax({
+                                url:getRootPath()+"/auditProduct/auditFailed",
+                                type:"get",
+                                dataType:"json",
+                                data:"id="+d.id,
+                                success:function (d) {
+                                    if (d.code == 200) {
+                                        var dataTable = $("#dataTables-example").dataTable();
+                                        dataTable.fnReloadAjax();
+                                        layer.close(i);
+                                    } else {
+                                        layer.msg("审核失败");
+                                    }
+                                }
+                            })
+                        }
+                    });
+                }
+            });
         });
     };
     var query = function () {

@@ -78,25 +78,25 @@
         <div class="form-body">
             <input type="hidden" name="id" id="id" />
             <input type="hidden" name="createTime" id="createTime" />
-            <div class="form-group" style="display: none" id="showMerchantId">
-                <label class="control-label col-md-3">商户id<span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" data-required="1" id="merchantId" name="merchantId" placeholder="请输入商户id" />
-                </div>
-            </div>
             <div class="form-group">
-                <label class="control-label col-md-3">地址<span class="required">* </span>
-                </label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" data-required="1" id="address" name="address" placeholder="请输入地址" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-3">渠道号<span class="required">* </span>
+                <label class="control-label col-md-3">渠道号
                 </label>
                 <div class="col-md-8">
                     <select class="form-control" name="channel" id="channel"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">商户id<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="merchantId" id="merchantId"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">提现地址<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" data-required="1" id="address" name="address" placeholder="请输入提现地址" />
                 </div>
             </div>
             <div class="form-group">
@@ -104,6 +104,13 @@
                 </label>
                 <div class="col-md-8">
                     <select class="form-control" name="coinId" id="coinId"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">审核状态
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="status" id="status"></select>
                 </div>
             </div>
         </div>

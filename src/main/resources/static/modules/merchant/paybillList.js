@@ -5,7 +5,7 @@ var paybillList = function () {
             {"mData": "id"},
             {"mData": "merchantName"},
             {"mData": "refBizNo"},
-            {"mData": "coinId"},
+            {"mData": "coinName"},
             {"mData": "billType"},
             {"mData": "status"},
             {"mData": "createTime"},

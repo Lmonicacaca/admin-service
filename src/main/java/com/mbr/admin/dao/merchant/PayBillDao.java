@@ -31,7 +31,7 @@ public interface PayBillDao extends TkMapper<PayBill> {
                     " and status=#{status}"+
                 "</if>"+
             "</where>"+
-            " order by last_update_time desc"+
+            " order by create_time desc,last_update_time desc"+
             "</script>")
     public List<PayBill> queryAllPayBill(@Param(value = "merchantId") String merchantId, @Param(value = "fromAddr")String fromAddr, @Param(value = "toAddr")String toAddr,@Param(value = "billType")int billType,@Param(value = "merchantnameSearch")String merchantnameSearch,@Param(value = "status")int status);
 }

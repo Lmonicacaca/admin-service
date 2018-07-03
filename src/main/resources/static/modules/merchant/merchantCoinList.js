@@ -25,6 +25,16 @@ var merchantCoin = function () {
                     }
 
                 }
+            },{
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
             },
             {
                 "aTargets": [5],
@@ -108,9 +118,7 @@ var merchantCoin = function () {
             });
         });
         // 编辑
-        $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
-            if(index ==0) {
-                index ++;
+        $("a[name='edit']").on("click", function () {
                 var table = $('#dataTables-example').DataTable();
                 var d = table.row($(this).parents('tr')).data();
                 var csrf = $("#csrfId");
@@ -183,7 +191,6 @@ var merchantCoin = function () {
                         });
                     }
                 });
-            }
         });
 
     };

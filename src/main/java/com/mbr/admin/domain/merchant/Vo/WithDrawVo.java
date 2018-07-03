@@ -1,29 +1,20 @@
-package com.mbr.admin.domain.merchant;
+package com.mbr.admin.domain.merchant.Vo;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name = "withdraw")
-public class WithDraw {
-    @Column(name = "id")
+public class WithDrawVo {
     private Long id;
-    @Column(name = "merchant_id")
     private String merchantId;
-    @Column(name = "coin_id")
     private Long coinId;
-    @Column(name = "channel")
     private String channel;
-    @Column(name = "create_time")
     private Date createTime;
-    @Column(name = "update_time")
     private Date updateTime;
-    @Column(name = "address")
     private String address;
-    @Column(name = "nonce")
     private  String nonce;
-    @Column(name = "status")
     private Integer status;
+    private String coinName;
+    private String merchantName;
+    private String tokenAddress;
 
     public Long getId() {
         return id;
@@ -97,18 +88,45 @@ public class WithDraw {
         this.status = status;
     }
 
+    public String getCoinName() {
+        return coinName;
+    }
+
+    public void setCoinName(String coinName) {
+        this.coinName = coinName;
+    }
+
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
+    public String getTokenAddress() {
+        return tokenAddress;
+    }
+
+    public void setTokenAddress(String tokenAddress) {
+        this.tokenAddress = tokenAddress;
+    }
+
     @Override
     public String toString() {
-        return "WithDraw{" +
+        return "WithDrawVo{" +
                 "id=" + id +
-                ", merchantId=" + merchantId +
+                ", merchantId='" + merchantId + '\'' +
                 ", coinId=" + coinId +
-                ", channel=" + channel +
+                ", channel='" + channel + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", address='" + address + '\'' +
                 ", nonce='" + nonce + '\'' +
                 ", status=" + status +
+                ", coinName='" + coinName + '\'' +
+                ", merchantName='" + merchantName + '\'' +
+                ", tokenAddress='" + tokenAddress + '\'' +
                 '}';
     }
 }

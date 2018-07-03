@@ -4,23 +4,37 @@ var withDraw = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "merchantId"},
-            {"mData": "channel"},
+            {"mData": "merchantName"},
             {"mData": "coinName"},
             {"mData": "address"},
             {"mData": "tokenAddress"},
             {"mData": "status"},
             {"mData": "createTime"},
-            {"mData": "updateTime"},
+            {"mData": "channel"},
             {"mData": null}
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },{
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==0){
-                    return "是";
+                    return "未审核";
+                }else if(a==1){
+                    return "审核通过";
                 }else{
-                    return "否";
+                    return "审核通过"
                 }
+
 
             }
         },
@@ -33,13 +47,11 @@ var withDraw = function () {
                     }
 
                 }
-            },
-            {
+            }, {
                 "aTargets": [8],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null&&a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    if(a==null||a==""){
+                        return "";
                     }else{
                         return a;
                     }
@@ -49,7 +61,7 @@ var withDraw = function () {
             {
             "aTargets": [9],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
@@ -59,8 +71,8 @@ var withDraw = function () {
     var __queryHandler =function (condition) {
         var merchantidSearch = $("#merchantidSearch").val();
         if (assertNotNullStr(merchantidSearch)) condition.merchantidSearch = merchantidSearch;
-        var channelSearch = $("#channelSearch").val();
-        if (assertNotNullStr(channelSearch)) condition.channelSearch = channelSearch;
+        var merchantnameSearch = $("#merchantnameSearch").val();
+        if (assertNotNullStr(merchantnameSearch)) condition.merchantnameSearch = merchantnameSearch;
     };
     var __initHandler =function () {
         //删除
@@ -81,9 +93,7 @@ var withDraw = function () {
             });
         });
         // 编辑
-        $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
-            if(index ==0) {
-                index ++;
+        $("a[name='edit']").on("click", function () {
                 var table = $('#dataTables-example').DataTable();
                 var d = table.row($(this).parents('tr')).data();
                 var csrf = $("#csrfId");
@@ -91,21 +101,33 @@ var withDraw = function () {
                 var param = {"id": d.id};
                 $.post("withDraw/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
-                        $("#showMerchantId").css("display","none");
                         var d = data.data;
-                        $("#address").val(d.address);
                         $("#id").val(d.id);
-                        $("#merchantId").val(d.merchantId);
+                        $("#address").val(d.address);
                         if(d.createTime!=null){
                             var date = new Date(d.createTime)
                             $("#createTime").val(date)
                         }
+                        var optionMerchant= "<option value='" + d.merchantId + "' selected='selected'>" +d.merchantId+ "</option>";
+                        $("#merchantId").empty();
+                        $("#merchantId").append(optionMerchant);
                         var optionChannel= "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
-                        var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
+                        var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinId + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
+                        var status= ""
+                        if(d.status==0){
+                            status = "未审核"
+                        }else if(d.status==1){
+                            return "审核通过"
+                        }else {
+                            return "审核通过"
+                        }
+                        var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status+ "</option>";
+                        $("#status").empty();
+                        $("#status").append(optionStatus);
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -126,37 +148,38 @@ var withDraw = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
                                 }
                                 index = 0;
                             }
-                            /*,
+                            ,
                             cancel: function (i, layero) {
                                 layer.close(i);
                                 index = 0;
-                            }*/
+                            }
                         });
                     }
                 });
-            }
         });
 
     };
-    //添加用户
+    //添加提现地址
     var add =function () {
         $("#add").bind("click",function () {
-            $("#showMerchantId").css("display","block");
             $("#id").val("");
             $("#createTime").val(new Date);
             $("#channel").html("");
+            $("#merchantId").html("");
+            $("#address").val("");
             $("#coinId").html("");
+            $("#status").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加用户",
+                title: "添加提现地址",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
@@ -165,6 +188,8 @@ var withDraw = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadCoin();
+                    loadMerchant();
+                    loadStatus();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -176,7 +201,7 @@ var withDraw = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("已存在相同的充值地址");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -226,6 +251,36 @@ var withDraw = function () {
             }
         });
     };
+    var loadMerchant = function () {
+        $('#merchantId').select2({
+            placeholder: "请选择商户",
+            allowClear: true,
+            ajax: {
+                url: "withDraw/queryMerchant",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
+    var loadStatus = function () {
+        $('#status').select2({
+            placeholder: "请选择审核状态",
+            allowClear: true,
+            ajax: {
+                url: "withDraw/queryStatus",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
    var validateForm = function () {
         var validate = $('#form').validate({
             errorElement: 'span', //default input error message container
@@ -236,9 +291,6 @@ var withDraw = function () {
                     required: true
                 },
                 address: {
-                    required: true
-                },
-                channel: {
                     required: true
                 },
                 coinId: {
@@ -252,9 +304,6 @@ var withDraw = function () {
                 },
                 address: {
                     required: "地址不能为空!"
-                },
-                channel: {
-                    required: "渠道号不能为空!"
                 },
                 coinId: {
                     required: "币种不能为空!"

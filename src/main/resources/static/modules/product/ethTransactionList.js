@@ -4,15 +4,17 @@ var ethTransaction = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "orderId"},
+            {"mData": "coinName"},
             {"mData": "txStatus"},
+            {"mData": "createTime"},
             {"mData": "from"},
             {"mData": "to"},
             {"mData": "value"},
             {"mData": "isErc20"},
-            {"mData": "createTime"}
+
         ];
         var aoColumnDefs = [{
-            "aTargets": [2],
+            "aTargets": [3],
             "mRender": function (a, b, c, d) {
                 if(a==-1){
                     return "交易发送";
@@ -28,7 +30,7 @@ var ethTransaction = function () {
 
             }
         },{
-            "aTargets": [6],
+            "aTargets": [8],
             "mRender": function (a, b, c, d) {
                 if(a==false){
                     return "否";

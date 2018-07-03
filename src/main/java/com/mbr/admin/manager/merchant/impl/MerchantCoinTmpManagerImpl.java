@@ -219,7 +219,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
         withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
         withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-        withDraw.setStatus(0);
+        withDraw.setStatus(1);//已审核
         if(channel==null||channel==""){
             withDraw.setChannel(merchantCoinTmp.getChannel());
         }else{

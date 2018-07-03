@@ -2,6 +2,7 @@ package com.mbr.admin.manager.app.impl;
 
 
 import com.mbr.admin.domain.app.EthTransaction;
+import com.mbr.admin.domain.app.Vo.EthTransactionVo;
 import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.manager.app.EthTransactionManager;
 import com.mbr.admin.repository.ProductRepository;
@@ -27,7 +28,7 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
     private ProductRepository productRepository;
 
     @Override
-    public List<Map<String,Object>> queryList(String orderId, String from, String to) {
+    public List<EthTransactionVo> queryList(String orderId, String from, String to) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(orderId!=null){
@@ -43,30 +44,24 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
         query.addCriteria(criteria);
         List<EthTransaction> ethTransactionList = mongoTemplate.find(query, EthTransaction.class);
 
-        List<Map<String,Object>> list = new ArrayList<>();
-
+        List<EthTransactionVo> list = new ArrayList<>();
         for(int i=0;i<ethTransactionList.size();i++) {
-            Map<String, Object> map = new HashMap<>();
-            Product coin = productRepository.findById(ethTransactionList.get(i).getCoinId());
-            map.put("id", ethTransactionList.get(i).getTo());
-            map.put("orderId", ethTransactionList.get(i).getOrderId());
-            map.put("txStatus", ethTransactionList.get(i).getTxStatus());
-            map.put("from", ethTransactionList.get(i).getFrom());
-            map.put("to", ethTransactionList.get(i).getTo());
-            String value = ethTransactionList.get(i).getValue();
-//            int coinDecimals = coin.getCoinDecimals();
-           /* if (!value.equals("0")) {
-                map.put("value", value.substring(0, value.length() - coinDecimals));
-            }
-            else{
-                map.put("value",value);
-            }*/
-            map.put("value",value);
-            map.put("isErc20",ethTransactionList.get(i).isErc20());
-            map.put("createTime",ethTransactionList.get(i).getCreateTime());
-            list.add(map);
-        }
 
+            EthTransactionVo ethTransactionVo = new EthTransactionVo();
+            ethTransactionVo.setId(ethTransactionList.get(i).getId());
+            ethTransactionVo.setOrderId(ethTransactionList.get(i).getOrderId());
+            ethTransactionVo.setTxStatus(ethTransactionList.get(i).getTxStatus());
+            ethTransactionVo.setCreateTime(ethTransactionList.get(i).getCreateTime());
+            ethTransactionVo.setFrom(ethTransactionList.get(i).getFrom());
+            ethTransactionVo.setTo(ethTransactionList.get(i).getTo());
+            ethTransactionVo.setValue(ethTransactionList.get(i).getValue());
+            ethTransactionVo.setErc20(ethTransactionList.get(i).isErc20());
+            if(ethTransactionList.get(i).getCoinId()!=null&&ethTransactionList.get(i).getCoinId()!=0){
+                Product coin = productRepository.findById(ethTransactionList.get(i).getCoinId());
+                ethTransactionVo.setCoinName(coin.getCoinName());
+            }
+            list.add(ethTransactionVo);
+        }
         return list;
     }
 }

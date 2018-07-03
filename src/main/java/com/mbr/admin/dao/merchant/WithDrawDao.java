@@ -1,6 +1,7 @@
 package com.mbr.admin.dao.merchant;
 
 import com.mbr.admin.common.dao.TkMapper;
+import com.mbr.admin.domain.merchant.Vo.WithDrawVo;
 import com.mbr.admin.domain.merchant.WithDraw;
 import org.apache.ibatis.annotations.*;
 
@@ -9,18 +10,16 @@ import java.util.List;
 public interface WithDrawDao extends TkMapper<WithDraw> {
 
     @Select("<script>" +
-            "select * from withdraw "+
-            "<where>"+
+            "select w.*,m.name as merchantName from withdraw as w,merchant_info as m where w.merchant_id=m.id "+
             "<if test=\"merchantId!=null and merchantId !=''\">" +
-            " and merchant_id=#{merchantId}"+
+            " and w.merchant_id=#{merchantId}"+
             "</if>"+
-            "<if test=\"channel!=null and channel !=''\">" +
-            " and channel=#{channel}"+
+            "<if test=\"merchantName!=null and merchantName !=''\">" +
+            " and m.name like '%${merchantName}%'"+
             "</if>"+
-            "</where>"+
-
+            "order by create_time desc,update_time desc"+
             "</script>")
-    public List<WithDraw> queryList(@Param(value = "merchantId") String merchantId, @Param(value = "channel")String channel);
+    public List<WithDrawVo> queryList(@Param(value = "merchantId") String merchantId, @Param(value = "merchantName")String merchantName);
 
 
     @Delete("delete from withdraw where id=#{id}")
@@ -39,7 +38,13 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
     @Select("select * from withdraw where merchant_id=#{merchantId} and coin_id=#{coinId}")
     public WithDraw queryWithdraw(@Param("merchantId")String merchantId,@Param("coinId")String coinId);
 
-    @Update("update withdraw set channel=#{channel},address = #{address} where merchant_id=#{merchantId} and coin_id=#{coinId}")
+    @Update("update withdraw set channel=#{channel},status=1,address = #{address} where merchant_id=#{merchantId} and coin_id=#{coinId}")
     public int updateWithdraw(@Param("merchantId")String merchantId,@Param("coinId")String coinId,@Param("channel")String channel,@Param("address")String address);
+
+    @Update("update withdraw set create_time=#{withDraw.createTime},address = #{withDraw.address},update_time=#{withDraw.updateTime},merchant_id=#{withDraw.merchantId},coin_id=#{withDraw.coinId},status=#{withDraw.status},channel=#{withDraw.channel} where id=#{withDraw.id}")
+    public int updateById(@Param("withDraw")WithDraw withDraw);
+
+    @Select("select * from withdraw where merchant_id=#{merchantId} and coin_id=#{coinId}")
+    public WithDraw selectByMerchantIdAndCoinId(@Param("merchantId")String merchantId,@Param("coinId")Long coinId);
 
 }

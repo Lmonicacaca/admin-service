@@ -75,9 +75,7 @@ var merchantCoinTmp = function () {
     };
     var __initHandler =function () {
         // 审核
-        $("#dataTables-example tbody").on("click", "a[name='audit']", function () {
-            if(index ==0) {
-                index ++;
+        $("a[name='audit']").on("click", function () {
                 var table = $('#dataTables-example').DataTable();
                 var d = table.row($(this).parents('tr')).data();
                 var csrf = $("#csrfId");
@@ -151,8 +149,6 @@ var merchantCoinTmp = function () {
                         });
                     }
                 });
-            }
-
         });
     };
     var query = function () {

@@ -1,20 +1,22 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.TimestampPkGenerator;
+import com.mbr.admin.dao.merchant.MerchantInfoDao;
 import com.mbr.admin.dao.merchant.WithDrawDao;
 import com.mbr.admin.domain.merchant.Channel;
+import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.Product;
+import com.mbr.admin.domain.merchant.Vo.WithDrawVo;
 import com.mbr.admin.domain.merchant.WithDraw;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.WithDrawManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.ProductRepository;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WithDrawManagerImpl implements WithDrawManager {
@@ -25,26 +27,22 @@ public class WithDrawManagerImpl implements WithDrawManager {
     private ChannelManager channelManager;
     @Resource
     private ProductRepository productRepository;
+    @Resource
+    private MerchantInfoDao merchantInfoDao;
+
     @Override
-    public List<Map<String,Object>> queryList(String merchantId,String channel) {
-        List<Map<String,Object>> list = new ArrayList<>();
-        List<WithDraw> withDrawList = withDrawDao.queryList(merchantId, channel);
-        for(int i=0;i<withDrawList.size();i++){
-            Product coin = productRepository.findById(withDrawList.get(i).getCoinId());
-            Map<String,Object> map = new HashMap<>();
-            map.put("id",withDrawList.get(i).getId());
-            map.put("createTime",withDrawList.get(i).getCreateTime());
-            map.put("address",withDrawList.get(i).getAddress());
-            map.put("updateTime",withDrawList.get(i).getUpdateTime());
-            map.put("merchantId",withDrawList.get(i).getMerchantId());
-            map.put("coinId",withDrawList.get(i).getCoinId());
-            map.put("coinName",coin.getCoinName());
-            map.put("tokenAddress",coin.getTokenAddress());
-            map.put("channel",withDrawList.get(i).getChannel());
-            map.put("status",withDrawList.get(i).getStatus());
-            list.add(map);
+    public List<WithDrawVo> queryList(String merchantId,String merchantName) {
+        List<WithDrawVo> withDrawVoList = withDrawDao.queryList(merchantId, merchantName);
+        for(int i=0;i<withDrawVoList.size();i++){
+            if(withDrawVoList.get(i).getCoinId()!=null&&withDrawVoList.get(i).getCoinId()!=0){
+                Product coin = productRepository.findById(withDrawVoList.get(i).getCoinId());
+                System.out.println(coin);
+                withDrawVoList.get(i).setCoinName(coin.getCoinName());
+                withDrawVoList.get(i).setTokenAddress(coin.getTokenAddress());
+            }
+
         }
-        return list;
+        return withDrawVoList;
     }
 
     @Override
@@ -53,22 +51,9 @@ public class WithDrawManagerImpl implements WithDrawManager {
     }
 
     @Override
-    public Map<String,Object> selectById(Long id) {
-        WithDraw withDraw = withDrawDao.selectById(id);
-        Long coinId = withDraw.getCoinId();
-        Product coin = productRepository.findById(coinId);
-        Map<String,Object> map = new HashMap<>();
-        map.put("id",withDraw.getId());
-        map.put("createTime",withDraw.getCreateTime());
-        map.put("address",withDraw.getAddress());
-        map.put("updateTime",withDraw.getUpdateTime());
-        map.put("merchantId",withDraw.getMerchantId());
-        map.put("coinId",withDraw.getCoinId());
-        map.put("coinName",coin.getCoinName());
-        map.put("tokenAddress",coin.getTokenAddress());
-        map.put("channel",withDraw.getChannel());
-        map.put("status",withDraw.getStatus());
-        return map;
+    public Object selectById(Long id) {
+
+        return withDrawDao.selectById(id);
     }
 
     @Override
@@ -96,13 +81,77 @@ public class WithDrawManagerImpl implements WithDrawManager {
         return withDrawDao.updateByPrimaryKey(withDraw);
     }
 
+
     @Override
-    public int saveWithDraw(WithDraw withDraw) {
-        WithDraw withDrawExit = withDrawDao.selectByAddrAndCoinId(withDraw.getAddress(), withDraw.getCoinId());
-        if(withDrawExit != null){
-            return 0;
+    public List<Map<String, Object>> queryMerchant() {
+        List<MerchantInfo> merchantInfoList = merchantInfoDao.selectAll();
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(int i=0;i<merchantInfoList.size();i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",merchantInfoList.get(i).getId());
+            map.put("text",merchantInfoList.get(i).getId());
+            list.add(map);
         }
-        withDrawDao.insert(withDraw);
-        return 1;
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> queryStatus() {
+        List<Map<String,Object>> list = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        map.put("id","0");
+        map.put("text","未审核");
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("id","1");
+        map1.put("text","审核通过");
+        Map<String,Object> map2 = new HashMap<>();
+        map2.put("id","2");
+        map2.put("text","审核不通过");
+        list.add(map);
+        list.add(map1);
+        list.add(map2);
+        return list;
+    }
+
+    @Override
+    public String addOrUpdate(WithDraw withDraw) {
+      if(withDraw.getStatus()==null){
+          withDraw.setStatus(0);
+      }
+        Long id = null;
+        if(withDraw.getId()==null){
+            id = new TimestampPkGenerator().next(getClass());
+            WithDraw withdrawDistinct = withDrawDao.selectByMerchantIdAndCoinId(withDraw.getMerchantId(), withDraw.getCoinId());
+            if(withdrawDistinct!=null){
+                return "withdrawExists";
+            }
+            WithDraw createWithDraw = createWithDraw(withDraw, id);
+            System.out.println(createWithDraw);
+            int insert = withDrawDao.insert(createWithDraw);
+            if(insert>0){
+                return "success";
+            }else{
+                return "insertFailed";
+            }
+        }else{
+            WithDraw createWithDraw = createWithDraw(withDraw, id);
+            int i = withDrawDao.updateById(createWithDraw);
+            if(i>0){
+                return "success";
+            }else{
+                return "updateFailed";
+            }
+        }
+    }
+
+
+    public WithDraw createWithDraw(WithDraw withDraw,Long id){
+        if(id!=null){
+            withDraw.setId(id);
+            withDraw.setCreateTime(new Date());
+        }else{
+            withDraw.setUpdateTime(new Date());
+        }
+        return withDraw;
     }
 }

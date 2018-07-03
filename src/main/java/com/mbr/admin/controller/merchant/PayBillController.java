@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.merchant.PayBill;
+import com.mbr.admin.domain.merchant.Vo.PayBillVo;
 import com.mbr.admin.manager.merchant.PayBillManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +32,8 @@ public class PayBillController extends BaseController {
         int billType = Integer.parseInt(billTypeSearch);
         int status = Integer.parseInt(statusSearch);
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<PayBill> payBillList = payManager.queryAllPayBill(merchantidSearch,fromAddrSearch,toAddrSearch,billType,merchantnameSearch,status);
-        PageResultDto result = new PageResultDto<PayBill>(new PageInfo<PayBill>(payBillList));
+        List<PayBillVo> payBillList = payManager.queryAllPayBill(merchantidSearch,fromAddrSearch,toAddrSearch,billType,merchantnameSearch,status);
+        PageResultDto result = new PageResultDto<PayBillVo>(new PageInfo<PayBillVo>(payBillList));
         return result;
     }
 
