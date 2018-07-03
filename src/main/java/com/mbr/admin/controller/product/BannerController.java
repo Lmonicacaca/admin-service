@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,9 +44,9 @@ public class BannerController extends BaseController {
     @RequestMapping(value="queryList",method = RequestMethod.POST)
     @ResponseBody
     public Object queryList(HttpServletRequest request, String url){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<Banner> bannerList = bannerManager.queryAll(0,url);//查询所有状态码为0的信息
-        PageResultDto result = new PageResultDto<Banner>(new PageInfo<Banner>(bannerList));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = bannerManager.queryAll(0, url, page);//查询所有状态码为0的信息
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }
 

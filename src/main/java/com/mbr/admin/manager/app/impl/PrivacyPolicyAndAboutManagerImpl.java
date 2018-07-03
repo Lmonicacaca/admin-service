@@ -8,6 +8,7 @@ import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.PrivacyPolicyAndAboutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,16 +29,24 @@ public class PrivacyPolicyAndAboutManagerImpl implements PrivacyPolicyAndAboutMa
     private PrivacyPolicyAndAboutRepository privacyPolicyAndAboutRepository;
 
     @Override
-    public List<PrivacyPolicyAndAbout> queryList(String channel) {
+    public Map<String,Object> queryList(String channel, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(channel!=null){
             criteria.andOperator(Criteria.where("channel").is(channel));
         }
 
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(criteria);
-        return mongoTemplate.find(query,PrivacyPolicyAndAbout.class);
+        long count = mongoTemplate.count(query, PrivacyPolicyAndAbout.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+
+        }
+        List<PrivacyPolicyAndAbout> list = mongoTemplate.find(query, PrivacyPolicyAndAbout.class);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",list);
+        return map;
     }
 
     @Override

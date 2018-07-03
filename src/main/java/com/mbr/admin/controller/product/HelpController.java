@@ -7,12 +7,16 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.app.Help;
 import com.mbr.admin.manager.app.HelpManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("help")
@@ -29,9 +33,9 @@ public class HelpController extends BaseController {
     @RequestMapping("queryList")
     @ResponseBody
     public Object queryList(HttpServletRequest request,String titleSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<Help> list = helpManager.queryList(titleSearch);
-        PageResultDto result = new PageResultDto<Help>(new PageInfo<Help>(list));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = helpManager.queryList(titleSearch, page);
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }
     @RequestMapping("addOrUpdate")

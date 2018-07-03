@@ -9,6 +9,9 @@ import com.mbr.admin.domain.app.Vo.AppUpdateVo;
 import com.mbr.admin.manager.app.AppUpdateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("appUpdate")
@@ -36,10 +40,11 @@ public class AppUpdateController extends BaseController {
     @RequestMapping("queryList")
     @ResponseBody
     public Object queryList(HttpServletRequest request,String versionSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<AppUpdate> list = appUpdateManager.queryList(versionSearch,image_url);
-        PageResultDto result = new PageResultDto<AppUpdate>(new PageInfo<AppUpdate>(list));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = appUpdateManager.queryList(versionSearch, image_url, page);
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
+        
     }
     @RequestMapping("deleteAppUpdate")
     @ResponseBody

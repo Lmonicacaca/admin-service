@@ -2,12 +2,14 @@ package com.mbr.admin.manager.app;
 
 import com.mbr.admin.domain.app.PrivacyPolicyAndAbout;
 import com.mbr.admin.domain.merchant.Channel;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PrivacyPolicyAndAboutManager {
 
-    public List<PrivacyPolicyAndAbout> queryList(String channel);
+    public Map<String,Object> queryList(String channel, Pageable page);
 
     public Object queryChannel();
 

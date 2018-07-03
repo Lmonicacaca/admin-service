@@ -9,6 +9,9 @@ import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.Notification;
 import com.mbr.admin.manager.app.NotificationManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,9 +38,9 @@ public class NotificationController extends BaseController {
     @RequestMapping(value = "queryList")
     @ResponseBody
     public Object queryList(HttpServletRequest request,int typeSearch,int dealSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<Notification> notificationList = notificationManager.queryList(typeSearch, dealSearch);
-        PageResultDto result = new PageResultDto<Notification>(new PageInfo<Notification>(notificationList));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = notificationManager.queryList(typeSearch, dealSearch, page);
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }
 

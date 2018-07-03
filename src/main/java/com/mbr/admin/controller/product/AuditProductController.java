@@ -8,12 +8,16 @@ import com.mbr.admin.domain.app.ProductApply;
 import com.mbr.admin.manager.app.AuditProductManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("auditProduct")
@@ -33,9 +37,9 @@ public class AuditProductController extends BaseController {
     @RequestMapping("queryList")
     @ResponseBody
     public Object queryList(HttpServletRequest request,String channelSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<ProductApply> list = auditProductManager.queryList(channelSearch);
-        PageResultDto result = new PageResultDto<ProductApply>(new PageInfo<ProductApply>(list));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = auditProductManager.queryList(channelSearch, page);
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }
     @RequestMapping("queryById")

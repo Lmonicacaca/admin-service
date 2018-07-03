@@ -7,6 +7,7 @@ import com.mbr.admin.domain.merchant.Product;
 import com.mbr.admin.manager.app.EthTransactionManager;
 import com.mbr.admin.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,22 +29,27 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
     private ProductRepository productRepository;
 
     @Override
-    public List<EthTransactionVo> queryList(String orderId, String from, String to) {
+    public Map<String,Object> queryList(String orderId, String from, String to,String status,Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        if(orderId!=null){
+        if(orderId!=null&&status==null){
             criteria.andOperator(Criteria.where("orderId").is(orderId));
         }
-        if(from!=null){
-            criteria.andOperator(Criteria.where("from").is(from));
+        if(status!=null&&orderId==null){
+            criteria.andOperator(Criteria.where("txStatus").is(Integer.parseInt(status)));
         }
-        if(to!=null){
-            criteria.andOperator(Criteria.where("to").is(to));
-        }
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
-        query.addCriteria(criteria);
-        List<EthTransaction> ethTransactionList = mongoTemplate.find(query, EthTransaction.class);
+        if(status!=null&&orderId!=null){
+            criteria.andOperator(Criteria.where("txStatus").is(Integer.parseInt(status)),Criteria.where("orderId").is(orderId));
 
+        }
+
+        query.addCriteria(criteria);
+        Long count = mongoTemplate.count(query,EthTransaction.class);
+        if(count>page.getPageSize()){
+            query.with( page);
+
+        }
+        List<EthTransaction> ethTransactionList = mongoTemplate.find(query, EthTransaction.class);
         List<EthTransactionVo> list = new ArrayList<>();
         for(int i=0;i<ethTransactionList.size();i++) {
 
@@ -62,6 +68,9 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
             }
             list.add(ethTransactionVo);
         }
-        return list;
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",list);
+        return map;
     }
 }

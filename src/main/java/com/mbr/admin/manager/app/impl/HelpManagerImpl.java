@@ -5,6 +5,7 @@ import com.mbr.admin.domain.app.Help;
 import com.mbr.admin.manager.app.HelpManager;
 import com.mbr.admin.repository.HelpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class HelpManagerImpl implements HelpManager {
@@ -22,15 +25,23 @@ public class HelpManagerImpl implements HelpManager {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Override
-    public List<Help> queryList(String title) {
+    public Map<String,Object> queryList(String title, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(title!=null&&title!=""){
             criteria.andOperator(Criteria.where("title").regex(title));
         }
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(criteria);
-        return mongoTemplate.find(query,Help.class);
+        long count = mongoTemplate.count(query, Help.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+
+        }
+        List<Help> list = mongoTemplate.find(query, Help.class);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",list);
+        return map;
     }
 
     @Override

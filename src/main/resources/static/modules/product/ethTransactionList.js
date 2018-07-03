@@ -10,10 +10,32 @@ var ethTransaction = function () {
             {"mData": "from"},
             {"mData": "to"},
             {"mData": "value"},
-            {"mData": "isErc20"},
 
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                "aTargets": [1],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },
+            {
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },
+            {
             "aTargets": [3],
             "mRender": function (a, b, c, d) {
                 if(a==-1){
@@ -29,26 +51,39 @@ var ethTransaction = function () {
                 }
 
             }
-        },{
-            "aTargets": [8],
-            "mRender": function (a, b, c, d) {
-                if(a==false){
-                    return "否";
-                }else if(a==true){
-                    return "是";
-                }
+        },
+            {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
 
-            }
-        }];
+                }
+            },{
+                "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
         initPageTable(t,"ethTransaction/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
         var orderIdSearch = $("#orderIdSearch").val();
+        var statusSearch = $("#statusSearch").val();
        /* var fromSearch = $("#fromSearch").val();
         var toSearch = $("#toSearch").val();*/
         if (assertNotNullStr(orderIdSearch)) condition.orderIdSearch = orderIdSearch;
+        if (assertNotNullStr(statusSearch)) condition.statusSearch = statusSearch;
        /* if (assertNotNullStr(fromSearch)) condition.fromSearch = fromSearch;
         if (assertNotNullStr(toSearch)) condition.fromSearch = toSearch;*/
     };

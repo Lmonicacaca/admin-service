@@ -13,6 +13,7 @@ import com.mbr.admin.repository.BannerRepository;
 import com.mbr.admin.repository.ChannelRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,18 +38,25 @@ public class BannerManagerImpl implements BannerManager {
     private FileUpload fileUpload;
 
     @Override
-    public List<Banner> queryAll(int i,String url) {
+    public Map<String,Object> queryAll(int i,String url, Pageable page) {
         Query query = new Query();
         Criteria c = new Criteria();
-        if(StringUtils.isNotEmpty(url)){
+        if(url!=null){
             c.andOperator(Criteria.where("status").is(i),Criteria.where("url").is(url));
         }else{
             c.andOperator(Criteria.where("status").is(i));
         }
 
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(c);
-        return mongoTemplate.find(query,Banner.class);
+        Long count = mongoTemplate.count(query, Banner.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+        }
+        List<Banner> bannerList = mongoTemplate.find(query, Banner.class);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",bannerList);
+         return map;
     }
 
     @Override

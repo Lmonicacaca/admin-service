@@ -7,6 +7,9 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.app.Vo.EthTransactionVo;
 import com.mbr.admin.manager.app.EthTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,12 +31,13 @@ public class EthTransactionController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String orderIdSearch, String fromSearch, String toSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<EthTransactionVo> list = ethTransactionManager.queryList(orderIdSearch,fromSearch,toSearch);
-        PageResultDto result = new PageResultDto<EthTransactionVo>(new PageInfo<EthTransactionVo>(list));
-
-        return result;
+    public Object queryList(HttpServletRequest request,String orderIdSearch, String fromSearch, String toSearch,String statusSearch){
+        if(statusSearch.equals("999")){
+            statusSearch = null;
+        }
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = ethTransactionManager.queryList(orderIdSearch, fromSearch, toSearch,statusSearch, page);
+        return result((List) map.get("list"),Long.valueOf(map.get("total").toString()));
     }
 
 }

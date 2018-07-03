@@ -10,6 +10,7 @@ import com.mbr.admin.manager.app.AppUpdateManager;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.AppUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,14 +35,19 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
     @Autowired
     private FileUpload fileUpload;
     @Override
-    public List<AppUpdate> queryList(String version,String image_url) {
+    public Map<String,Object> queryList(String version,String image_url, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(version!=null&&version!=""){
             criteria.andOperator(Criteria.where("version").is(version));
         }
         query.addCriteria(criteria);
+        long count = mongoTemplate.count(query, AppUpdate.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+        }
         List<AppUpdate> appUpdateList = mongoTemplate.find(query, AppUpdate.class);
+
         for(int i=0;i<appUpdateList.size();i++){
             if(appUpdateList.get(i).getUrl()!=null&&appUpdateList.get(i).getUrl()!=""){
                 appUpdateList.get(i).setUrl(image_url+appUpdateList.get(i).getUrl());
@@ -53,7 +59,10 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
                 appUpdateList.get(i).setIosLogo(image_url+appUpdateList.get(i).getIosLogo());
             }
         }
-        return appUpdateList;
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",appUpdateList);
+        return map;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.mbr.admin.repository.ChannelRepository;
 import com.mbr.admin.repository.NotificationRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -33,7 +34,7 @@ public class NotificationManagerImpl implements NotificationManager {
     private ChannelManager channelManager;
 
     @Override
-    public List<Notification> queryList(int type, int transfer) {
+    public Map<String,Object> queryList(int type, int transfer, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(type!=-1 && transfer==-1){
@@ -43,9 +44,17 @@ public class NotificationManagerImpl implements NotificationManager {
         }else if(transfer!=-1 && type!=-1){
             criteria.andOperator(Criteria.where("transfer").is(transfer),Criteria.where("type").is(type));
         }
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(criteria);
-        return mongoTemplate.find(query,Notification.class);
+        long count = mongoTemplate.count(query, Notification.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+
+        }
+        List<Notification> notificationList = mongoTemplate.find(query, Notification.class);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",notificationList);
+        return map;
     }
 
     @Override

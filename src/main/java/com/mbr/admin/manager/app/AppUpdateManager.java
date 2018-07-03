@@ -2,6 +2,7 @@ package com.mbr.admin.manager.app;
 
 import com.mbr.admin.domain.app.AppUpdate;
 import com.mbr.admin.domain.app.Vo.AppUpdateVo;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AppUpdateManager {
-    public List<AppUpdate> queryList(String version,String image_url);
+    public Map<String,Object> queryList(String version, String image_url, Pageable page);
 
     public void deleteAppUpdate(Long id);
 

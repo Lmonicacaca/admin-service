@@ -24,6 +24,19 @@
                     <input class="form-control" placeholder="请输入订单号" name="orderIdSearch" id="orderIdSearch" type="text" th:autofocus="true" />
                 </div>
             </div>
+            <div class="col-sm-5">
+                <label class="control-label col-md-5">订单状态：</label>
+                <div class="input-group">
+                    <select id="statusSearch" name="statusSearch" class="form-control">
+                        <option value="999">请选择交易状态</option>
+                        <option value="-1">交易发送</option>
+                        <option value="0">交易pending</option>
+                        <option value="1">交易失败</option>
+                        <option value="2">交易确认</option>
+                        <option value="3">交易成功</option>
+                    </select>
+                </div>
+            </div>
             <!--<div class="col-sm-4">
                 <label class="control-label col-md-3">转出地址：</label>
                 <div class="input-group">
@@ -70,7 +83,6 @@
                 <th>转出地址</th>
                 <th>转入地址</th>
                 <th>金额</th>
-                <th>是否ERC20</th>
             </tr>
             </thead>
             <tbody></tbody>

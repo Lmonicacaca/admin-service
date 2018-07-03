@@ -9,6 +9,7 @@ import com.mbr.admin.repository.ProductApplyRepository;
 import com.mbr.admin.repository.ProductRepository;
 import com.mbr.admin.repository.ProductVsChannelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,7 +17,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AuditProductManagerImpl implements AuditProductManager {
@@ -30,15 +33,22 @@ public class AuditProductManagerImpl implements AuditProductManager {
     @Autowired
     private ProductVsChannelRepository productVsChannelRepository;
     @Override
-    public List<ProductApply> queryList(String channelSearch) {
+    public Map<String,Object> queryList(String channelSearch, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
         if(channelSearch!=null&&channelSearch!=""){
             criteria.andOperator(Criteria.where("channel").is(channelSearch));
         }
-        query.with(new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
         query.addCriteria(criteria);
-        return mongoTemplate.find(query,ProductApply.class);
+        long count = mongoTemplate.count(query, ProductApply.class);
+        if(count>page.getPageSize()){
+            query.with(page);
+        }
+        List<ProductApply> list = mongoTemplate.find(query, ProductApply.class);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",count);
+        map.put("list",list);
+        return map;
     }
 
     @Override

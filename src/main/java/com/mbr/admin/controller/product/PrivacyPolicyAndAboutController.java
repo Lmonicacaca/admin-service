@@ -7,6 +7,9 @@ import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.app.PrivacyPolicyAndAbout;
 import com.mbr.admin.manager.app.PrivacyPolicyAndAboutManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("privacyPolicyAndAbout")
@@ -30,9 +34,9 @@ public class PrivacyPolicyAndAboutController extends BaseController {
     @RequestMapping("queryList")
     @ResponseBody
     public Object queryList(HttpServletRequest request,String channelSearch){
-        PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<PrivacyPolicyAndAbout> privacyPolicyAndAboutList = privacyPolicyAndAboutManager.queryList(channelSearch);//查询所有状态码为0的信息
-        PageResultDto result = new PageResultDto<PrivacyPolicyAndAbout>(new PageInfo<PrivacyPolicyAndAbout>(privacyPolicyAndAboutList));
+        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Map<String, Object> map = privacyPolicyAndAboutManager.queryList(channelSearch, page);//查询所有状态码为0的信息
+        PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }
 
