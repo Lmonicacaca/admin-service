@@ -137,11 +137,18 @@ public class ProductController extends BaseController{
             product.setId(productVo.getId());
         }
         if(logoUrl!=null&&logoUrl!=""){
-            product.setCoinAvatarUrl(logoUrl);
-        }else{
-            String url = "/"+productVo.getOldLogo().substring(productVo.getOldLogo().indexOf("d"));
-            product.setCoinAvatarUrl(url);
+                product.setCoinAvatarUrl(logoUrl);
         }
+      else {
+            if(productVo.getOldLogo()==null||productVo.getOldLogo().equals("")){
+                product.setCoinAvatarUrl("");
+            }else{
+                String url = "/"+productVo.getOldLogo().substring(productVo.getOldLogo().indexOf("d"));
+                product.setCoinAvatarUrl(url);
+            }
+
+        }
+
         product.setCreateTime(new Date());
         product.setCoinName(productVo.getCoinName());
         product.setCoinType(productVo.getCoinType());

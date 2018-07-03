@@ -142,7 +142,14 @@ var appUpdate = function () {
                         var optionType = "<option value='" + d.appUpdateType + "' selected='selected'>" + d.appUpdateType + "</option>";
                         $("#appUpdateType").empty();
                         $("#appUpdateType").append(optionType);
-
+                        if(d.appUpdateType=="Android"){
+                            $("#showPlistUrl").css("display","none")
+                            $("#showIosLogo").css("display","none")
+                        }
+                        if(d.appUpdateType=="IOS"){
+                            $("#showPlistUrl").css("display","block")
+                            $("#showIosLogo").css("display","block")
+                        }
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
