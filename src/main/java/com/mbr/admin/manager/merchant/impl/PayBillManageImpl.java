@@ -21,37 +21,15 @@ public class PayBillManageImpl implements PayBillManager {
     private ProductRepository productRepository;
     @Override
     public List<PayBillVo> queryAllPayBill(String merchantId, String fromAddr, String toAddr,int billType,String merchantnameSearch,int status) {
-        List<PayBill> payBillList = payDao.queryAllPayBill(merchantId, fromAddr, toAddr, billType, merchantnameSearch, status);
-        List<PayBillVo> list = new ArrayList<>();
+        List<PayBillVo> payBillList = payDao.queryAllPayBill(merchantId, fromAddr, toAddr, billType, merchantnameSearch, status);
         for (int i=0;i<payBillList.size();i++){
-            PayBillVo payBillVo = new PayBillVo();
-            payBillVo.setId(payBillList.get(i).getId());
-            payBillVo.setAmount(payBillList.get(i).getAmount());
-            payBillVo.setAttach(payBillList.get(i).getAttach());
-            payBillVo.setBillType(payBillList.get(i).getBillType());
-            payBillVo.setChannel(payBillList.get(i).getChannel());
-            payBillVo.setCoinId(payBillList.get(i).getCoinId());
-            payBillVo.setCreateTime(payBillList.get(i).getCreateTime());
-            payBillVo.setFromAddr(payBillList.get(i).getFromAddr());
-            payBillVo.setGethMessage(payBillList.get(i).getGethMessage());
-            payBillVo.setGoodsTag(payBillList.get(i).getGoodsTag());
-            payBillVo.setGoodsType(payBillList.get(i).getGoodsType());
-            payBillVo.setIndustry(payBillList.get(i).getIndustry());
-            payBillVo.setLastUpdateTime(payBillList.get(i).getLastUpdateTime());
-            payBillVo.setMerchantId(payBillList.get(i).getMerchantId());
-            payBillVo.setMerchantName(payBillList.get(i).getMerchantName());
-            payBillVo.setRefBizNo(payBillList.get(i).getRefBizNo());
-            payBillVo.setSingedTx(payBillList.get(i).getSingedTx());
-            payBillVo.setStatus(payBillList.get(i).getStatus());
-            payBillVo.setToAddr(payBillList.get(i).getToAddr());
-            payBillVo.setTokenAddr(payBillList.get(i).getTokenAddr());
-            payBillVo.setTxData(payBillList.get(i).getTxData());
-            payBillVo.setTxHash(payBillList.get(i).getTxHash());
-            Product coin = productRepository.findById(payBillList.get(i).getCoinId());
-            payBillVo.setCoinName(coin.getCoinName());
-            list.add(payBillVo);
+            if(payBillList.get(i).getCoinId()!=null&&payBillList.get(i).getCoinId()!=0){
+                Product coin = productRepository.findById(payBillList.get(i).getCoinId());
+                payBillList.get(i).setCoinName(coin.getCoinName());
+            }
+
         }
 
-        return list;
+        return payBillList;
     }
 }

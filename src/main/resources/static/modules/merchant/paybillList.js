@@ -11,6 +11,7 @@ var paybillList = function () {
             {"mData": "createTime"},
             {"mData": "lastUpdateTime"},
             {"mData": "amount"},
+            {"mData": "txHash"},
             {"mData": "merchantId"},
             {"mData": "fromAddr"},
             {"mData": "toAddr"},
@@ -89,11 +90,10 @@ var paybillList = function () {
                     }
 
                 }
-            },
-            {
+            },{
                 "aTargets": [9],
                 "mRender": function (a, b, c, d) {
-                    if(a==null){
+                    if(a==null||a==""){
                         return "";
                     }else{
                         return a;
@@ -119,8 +119,18 @@ var paybillList = function () {
                         return a;
                     }
                 }
-            }, {
+            },
+            {
                 "aTargets": [12],
+                "mRender": function (a, b, c, d) {
+                    if(a==null){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            }, {
+                "aTargets": [13],
                 "mRender": function (a, b, c, d) {
                     if(a==null){
                         return "";
@@ -130,7 +140,7 @@ var paybillList = function () {
                 }
             },
             {
-                "aTargets": [13],
+                "aTargets": [14],
                 "mRender": function (a, b, c, d) {
                     if(a==null){
                         return "";
