@@ -3,7 +3,7 @@ package com.mbr.admin.domain.merchant.Vo;
 import java.util.Date;
 
 public class MerchantHelpVo {
-    private Integer id;
+    private Long id;
     private Integer catId;
     private String catName;
     private String lang;
@@ -12,11 +12,11 @@ public class MerchantHelpVo {
     private Date createTime;
     private Long createUser;
     private String createUserName;
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
