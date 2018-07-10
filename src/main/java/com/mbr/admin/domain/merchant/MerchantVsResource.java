@@ -1,11 +1,14 @@
 package com.mbr.admin.domain.merchant;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
 @Table(name = "merchant_vs_resource")
 public class MerchantVsResource {
+
+    @Id
     @Column(name = "id")
     private String id;
     @Column(name = "merchant_id")

@@ -42,7 +42,7 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
     @Select("select * from merchant_resource")
     public List<MerchantResource> queryAllMerchantResource();
 
-    @Insert("insert into merchant_vs_resource values(null,#{mvr.merchantId},#{mvr.resourceId},#{mvr.status},#{mvr.createTime},null,#{mvr.createUserName},null,#{mvr.channel})")
+    @Insert("insert into merchant_vs_resource values(#{mvr.id},#{mvr.merchantId},#{mvr.resourceId},#{mvr.status},#{mvr.createTime},null,#{mvr.createUserName},null,#{mvr.channel})")
     public int insertMerchantVsResource(@Param("mvr")MerchantVsResource mvr);
 
     @Select("select * from merchant_vs_resource where merchant_id=#{merchantId} and resource_id = #{resourceId}")

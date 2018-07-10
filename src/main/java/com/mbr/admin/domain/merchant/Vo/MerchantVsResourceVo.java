@@ -3,7 +3,7 @@ package com.mbr.admin.domain.merchant.Vo;
 import java.util.Date;
 
 public class MerchantVsResourceVo {
-    private Integer id;
+    private Long id;
     private String merchantId;
     private String resourceId;
     private Integer status;
@@ -14,11 +14,11 @@ public class MerchantVsResourceVo {
     private String channel;
     private String url;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

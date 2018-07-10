@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantVsResourceDao;
 import com.mbr.admin.domain.merchant.MerchantResource;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
@@ -59,6 +60,7 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
         if(merchantVsResourceDao.queryMerchantVsResourceByCondition(merchantVsResource.getMerchantId(),merchantVsResource.getResourceId())!=null){
             return 999;
         }
+        merchantVsResource.setId(new TimestampPkGenerator().next(getClass())+"");
         merchantVsResource.setCreateTime(new Date());
         SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
         merchantVsResource.setCreateUserName(securityUserDetails.getUsername());
