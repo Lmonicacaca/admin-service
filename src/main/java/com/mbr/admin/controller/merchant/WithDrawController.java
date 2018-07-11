@@ -78,11 +78,6 @@ public class WithDrawController extends BaseController {
         return withDrawManager.queryMerchant();
     }
 
-    @RequestMapping("queryStatus")
-    @ResponseBody
-    public List<Map<String,Object>> queryStatus(){
-        return withDrawManager.queryStatus();
-    }
 
 
     @RequestMapping("addOrUpdate")

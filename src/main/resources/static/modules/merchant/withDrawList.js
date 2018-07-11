@@ -28,14 +28,10 @@ var withDraw = function () {
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==0){
-                    return "未审核";
+                    return "可用";
                 }else if(a==1){
-                    return "审核通过";
-                }else{
-                    return "审核通过"
+                    return "不可用";
                 }
-
-
             }
         },
             {
@@ -117,17 +113,6 @@ var withDraw = function () {
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinId + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
-                        var status= ""
-                        if(d.status==0){
-                            status = "未审核"
-                        }else if(d.status==1){
-                            return "审核通过"
-                        }else {
-                            return "审核通过"
-                        }
-                        var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status+ "</option>";
-                        $("#status").empty();
-                        $("#status").append(optionStatus);
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -175,7 +160,6 @@ var withDraw = function () {
             $("#merchantId").html("");
             $("#address").val("");
             $("#coinId").html("");
-            $("#status").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -189,7 +173,6 @@ var withDraw = function () {
                     loadChannel();
                     loadCoin();
                     loadMerchant();
-                    loadStatus();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -257,21 +240,6 @@ var withDraw = function () {
             allowClear: true,
             ajax: {
                 url: "withDraw/queryMerchant",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
-    var loadStatus = function () {
-        $('#status').select2({
-            placeholder: "请选择审核状态",
-            allowClear: true,
-            ajax: {
-                url: "withDraw/queryStatus",
                 cache: true,
                 processResults: function (data) {
                     return {

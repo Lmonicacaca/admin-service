@@ -51,13 +51,10 @@ var merchantCoin = function () {
             "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==0){
-                    return "未审核";
+                    return "可用";
                 }else if(a==1){
-                    return "审核通过";
-                }else{
-                    return "审核不通过"
+                    return "不可用";
                 }
-
             }
         },
             {
@@ -139,17 +136,6 @@ var merchantCoin = function () {
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
-                        var status = "";
-                        if(d.status==0){
-                            status = "未审核"
-                        }else if(d.status ==1){
-                            status = "审核通过"
-                        }else{
-                            status = "审核不通过"
-                        }
-                        var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status + "</option>";
-                        $("#status").empty();
-                        $("#status").append(optionStatus);
 
                         var optionMerchant = "<option value='" + d.merchantId + "' selected='selected'>" + d.merchantId + "</option>";
                         $("#merchantId").empty();
@@ -164,7 +150,6 @@ var merchantCoin = function () {
                             success: function (layero, index) {
                                 loadChannel();
                                 loadCoin();
-                                loadStatus();
                                 loadMerchantId();
                             },
                             yes: function (i, layero) {
@@ -200,7 +185,6 @@ var merchantCoin = function () {
             $("#address").val("");
             $("#merchantId").val("")
             $("#id").val("")
-            $("#status").html("")
             $("#createTime").val(new Date);
             $("#channel").html("")
             $("#coinId").html("")
@@ -217,7 +201,6 @@ var merchantCoin = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadCoin();
-                    loadStatus();
                     loadMerchantId();
                 },
                 yes: function (layero, index) {
@@ -271,21 +254,6 @@ var merchantCoin = function () {
             allowClear: true,
             ajax: {
                 url: "merchantCoin/queryCoin",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
-    var loadStatus = function () {
-        $('#status').select2({
-            placeholder: "请选择审核状态",
-            allowClear: true,
-            ajax: {
-                url: "merchantCoin/queryStatus",
                 cache: true,
                 processResults: function (data) {
                     return {

@@ -1,6 +1,6 @@
 package com.mbr.admin.manager.merchant;
 
-import com.mbr.admin.common.utils.AuditMerchantException;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantCoinTmp;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public interface MerchantCoinTmpManager {
 
     public MerchantCoinTmp queryById(String id);
 
-    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException;
+    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException;
 
-    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException;
+    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException;
 
     public int auditMercahntNotPass(String id,int status);
 

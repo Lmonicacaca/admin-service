@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant;
 
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
 
@@ -25,8 +26,7 @@ public interface MerchantInfoManager {
 
     public List<Map<String,Object>> queryIsShow();
 
-    public List<Map<String,Object>> queryStatus();
 
-    public String addOrUpdate(MerchantInfoVo merchantInfoVo, HttpServletRequest request);
+    public String addOrUpdate(MerchantInfoVo merchantInfoVo, HttpServletRequest request) throws MerchantException;
 
 }

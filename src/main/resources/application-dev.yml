@@ -14,3 +14,5 @@ spring:
     mongodb:
       uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
 
+
+

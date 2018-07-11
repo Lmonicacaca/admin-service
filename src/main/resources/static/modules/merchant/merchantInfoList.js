@@ -10,7 +10,7 @@ var merchantInfo = function () {
             {"mData": "rsaPublic"},
             {"mData": "rsaPrivate"},
             {"mData": "isShow"},
-            {"mData": "status"},
+            {"mData": "audit"},
             {"mData": "createTime"},
             {"mData": "channel"},
             {"mData": null}
@@ -209,7 +209,7 @@ var merchantInfo = function () {
                 if (data.code == 200) {
                     var d = data.data;
                     $("#id").val(d.id);
-                    $("#oldImage").val(d.logoBill);
+                    $("#oldImg").val(d.logoBill);
                     $("#file").val("");
                     $("#name").val(d.name);
                     $("#description").val(d.name);
@@ -233,17 +233,6 @@ var merchantInfo = function () {
                     $("#isShow").empty();
                     $("#isShow").append(optionIsShow);
 
-                    var status = "";
-                    if(status==0){
-                        status = "未审核"
-                    }else if(status==1){
-                        status = "审核通过"
-                    }else{
-                        status = "审核不通过"
-                    }
-                    var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status + "</option>";
-                    $("#status").empty();
-                    $("#status").append(optionStatus);
                     layer.open({
                         area: '800px',
                         shade: [0.8, '#393D49'],
@@ -254,7 +243,6 @@ var merchantInfo = function () {
                         success: function (layero, index) {
                             loadChannel();
                             loadisShow();
-                            loadStatus();
                         },
                         yes: function (i, layero) {
                             if ($('#form').valid()) {
@@ -291,7 +279,6 @@ var merchantInfo = function () {
             $("#rsaPublic").val("");
             $("#rsaPrivate").val("");
             $("#isShow").html("");
-            $("#status").val("");
             $("#createUserName").val("");
             $("#createTime").val(new Date());
             $("#file").val("");
@@ -307,7 +294,6 @@ var merchantInfo = function () {
                     validateForm().resetForm();
                     loadChannel();
                     loadisShow();
-                    loadStatus();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -362,21 +348,6 @@ var merchantInfo = function () {
             }
         });
     };
-    var loadStatus = function () {
-        $('#status').select2({
-            placeholder: "请选择审核状态",
-            allowClear: true,
-            ajax: {
-                url: "merchantInfo/queryStatus",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
     var query = function () {
         //查询按钮
         $("#query").click(function () {
@@ -393,9 +364,6 @@ var merchantInfo = function () {
                 name: {
                     required: true
                 },
-                channel: {
-                    required: true
-                },
                 rsaPublic: {
                     required: true
                 }
@@ -403,9 +371,6 @@ var merchantInfo = function () {
             messages: {
                 name: {
                     required: "商户名不能为空!"
-                },
-                channel: {
-                    required: "渠道号不能为空!"
                 },
                 rsaPublic: {
                     required: "商户公钥不能为空!"

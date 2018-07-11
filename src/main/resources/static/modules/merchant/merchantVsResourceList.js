@@ -103,6 +103,7 @@ var merchantVsResource = function () {
                     validateForm().resetForm();
                     loadUrl();
                     loadChannel();
+                    loadMerchantId();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -135,7 +136,7 @@ var merchantVsResource = function () {
         });
     }
     var loadUrl = function () {
-        $('#resourceId').select2({
+        $('#resourceIdList').select2({
             placeholder: "请选择权限",
             allowClear: true,
             ajax: {
@@ -155,6 +156,21 @@ var merchantVsResource = function () {
             allowClear: true,
             ajax: {
                 url: "merchantVsResource/queryChannel",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
+    var loadMerchantId = function () {
+        $('#merchantId').select2({
+            placeholder: "请选择商户号",
+            allowClear: true,
+            ajax: {
+                url: "merchantVsResource/queryMerchantId",
                 cache: true,
                 processResults: function (data) {
                     return {

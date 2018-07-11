@@ -13,6 +13,7 @@ public class MerchantVsResourceVo {
     private String updateUserName;
     private String channel;
     private String url;
+    private String resourceIdList;
 
     public Long getId() {
         return id;
@@ -94,6 +95,14 @@ public class MerchantVsResourceVo {
         this.url = url;
     }
 
+    public String getResourceIdList() {
+        return resourceIdList;
+    }
+
+    public void setResourceIdList(String resourceIdList) {
+        this.resourceIdList = resourceIdList;
+    }
+
     @Override
     public String toString() {
         return "MerchantVsResourceVo{" +
@@ -107,6 +116,7 @@ public class MerchantVsResourceVo {
                 ", updateUserName='" + updateUserName + '\'' +
                 ", channel='" + channel + '\'' +
                 ", url='" + url + '\'' +
+                ", resourceIdList='" + resourceIdList + '\'' +
                 '}';
     }
 }

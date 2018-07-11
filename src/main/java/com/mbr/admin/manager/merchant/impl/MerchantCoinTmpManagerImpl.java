@@ -1,6 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
-import com.mbr.admin.common.utils.AuditMerchantException;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantCoinTmpDao;
@@ -58,8 +58,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     }
 
     @Override
-    @Transactional(rollbackFor = AuditMerchantException.class)
-    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException {
+    @Transactional(rollbackFor = MerchantException.class)
+    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException {
         //查询出商户信息
         MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
         if(merchantInfo!=null){
@@ -114,33 +114,33 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                                if(channelInsert!=null){
                                    return "success";
                                }else{
-                                   throw new AuditMerchantException("渠道号添加势失败");
+                                   throw new MerchantException("渠道号添加势失败");
                                }
                            }else{
-                               throw new AuditMerchantException("商户资源配置失败");
+                               throw new MerchantException("商户资源配置失败");
                            }
                         }else{
-                            throw new AuditMerchantException("商户提现地址添加失败");
+                            throw new MerchantException("商户提现地址添加失败");
                         }
                     }else{
-                        throw new AuditMerchantException("商户支付地址添加失败");
+                        throw new MerchantException("商户支付地址添加失败");
                     }
 
                 }else{
-                    throw new AuditMerchantException("更新商户渠道号失败");
+                    throw new MerchantException("更新商户渠道号失败");
                 }
             }else {
-                throw new AuditMerchantException("更新临时表失败");
+                throw new MerchantException("更新临时表失败");
             }
         }else{
-            throw new AuditMerchantException("商户信息不存在");
+            throw new MerchantException("商户信息不存在");
         }
 
     }
 
     @Override
-    @Transactional(rollbackFor = AuditMerchantException.class)
-    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws AuditMerchantException {
+    @Transactional(rollbackFor = MerchantException.class)
+    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException {
         //查询出商户信息
         MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
         if(merchantInfo!=null){
@@ -183,22 +183,22 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                             if(k>0){
                                 return "success";
                             }else{
-                                throw new AuditMerchantException("商户资源配置失败");
+                                throw new MerchantException("商户资源配置失败");
                             }
                         }else{
-                            throw new AuditMerchantException("商户提现地址添加失败");
+                            throw new MerchantException("商户提现地址添加失败");
                         }
                     }else{
-                        throw new AuditMerchantException("商户支付地址添加失败");
+                        throw new MerchantException("商户支付地址添加失败");
                     }
                 }else{
-                    throw new AuditMerchantException("更新商户渠道号失败");
+                    throw new MerchantException("更新商户渠道号失败");
                 }
             }else {
-                throw new AuditMerchantException("更新临时表失败");
+                throw new MerchantException("更新临时表失败");
             }
         }else{
-            throw new AuditMerchantException("商户信息不存在");
+            throw new MerchantException("商户信息不存在");
         }
 
     }
@@ -219,7 +219,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
         withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
         withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
-        withDraw.setStatus(1);//已审核
+        withDraw.setStatus(0);
         if(channel==null||channel==""){
             withDraw.setChannel(merchantCoinTmp.getChannel());
         }else{
@@ -235,7 +235,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
         merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
         merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
-        merchantCoin.setStatus(1);//已审核
+        merchantCoin.setStatus(0);
         SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
         merchantCoin.setCreateUserName(securityUserDetails.getUsername());
         merchantCoin.setCreateTime(new Date());
@@ -257,40 +257,61 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
      * @param merchantId
      */
     private int initMerchantVsResource(String merchantId, String channelId) {
-
+        SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final MerchantVsResource re3 = new MerchantVsResource();
+        re3.setId(new TimestampPkGenerator().next(getClass()).toString());
         re3.setMerchantId(merchantId);
         re3.setChannel(channelId);
+        re3.setCreateTime(new Date());
+        re3.setCreateUserName(securityUserDetails.getUsername());
         re3.setResourceId(3L);
         re3.setStatus(0);
         final MerchantVsResource re4 = new MerchantVsResource();
+        re4.setId(new TimestampPkGenerator().next(getClass()).toString());
         re4.setMerchantId(merchantId);
         re4.setChannel(channelId);
+        re4.setCreateTime(new Date());
+        re4.setCreateUserName(securityUserDetails.getUsername());
         re4.setResourceId(4L);
         re4.setStatus(0);
         final MerchantVsResource re11 = new MerchantVsResource();
+        re11.setId(new TimestampPkGenerator().next(getClass()).toString());
         re11.setMerchantId(merchantId);
         re11.setChannel(channelId);
+        re11.setCreateTime(new Date());
+        re11.setCreateUserName(securityUserDetails.getUsername());
         re11.setResourceId(11L);
         re11.setStatus(0);
         final MerchantVsResource re12 = new MerchantVsResource();
+        re12.setId(new TimestampPkGenerator().next(getClass()).toString());
         re12.setMerchantId(merchantId);
         re12.setChannel(channelId);
+        re12.setCreateTime(new Date());
+        re12.setCreateUserName(securityUserDetails.getUsername());
         re12.setResourceId(12L);
         re12.setStatus(0);
         final MerchantVsResource re22 = new MerchantVsResource();
+        re22.setId(new TimestampPkGenerator().next(getClass()).toString());
         re22.setMerchantId(merchantId);
         re22.setChannel(channelId);
+        re22.setCreateTime(new Date());
+        re22.setCreateUserName(securityUserDetails.getUsername());
         re22.setResourceId(22L);
         re22.setStatus(0);
         final MerchantVsResource re23 = new MerchantVsResource();
+        re23.setId(new TimestampPkGenerator().next(getClass()).toString());
         re23.setMerchantId(merchantId);
         re23.setChannel(channelId);
+        re23.setCreateTime(new Date());
+        re23.setCreateUserName(securityUserDetails.getUsername());
         re23.setResourceId(23L);
         re23.setStatus(0);
         final MerchantVsResource re24 = new MerchantVsResource();
+        re24.setId(new TimestampPkGenerator().next(getClass()).toString());
         re24.setMerchantId(merchantId);
         re24.setChannel(channelId);
+        re24.setCreateTime(new Date());
+        re24.setCreateUserName(securityUserDetails.getUsername());
         re24.setResourceId(24L);
         re24.setStatus(0);
 

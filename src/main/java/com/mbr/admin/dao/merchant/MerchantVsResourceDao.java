@@ -13,7 +13,7 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
     @Insert("<script>" +
             "insert into merchant_vs_resource values"+
             "<foreach item=\"item\" index=\"index\" collection=\"list\" separator=\",\">" +
-                "(null,#{item.merchantId},#{item.resourceId},#{item.status},null,null,null,null,#{item.channel})"+
+                "(#{item.id},#{item.merchantId},#{item.resourceId},#{item.status},#{item.createTime},null,#{item.createUserName},null,#{item.channel})"+
             "</foreach>"+
             "</script>")
     public int insertList(@Param("list") List<MerchantVsResource> list);
@@ -32,6 +32,7 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
             "<if test=\"merchantId!=null and merchantId!=''\">" +
             "and mvr.merchant_id = #{merchantId}"+
             "</if>"+
+            " order by mvr.create_time desc"+
             "</script>")
     public List<MerchantVsResourceVo> queryList(@Param("merchantId")String merchantId);
 

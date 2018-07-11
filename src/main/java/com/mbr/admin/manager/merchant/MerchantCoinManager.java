@@ -22,7 +22,6 @@ public interface MerchantCoinManager {
 
     public List<Map<String,Object>> findAllChannel();
 
-    public List<Map<String,Object>> queryStatus();
 
     public List<Map<String,Object>> queryMerchantId();
 

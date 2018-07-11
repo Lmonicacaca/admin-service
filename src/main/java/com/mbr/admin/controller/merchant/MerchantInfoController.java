@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
 import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
@@ -76,32 +77,27 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
         return merchantInfoManager.queryIsShow();
     }
 
-    @RequestMapping("queryStatus")
-    @ResponseBody
-    public Object queryStatus(){
-        return merchantInfoManager.queryStatus();
-}
 
 
     @RequestMapping("addOrUpdate")
     @ResponseBody
     public Object addOrUpdate(MerchantInfoVo merchantInfoVo, HttpServletRequest request){
         System.out.println(merchantInfoVo);
-        if(merchantInfoVo.getStatus()==null){
-            merchantInfoVo.setStatus(0);
-        }
         if(merchantInfoVo.getIsShow()==null){
             merchantInfoVo.setIsShow(0);
         }
-        String result = merchantInfoManager.addOrUpdate(merchantInfoVo, request);
-        if(result.equals("imgFailed")){
-            return failed("图片上传失败");
-        }else if(result.equals("insertFailed")){
-            return failed("添加数据失败");
-        }else if(result.equals("updateFailed")){
-            return failed("更新数据失败");
+        try{
+            String result = merchantInfoManager.addOrUpdate(merchantInfoVo, request);
+            if(result.equals("imgFailed")){
+                return failed("图片上传失败");
+            }else{
+                return success();
+            }
+
+        }catch(MerchantException e){
+            return failed(e.getMessage());
         }
-        return success();
+
     }
 
     @RequestMapping("queryById")

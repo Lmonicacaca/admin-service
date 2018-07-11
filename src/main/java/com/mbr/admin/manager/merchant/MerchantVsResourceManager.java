@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant;
 
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
 import com.mbr.admin.domain.merchant.Vo.MerchantVsResourceVo;
 
@@ -16,6 +17,8 @@ public interface MerchantVsResourceManager {
 
     public List<Map<String,Object>> queryChannel();
 
-    public int insertMerchantVsResource(MerchantVsResource merchantVsResource);
+    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo)throws MerchantException;
+
+    public List<Map<String,Object>> queryMerchantId();
 
 }

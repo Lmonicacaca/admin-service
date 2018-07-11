@@ -69,23 +69,6 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         return channelManager.findAllChannel();
     }
 
-    @Override
-    public List<Map<String, Object>> queryStatus() {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("id","0");
-        map.put("text","未审核");
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("id","1");
-        map1.put("text","审核通过");
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("id","2");
-        map2.put("text","审核不通过");
-        list.add(map);
-        list.add(map1);
-        list.add(map2);
-        return list;
-    }
 
     @Override
     public List<Map<String, Object>> queryMerchantId() {
@@ -169,7 +152,7 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         }
 
         merchantCoin.setMerchantId(merchantCoinVo.getMerchantId());
-        merchantCoin.setStatus(merchantCoinVo.getStatus());
+        merchantCoin.setStatus(0);
         merchantCoin.setAddress(merchantCoinVo.getAddress());
         merchantCoin.setChannel(merchantCoinVo.getChannel());
         return merchantCoin;

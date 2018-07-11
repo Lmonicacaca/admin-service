@@ -1,7 +1,10 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
+import com.mbr.admin.dao.merchant.MerchantInfoDao;
 import com.mbr.admin.dao.merchant.MerchantVsResourceDao;
+import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.MerchantResource;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
 import com.mbr.admin.domain.merchant.Vo.MerchantVsResourceVo;
@@ -22,6 +25,8 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
     private MerchantVsResourceDao merchantVsResourceDao;
     @Resource
     private ChannelManager channelManager;
+    @Resource
+    private MerchantInfoDao merchantInfoDao;
     @Override
     public List<MerchantVsResourceVo> queryList(String merchantId) {
         return merchantVsResourceDao.queryList(merchantId);
@@ -55,16 +60,50 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
     }
 
     @Override
-    public int insertMerchantVsResource(MerchantVsResource merchantVsResource) {
+    @Transactional(rollbackFor = MerchantException.class)
+    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo) throws MerchantException {
         //判断权限是否已存在
-        if(merchantVsResourceDao.queryMerchantVsResourceByCondition(merchantVsResource.getMerchantId(),merchantVsResource.getResourceId())!=null){
-            return 999;
+        String resourceIdList = merchantVsResourceVo.getResourceIdList();
+        String[] resourceIds = resourceIdList.split(",");
+        for(int i=0;i<resourceIds.length;i++){
+            if(merchantVsResourceDao.queryMerchantVsResourceByCondition(merchantVsResourceVo.getMerchantId(),Long.parseLong(resourceIds[i]))!=null){
+                return 999;
+            }
         }
-        merchantVsResource.setId(new TimestampPkGenerator().next(getClass())+"");
-        merchantVsResource.setCreateTime(new Date());
-        SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
-        merchantVsResource.setCreateUserName(securityUserDetails.getUsername());
-        int i = merchantVsResourceDao.insertMerchantVsResource(merchantVsResource);
-        return i;
+        int count = 0;
+        for(int i=0;i<resourceIds.length;i++){
+            MerchantVsResource merchantVsResource = new MerchantVsResource();
+            merchantVsResource.setId(new TimestampPkGenerator().next(getClass())+"");
+            merchantVsResource.setCreateTime(new Date());
+            SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+            merchantVsResource.setCreateUserName(securityUserDetails.getUsername());
+            merchantVsResource.setMerchantId(merchantVsResourceVo.getMerchantId());
+            merchantVsResource.setStatus(0);
+            merchantVsResource.setChannel(merchantVsResourceVo.getChannel());
+            merchantVsResource.setResourceId(Long.parseLong(resourceIds[i]));
+            int k = merchantVsResourceDao.insertMerchantVsResource(merchantVsResource);
+            if(k>0){
+                count++;
+            }
+        }
+        if(count==resourceIds.length){
+            return 1;
+        }else{
+            throw new MerchantException("权限添加失败");
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> queryMerchantId() {
+
+        List<MerchantInfo> merchantInfoList = merchantInfoDao.selectAll();
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(int i=0;i<merchantInfoList.size();i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",merchantInfoList.get(i).getId());
+            map.put("text",merchantInfoList.get(i).getId());
+            list.add(map);
+        }
+        return list;
     }
 }

@@ -10,7 +10,6 @@ public class MerchantInfoVo {
     private String rsaPublic;
     private String rsaPrivate;
     private Integer isShow;
-    private Integer status;
     private String oldImg;
     private String description;
     private String address;
@@ -72,13 +71,6 @@ public class MerchantInfoVo {
         this.isShow = isShow;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 
     public String getOldImg() {
         return oldImg;
@@ -130,7 +122,6 @@ public class MerchantInfoVo {
                 ", rsaPublic='" + rsaPublic + '\'' +
                 ", rsaPrivate='" + rsaPrivate + '\'' +
                 ", isShow=" + isShow +
-                ", status=" + status +
                 ", oldImg='" + oldImg + '\'' +
                 ", description='" + description + '\'' +
                 ", address='" + address + '\'' +

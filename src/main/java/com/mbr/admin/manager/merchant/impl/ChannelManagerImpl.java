@@ -40,4 +40,9 @@ public class ChannelManagerImpl implements ChannelManager {
         }
         return list;
     }
+
+    @Override
+    public Channel insertChannel(Channel channel) {
+        return channelRepository.save(channel);
+    }
 }

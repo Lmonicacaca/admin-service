@@ -95,29 +95,9 @@ public class WithDrawManagerImpl implements WithDrawManager {
         return list;
     }
 
-    @Override
-    public List<Map<String, Object>> queryStatus() {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map = new HashMap<>();
-        map.put("id","0");
-        map.put("text","未审核");
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("id","1");
-        map1.put("text","审核通过");
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("id","2");
-        map2.put("text","审核不通过");
-        list.add(map);
-        list.add(map1);
-        list.add(map2);
-        return list;
-    }
 
     @Override
     public String addOrUpdate(WithDraw withDraw) {
-      if(withDraw.getStatus()==null){
-          withDraw.setStatus(0);
-      }
         Long id = null;
         if(withDraw.getId()==null){
             id = new TimestampPkGenerator().next(getClass());
@@ -152,6 +132,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
         }else{
             withDraw.setUpdateTime(new Date());
         }
+        withDraw.setStatus(0);
         return withDraw;
     }
 }

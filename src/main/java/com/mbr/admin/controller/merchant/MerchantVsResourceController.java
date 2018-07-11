@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
 import com.mbr.admin.domain.merchant.Vo.MerchantVsResourceVo;
 import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
@@ -50,15 +51,19 @@ public class MerchantVsResourceController extends BaseController {
 
     @RequestMapping("addOrUpdate")
     @ResponseBody
-    public Object addOrUpdate(MerchantVsResource merchantVsResource){
-        System.out.println(merchantVsResource);
-        int i = merchantVsResourceManager.insertMerchantVsResource(merchantVsResource);
-        if(i>0&&i!=999){
-            return success();
-        }else if(i==999){
-            return failed("该商户已存在相同的权限");
+    public Object addOrUpdate(MerchantVsResourceVo merchantVsResourceVo){
+        System.out.println(merchantVsResourceVo);
+        try{
+            int i = merchantVsResourceManager.insertMerchantVsResource(merchantVsResourceVo);
+            if(i>0&&i!=999){
+                return success();
+            }else{
+                return failed("该商户已存在相同的权限");
+            }
+        }catch(MerchantException e){
+            return failed(e.getMessage());
         }
-        return failed("权限添加失败");
+
     }
 
     @RequestMapping("queryUrl")
@@ -71,5 +76,11 @@ public class MerchantVsResourceController extends BaseController {
     @ResponseBody
     public Object queryChannel(){
         return merchantVsResourceManager.queryChannel();
+    }
+
+    @RequestMapping("queryMerchantId")
+    @ResponseBody
+    public Object queryMerchantId(){
+        return merchantVsResourceManager.queryMerchantId();
     }
 }

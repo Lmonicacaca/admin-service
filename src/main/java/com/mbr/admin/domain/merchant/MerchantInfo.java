@@ -38,6 +38,8 @@ public class MerchantInfo {
     private int isShow;
     @Column(name = "channel")
     private String channel;
+    @Column(name = "audit")
+    private Integer audit;
 
     public String getId() {
         return id;
@@ -168,6 +170,14 @@ public class MerchantInfo {
         this.channel = channel;
     }
 
+    public Integer getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Integer audit) {
+        this.audit = audit;
+    }
+
     @Override
     public String toString() {
         return "MerchantInfo{" +
@@ -187,6 +197,7 @@ public class MerchantInfo {
                 ", rsaPrivate='" + rsaPrivate + '\'' +
                 ", isShow=" + isShow +
                 ", channel='" + channel + '\'' +
+                ", audit=" + audit +
                 '}';
     }
 }

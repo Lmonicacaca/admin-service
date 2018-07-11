@@ -21,7 +21,6 @@ public interface WithDrawManager {
 
     public List<Map<String,Object>> queryMerchant();
 
-    public List<Map<String,Object>> queryStatus();
 
     public String addOrUpdate(WithDraw withDraw);
 }
