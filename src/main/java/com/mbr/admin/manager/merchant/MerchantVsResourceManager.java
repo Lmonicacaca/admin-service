@@ -17,7 +17,7 @@ public interface MerchantVsResourceManager {
 
     public List<Map<String,Object>> queryChannel();
 
-    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo)throws MerchantException;
+    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo);
 
     public List<Map<String,Object>> queryMerchantId();
 

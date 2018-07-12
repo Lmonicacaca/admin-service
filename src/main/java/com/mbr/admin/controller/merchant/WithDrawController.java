@@ -60,11 +60,6 @@ public class WithDrawController extends BaseController {
         return success(withdraw);
     }
 
-    @RequestMapping("queryChannel")
-    @ResponseBody
-    public List<Map<String,Object>> queryChannel(){
-        return withDrawManager.queryChannel();
-    }
 
     @RequestMapping("queryCoin")
     @ResponseBody

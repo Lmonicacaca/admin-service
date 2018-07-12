@@ -102,7 +102,6 @@ var merchantVsResource = function () {
                     $("#form")[0].reset();
                     validateForm().resetForm();
                     loadUrl();
-                    loadChannel();
                     loadMerchantId();
                 },
                 yes: function (layero, index) {
@@ -116,6 +115,7 @@ var merchantVsResource = function () {
                                     layer.closeAll();
                                 } else {
                                     layer.msg(d.message);
+                                    layer.close(index);
                                 }
                             }
                         })
@@ -150,24 +150,10 @@ var merchantVsResource = function () {
             }
         });
     };
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
-            allowClear: true,
-            ajax: {
-                url: "merchantVsResource/queryChannel",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
+
     var loadMerchantId = function () {
         $('#merchantId').select2({
-            placeholder: "请选择商户号",
+            placeholder: "请选择商户名",
             allowClear: true,
             ajax: {
                 url: "merchantVsResource/queryMerchantId",
@@ -186,33 +172,19 @@ var merchantVsResource = function () {
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                username: {
+                merchantId: {
                     required: true
                 },
-                name: {
-                    required: true
-                },
-                password: {
-                    required: true,
-                    minlength: 6,
-                    maxlength: 10
-                },
-                roleId: {
+                resourceIdList: {
                     required: true
                 }
             },
             messages: {
-                username: {
-                    required: "用户名不能为空!"
+                merchantId: {
+                    required: "商户号不能为空!"
                 },
-                name: {
-                    required: "姓名不能为空!"
-                },
-                password: {
-                    required: "密码不能为空!"
-                },
-                roleId: {
-                    required: "角色不能为空!"
+                resourceIdList: {
+                    required: "权限不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

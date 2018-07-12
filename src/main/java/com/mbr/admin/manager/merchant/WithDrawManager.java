@@ -13,7 +13,6 @@ public interface WithDrawManager {
 
     public Object selectById(Long id);
 
-    public List<Map<String,Object>> queryChannel();
 
     public List<Map<String,Object>> queryCoin();
 

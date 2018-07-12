@@ -53,15 +53,15 @@ public class MerchantVsResourceController extends BaseController {
     @ResponseBody
     public Object addOrUpdate(MerchantVsResourceVo merchantVsResourceVo){
         System.out.println(merchantVsResourceVo);
-        try{
-            int i = merchantVsResourceManager.insertMerchantVsResource(merchantVsResourceVo);
-            if(i>0&&i!=999){
-                return success();
-            }else{
-                return failed("该商户已存在相同的权限");
-            }
-        }catch(MerchantException e){
-            return failed(e.getMessage());
+
+        int i = merchantVsResourceManager.insertMerchantVsResource(merchantVsResourceVo);
+        if(i>0&&i!=999){
+            return success();
+        }else if(i==999){
+            return failed("添加的权限全部已存在");
+        }
+        else{
+            return failed("添加权限失败");
         }
 
     }

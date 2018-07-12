@@ -60,18 +60,24 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
     }
 
     @Override
-    @Transactional(rollbackFor = MerchantException.class)
-    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo) throws MerchantException {
+    public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo){
+        String channel = merchantInfoDao.selectChannelByMerchantId(merchantVsResourceVo.getMerchantId());
         //判断权限是否已存在
         String resourceIdList = merchantVsResourceVo.getResourceIdList();
         String[] resourceIds = resourceIdList.split(",");
+        StringBuffer insertResourceIds = new StringBuffer();
         for(int i=0;i<resourceIds.length;i++){
-            if(merchantVsResourceDao.queryMerchantVsResourceByCondition(merchantVsResourceVo.getMerchantId(),Long.parseLong(resourceIds[i]))!=null){
-                return 999;
+            if(merchantVsResourceDao.queryMerchantVsResourceByCondition(merchantVsResourceVo.getMerchantId(),Long.parseLong(resourceIds[i]))==null){
+                insertResourceIds.append(resourceIds[i]).append(",");
             }
         }
+        if(insertResourceIds.toString().equals("")){
+            return 999;
+        }
+        String[] insertIds = insertResourceIds.toString().split(",");
+
         int count = 0;
-        for(int i=0;i<resourceIds.length;i++){
+        for(int i=0;i<insertIds.length;i++){
             MerchantVsResource merchantVsResource = new MerchantVsResource();
             merchantVsResource.setId(new TimestampPkGenerator().next(getClass())+"");
             merchantVsResource.setCreateTime(new Date());
@@ -79,17 +85,17 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
             merchantVsResource.setCreateUserName(securityUserDetails.getUsername());
             merchantVsResource.setMerchantId(merchantVsResourceVo.getMerchantId());
             merchantVsResource.setStatus(0);
-            merchantVsResource.setChannel(merchantVsResourceVo.getChannel());
-            merchantVsResource.setResourceId(Long.parseLong(resourceIds[i]));
+            merchantVsResource.setChannel(channel);
+            merchantVsResource.setResourceId(Long.parseLong(insertIds[i]));
             int k = merchantVsResourceDao.insertMerchantVsResource(merchantVsResource);
             if(k>0){
                 count++;
             }
         }
-        if(count==resourceIds.length){
+        if(count==insertIds.length){
             return 1;
         }else{
-            throw new MerchantException("权限添加失败");
+            return 0;
         }
     }
 
@@ -101,7 +107,7 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
         for(int i=0;i<merchantInfoList.size();i++){
             Map<String,Object> map = new HashMap<>();
             map.put("id",merchantInfoList.get(i).getId());
-            map.put("text",merchantInfoList.get(i).getId());
+            map.put("text",merchantInfoList.get(i).getName());
             list.add(map);
         }
         return list;

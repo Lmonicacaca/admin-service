@@ -30,8 +30,6 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     private MerchantInfoDao merchantInfoDao;
     @Resource
     private ProductRepository productRepository;
-    @Resource
-    private ChannelManager channelManager;
     @Override
     public List<MerchantCoinVo> queryList(String merchantId, String nameSearch) {
 
@@ -64,20 +62,14 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     }
 
     @Override
-    public List<Map<String, Object>> findAllChannel() {
-
-        return channelManager.findAllChannel();
-    }
-
-
-    @Override
     public List<Map<String, Object>> queryMerchantId() {
+
         List<MerchantInfo> merchantInfoList = merchantInfoDao.selectAll();
         List<Map<String,Object>> list = new ArrayList<>();
         for(int i=0;i<merchantInfoList.size();i++){
             Map<String,Object> map = new HashMap<>();
             map.put("id",merchantInfoList.get(i).getId());
-            map.put("text",merchantInfoList.get(i).getId());
+            map.put("text",merchantInfoList.get(i).getName());
             list.add(map);
         }
         return list;
@@ -154,7 +146,8 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         merchantCoin.setMerchantId(merchantCoinVo.getMerchantId());
         merchantCoin.setStatus(0);
         merchantCoin.setAddress(merchantCoinVo.getAddress());
-        merchantCoin.setChannel(merchantCoinVo.getChannel());
+        String channel = merchantInfoDao.selectChannelByMerchantId(merchantCoinVo.getMerchantId());
+        merchantCoin.setChannel(channel);
         return merchantCoin;
     }
 

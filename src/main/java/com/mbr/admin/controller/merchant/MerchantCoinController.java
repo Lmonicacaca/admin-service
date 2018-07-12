@@ -84,16 +84,11 @@ public class MerchantCoinController extends BaseController {
         return allProduct;
     }
 
-    @RequestMapping("queryChannel")
-    @ResponseBody
-    public Object queryChannel(){
-        List<Map<String,Object>> allChannel = merchantCoinManager.findAllChannel();
-        return allChannel;
-    }
 
     @RequestMapping("queryMerchantId")
     @ResponseBody
     public Object queryMerchantId(){
+        System.out.println(channel);
         List<Map<String,Object>> allMerchantId= merchantCoinManager.queryMerchantId();
         return allMerchantId;
     }

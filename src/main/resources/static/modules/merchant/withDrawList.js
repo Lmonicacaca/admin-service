@@ -107,9 +107,6 @@ var withDraw = function () {
                         var optionMerchant= "<option value='" + d.merchantId + "' selected='selected'>" +d.merchantId+ "</option>";
                         $("#merchantId").empty();
                         $("#merchantId").append(optionMerchant);
-                        var optionChannel= "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
-                        $("#channel").empty();
-                        $("#channel").append(optionChannel);
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinId + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
@@ -121,7 +118,6 @@ var withDraw = function () {
                             content: $("#addWin"),
                             btn: ['确定'],
                             success: function (layero, index) {
-                                loadChannel();
                                 loadCoin();
                             },
                             yes: function (i, layero) {
@@ -156,7 +152,6 @@ var withDraw = function () {
         $("#add").bind("click",function () {
             $("#id").val("");
             $("#createTime").val(new Date);
-            $("#channel").html("");
             $("#merchantId").html("");
             $("#address").val("");
             $("#coinId").html("");
@@ -170,7 +165,6 @@ var withDraw = function () {
                 success: function (layero, index) {
                     $("#form")[0].reset();
                     validateForm().resetForm();
-                    loadChannel();
                     loadCoin();
                     loadMerchant();
                 },
@@ -204,21 +198,6 @@ var withDraw = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
-            allowClear: true,
-            ajax: {
-                url: "withDraw/queryChannel",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
     var loadCoin = function () {
         $('#coinId').select2({
             placeholder: "请选择币种",
@@ -236,7 +215,7 @@ var withDraw = function () {
     };
     var loadMerchant = function () {
         $('#merchantId').select2({
-            placeholder: "请选择商户",
+            placeholder: "请选择商户名",
             allowClear: true,
             ajax: {
                 url: "withDraw/queryMerchant",

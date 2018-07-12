@@ -24,8 +24,6 @@ public class WithDrawManagerImpl implements WithDrawManager {
     @Resource
     private WithDrawDao withDrawDao;
     @Resource
-    private ChannelManager channelManager;
-    @Resource
     private ProductRepository productRepository;
     @Resource
     private MerchantInfoDao merchantInfoDao;
@@ -56,11 +54,6 @@ public class WithDrawManagerImpl implements WithDrawManager {
         return withDrawDao.selectById(id);
     }
 
-    @Override
-    public List<Map<String, Object>> queryChannel() {
-
-        return channelManager.findAllChannel();
-    }
 
     @Override
     public List<Map<String, Object>> queryCoin() {
@@ -89,7 +82,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
         for(int i=0;i<merchantInfoList.size();i++){
             Map<String,Object> map = new HashMap<>();
             map.put("id",merchantInfoList.get(i).getId());
-            map.put("text",merchantInfoList.get(i).getId());
+            map.put("text",merchantInfoList.get(i).getName());
             list.add(map);
         }
         return list;
@@ -133,6 +126,8 @@ public class WithDrawManagerImpl implements WithDrawManager {
             withDraw.setUpdateTime(new Date());
         }
         withDraw.setStatus(0);
+        String channel = merchantInfoDao.selectChannelByMerchantId(withDraw.getMerchantId());
+        withDraw.setChannel(channel);
         return withDraw;
     }
 }

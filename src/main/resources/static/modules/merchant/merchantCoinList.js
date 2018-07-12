@@ -130,9 +130,6 @@ var merchantCoin = function () {
                         $("#createUserName").val(d.createUserName)
                         var date = new Date(d.createTime)
                         $("#createTime").val(date)
-                        var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
-                        $("#channel").empty();
-                        $("#channel").append(optionChannel);
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);
@@ -148,7 +145,6 @@ var merchantCoin = function () {
                             content: $("#addWin"),
                             btn: ['确定'],
                             success: function (layero, index) {
-                                loadChannel();
                                 loadCoin();
                                 loadMerchantId();
                             },
@@ -186,7 +182,6 @@ var merchantCoin = function () {
             $("#merchantId").val("")
             $("#id").val("")
             $("#createTime").val(new Date);
-            $("#channel").html("")
             $("#coinId").html("")
             $("#createUserName").val("")
             layer.open({
@@ -199,7 +194,6 @@ var merchantCoin = function () {
                 success: function (layero, index) {
                     $("#form")[0].reset();
                     validateForm().resetForm();
-                    loadChannel();
                     loadCoin();
                     loadMerchantId();
                 },
@@ -233,21 +227,6 @@ var merchantCoin = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadChannel = function () {
-        $('#channel').select2({
-            placeholder: "请选择渠道号",
-            allowClear: true,
-            ajax: {
-                url: "merchantCoin/queryChannel",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
     var loadCoin = function () {
         $('#coinId').select2({
             placeholder: "请选择币种",
@@ -265,7 +244,7 @@ var merchantCoin = function () {
     };
     var loadMerchantId = function () {
         $('#merchantId').select2({
-            placeholder: "请选择商户号",
+            placeholder: "请选择商户名",
             allowClear: true,
             ajax: {
                 url: "merchantCoin/queryMerchantId",

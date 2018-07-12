@@ -51,4 +51,8 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
 */
     @Select("select * from merchant_info")
     public List<MerchantInfo> selectAll();
+
+    @Select("select channel from merchant_info where id=#{id}")
+    public String selectChannelByMerchantId(@Param("id")String id);
+
 }
