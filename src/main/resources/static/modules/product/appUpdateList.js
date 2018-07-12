@@ -171,7 +171,7 @@ var appUpdate = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });

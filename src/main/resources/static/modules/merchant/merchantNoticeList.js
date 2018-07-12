@@ -107,7 +107,7 @@ var merchantNotice = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
@@ -166,7 +166,7 @@ var merchantNotice = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("当前用户已存在");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
