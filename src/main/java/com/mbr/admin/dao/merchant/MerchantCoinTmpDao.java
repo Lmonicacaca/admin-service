@@ -22,7 +22,7 @@ public interface MerchantCoinTmpDao extends TkMapper<MerchantCoinTmp> {
     public MerchantCoinTmp queryById(@Param("id")String id);
 
     @Update("update merchant_coin_tmp set status=#{status},channel=#{channel} where id=#{id}")
-    public int updateStatusByAudit(@Param("status")int status,@Param("id")String id,@Param("channel")String channel);
+    public int updateStatusByAudit(@Param("status")int status,@Param("id")String id,@Param("channel")Long channel);
 
     @Update("update merchant_coin_tmp set status=#{status} where id=#{id}")
     public int updateStatusNotPass(@Param("status")int status,@Param("id")String id);

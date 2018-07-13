@@ -58,7 +58,7 @@ public class MerchantCoinTmpController extends BaseController {
     public Object auditMerchant(MerchantCoinTmp merchantCoinTmp){
         System.out.println(merchantCoinTmp);
         //判断是否有渠道号
-        if(merchantCoinTmp.getChannel()==null||merchantCoinTmp.getChannel()==""){
+        if(merchantCoinTmp.getChannel()==null){
             try{
                 merchantCoinTmpManager.auditMerchantNoChannel(merchantCoinTmp);
                 return success();

@@ -37,7 +37,7 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
     public MerchantCoin queryCoin(@Param("merchantId")String merchantId,@Param("coinId")String coinId);
 
     @Update("update merchant_coin set channel=#{channel},status=1,address=#{address} where merchant_id=#{merchantId} and coin_id=#{coinId}")
-    public int updateCoin(@Param("merchantId")String merchantId,@Param("channel")String channel,@Param("coinId")String coinId,@Param("address")String address);
+    public int updateCoin(@Param("merchantId")String merchantId,@Param("channel")Long channel,@Param("coinId")String coinId,@Param("address")String address);
 
     @Select("select mc.*,mi.name as merchantName from merchant_coin as mc,merchant_info as mi where mc.id=#{id} and mc.merchant_id=mi.id")
     public MerchantCoinVo queryById(@Param("id")String id);

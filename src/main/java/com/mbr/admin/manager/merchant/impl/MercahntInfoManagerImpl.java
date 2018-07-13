@@ -79,7 +79,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     }
 
     @Override
-    public int updateChannelById(String channel, String id) {
+    public int updateChannelById(Long channel, String id) {
         return merchantInfoDao.updateMerchantInfoChannel(channel, id);
     }
 
@@ -123,8 +123,8 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
         Channel channel = new Channel();
         if(merchantInfo.getChannel()==null){
-            String channelId = new TimestampPkGenerator().next(getClass()).toString();
-            String channelNumber = new TimestampPkGenerator().next(getClass()).toString();
+            Long channelId = new TimestampPkGenerator().next(getClass());
+            Long channelNumber = new TimestampPkGenerator().next(getClass());
             channel.setId(channelId);
             channel.setChannel(channelNumber);
             channel.setSystemName(merchantInfo.getName());
@@ -217,7 +217,9 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         }
         merchantInfo.setStatus(0);
         merchantInfo.setAudit(1);//已审核
-        merchantInfo.setChannel(merchantInfoVo.getChannel());
+        if(merchantInfoVo.getChannel()!=null&&!merchantInfoVo.getChannel().equals("")){
+            merchantInfo.setChannel(Long.parseLong(merchantInfoVo.getChannel()));
+        }
         return merchantInfo;
     }
 
@@ -227,7 +229,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
      *
      * @param merchantId
      */
-    private int initMerchantVsResource(String merchantId, String channelId) {
+    private int initMerchantVsResource(String merchantId, Long channelId) {
 
         SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final MerchantVsResource re3 = new MerchantVsResource();

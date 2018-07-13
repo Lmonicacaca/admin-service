@@ -26,7 +26,7 @@ public class MerchantVsResource {
     @Column(name = "update_user_name")
     private String updateUserName;
     @Column(name = "channel")
-    private String channel;
+    private Long channel;
 
     public String getId() {
         return id;
@@ -92,11 +92,11 @@ public class MerchantVsResource {
         this.updateUserName = updateUserName;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

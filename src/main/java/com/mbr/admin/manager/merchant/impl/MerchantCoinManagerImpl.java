@@ -146,7 +146,7 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         merchantCoin.setMerchantId(merchantCoinVo.getMerchantId());
         merchantCoin.setStatus(0);
         merchantCoin.setAddress(merchantCoinVo.getAddress());
-        String channel = merchantInfoDao.selectChannelByMerchantId(merchantCoinVo.getMerchantId());
+        Long channel = merchantInfoDao.selectChannelByMerchantId(merchantCoinVo.getMerchantId());
         merchantCoin.setChannel(channel);
         return merchantCoin;
     }

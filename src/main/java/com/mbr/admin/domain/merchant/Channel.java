@@ -6,18 +6,18 @@ import java.util.Date;
 
 @Data
 public class Channel {
-    private String id;
+    private Long id;
     private String systemName;
     private String merchantId;
     private Date createTime;
-    private String channel;
+    private Long channel;
     private int status;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -53,11 +53,11 @@ public class Channel {
         this.status = status;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

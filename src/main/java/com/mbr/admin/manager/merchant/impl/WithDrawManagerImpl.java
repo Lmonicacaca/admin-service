@@ -126,7 +126,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
             withDraw.setUpdateTime(new Date());
         }
         withDraw.setStatus(0);
-        String channel = merchantInfoDao.selectChannelByMerchantId(withDraw.getMerchantId());
+        Long channel = merchantInfoDao.selectChannelByMerchantId(withDraw.getMerchantId());
         withDraw.setChannel(channel);
         return withDraw;
     }

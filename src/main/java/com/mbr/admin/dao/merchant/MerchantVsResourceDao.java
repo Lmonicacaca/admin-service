@@ -22,7 +22,7 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
     public List<MerchantVsResource> queryMerchantVsResource(@Param("merchantId")String merchantId);
 
     @Update("update merchant_vs_resource set channel=#{channel} where merchant_id=#{merchantId}")
-    public int updateChannel(@Param("merchantId")String merchantId,@Param("channel")String channel);
+    public int updateChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
 
 
     @Select("<script>" +

@@ -65,8 +65,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         if(merchantInfo!=null){
             //先创建渠道号
             Channel channel = new Channel();
-            String channelId = new TimestampPkGenerator().next(getClass()).toString();
-            String channelNumber = new TimestampPkGenerator().next(getClass()).toString();
+            Long channelId = new TimestampPkGenerator().next(getClass());
+            Long channelNumber = new TimestampPkGenerator().next(getClass());
             channel.setId(channelId);
             channel.setChannel(channelNumber);
             channel.setSystemName(merchantInfo.getName());
@@ -211,7 +211,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     }
 
     //创建提现对象
-    public WithDraw createWithdraw(MerchantCoinTmp merchantCoinTmp,String channel){
+    public WithDraw createWithdraw(MerchantCoinTmp merchantCoinTmp,Long channel){
         //添加withdraw
         WithDraw withDraw = new WithDraw();
         withDraw.setId(new TimestampPkGenerator().next(getClass()));
@@ -220,7 +220,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
         withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
         withDraw.setStatus(0);
-        if(channel==null||channel==""){
+        if(channel==null){
             withDraw.setChannel(merchantCoinTmp.getChannel());
         }else{
             withDraw.setChannel(channel);
@@ -230,7 +230,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     }
 
     //创建充值对象
-    public MerchantCoin createMerchantCoin(MerchantCoinTmp merchantCoinTmp,String channel){
+    public MerchantCoin createMerchantCoin(MerchantCoinTmp merchantCoinTmp,Long channel){
         MerchantCoin merchantCoin = new MerchantCoin();
         merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
         merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
@@ -242,7 +242,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         merchantCoin.setAddress(merchantCoinTmp.getRechargeAddress());
         merchantCoin.setTokenAddress(merchantCoinTmp.getTokenAddress());
         merchantCoin.setCoinName(merchantCoinTmp.getCoinName());
-        if(channel==null||channel==""){
+        if(channel==null){
             merchantCoin.setChannel(merchantCoinTmp.getChannel());
         }else{
             merchantCoin.setChannel(channel);
@@ -256,7 +256,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
      *
      * @param merchantId
      */
-    private int initMerchantVsResource(String merchantId, String channelId) {
+    private int initMerchantVsResource(String merchantId, Long channelId) {
         SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final MerchantVsResource re3 = new MerchantVsResource();
         re3.setId(new TimestampPkGenerator().next(getClass()).toString());

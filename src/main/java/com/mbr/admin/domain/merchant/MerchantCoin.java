@@ -21,7 +21,7 @@ public class MerchantCoin {
     @Column(name = "coin_name")
     private String coinName;
     @Column(name = "channel")
-    private String channel;
+    private Long channel;
     @Column(name = "status")
     private Integer status;
     @Column(name = "create_user_name")
@@ -76,11 +76,11 @@ public class MerchantCoin {
         this.coinName = coinName;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

@@ -37,7 +37,7 @@ public class MerchantInfo {
     @Column(name = "is_show")
     private int isShow;
     @Column(name = "channel")
-    private String channel;
+    private Long channel;
     @Column(name = "audit")
     private Integer audit;
 
@@ -162,11 +162,11 @@ public class MerchantInfo {
         this.isShow = isShow;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

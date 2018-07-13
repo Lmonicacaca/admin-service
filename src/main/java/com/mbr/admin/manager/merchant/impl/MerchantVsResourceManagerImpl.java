@@ -61,7 +61,7 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
 
     @Override
     public int insertMerchantVsResource(MerchantVsResourceVo merchantVsResourceVo){
-        String channel = merchantInfoDao.selectChannelByMerchantId(merchantVsResourceVo.getMerchantId());
+        Long channel = merchantInfoDao.selectChannelByMerchantId(merchantVsResourceVo.getMerchantId());
         //判断权限是否已存在
         String resourceIdList = merchantVsResourceVo.getResourceIdList();
         String[] resourceIds = resourceIdList.split(",");

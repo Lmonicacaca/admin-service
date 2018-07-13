@@ -13,7 +13,7 @@ public class WithDraw {
     @Column(name = "coin_id")
     private Long coinId;
     @Column(name = "channel")
-    private String channel;
+    private Long channel;
     @Column(name = "create_time")
     private Date createTime;
     @Column(name = "update_time")
@@ -49,11 +49,11 @@ public class WithDraw {
         this.coinId = coinId;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

@@ -29,7 +29,7 @@ public class MerchantCoinTmp {
     @Column(name = "coin_name")
     private String coinName;
     @Column(name = "channel")
-    private String channel;
+    private Long channel;
     @Column(name = "withdraw_address")
     private String withdrawAddress;
 
@@ -121,11 +121,11 @@ public class MerchantCoinTmp {
         this.coinName = coinName;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

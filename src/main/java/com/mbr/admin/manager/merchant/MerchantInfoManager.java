@@ -22,7 +22,7 @@ public interface MerchantInfoManager {
 
     public MerchantInfo queryById(String id);
 
-    public int updateChannelById(String channel,String id);
+    public int updateChannelById(Long channel,String id);
 
     public List<Map<String,Object>> queryIsShow();
 
