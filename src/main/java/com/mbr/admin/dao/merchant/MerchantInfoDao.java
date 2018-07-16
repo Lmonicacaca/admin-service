@@ -2,11 +2,11 @@ package com.mbr.admin.dao.merchant;
 
 import com.mbr.admin.common.dao.TkMapper;
 import com.mbr.admin.domain.merchant.MerchantInfo;
+import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
             "</where>"+
             "order by create_time desc"+
             "</script>")
-    public List<MerchantInfo> queryList(@Param("nameSearch") String nameSearch,@Param("idSearch")String idSearch);
+    public List<MerchantInfoVo> queryList(@Param("nameSearch") String nameSearch, @Param("idSearch")String idSearch);
 
     //修改商户表的渠道号
     @Update("update merchant_info set channel = #{channel},status=1 where id=#{id}")

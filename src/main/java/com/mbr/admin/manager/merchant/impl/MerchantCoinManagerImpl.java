@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantInfoDao;
@@ -32,8 +33,17 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
     private ProductRepository productRepository;
     @Override
     public List<MerchantCoinVo> queryList(String merchantId, String nameSearch) {
+        List<MerchantCoinVo> merchantCoinVoList = merchantCoinDao.queryList(merchantId, nameSearch);
+        for(int i =0;i<merchantCoinVoList.size();i++){
+            if(merchantCoinVoList.get(i).getCreateTime()!=null&&merchantCoinVoList.get(i).getCreateTime()!=""){
+                merchantCoinVoList.get(i).setCreateTime(merchantCoinVoList.get(i).getCreateTime().substring(0,merchantCoinVoList.get(i).getCreateTime().length()-2));
+            }
 
-        return merchantCoinDao.queryList(merchantId,nameSearch);
+            if(merchantCoinVoList.get(i).getUpdateTime()!=null&&merchantCoinVoList.get(i).getUpdateTime()!=""){
+                merchantCoinVoList.get(i).setUpdateTime(merchantCoinVoList.get(i).getUpdateTime().substring(0,merchantCoinVoList.get(i).getUpdateTime().length()-2));
+            }
+        }
+        return merchantCoinVoList;
     }
 
     @Override
@@ -123,14 +133,15 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
             merchantCoin.setId(id);
             SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
             merchantCoin.setCreateUserName(securityUserDetails.getUsername());
-            merchantCoin.setCreateTime(new Date());
+            merchantCoin.setCreateTime(DateUtil.formatDateTime(new Date()));
         }else{
             merchantCoin.setId(merchantCoinVo.getId());
             merchantCoin.setCreateUserName(merchantCoinVo.getCreateUserName());
             SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
             merchantCoin.setUpdateUserName(securityUserDetails.getUsername());
+
             merchantCoin.setCreateTime(merchantCoinVo.getCreateTime());
-            merchantCoin.setUpdateTime(new Date());
+            merchantCoin.setUpdateTime(DateUtil.formatDateTime(new Date()));
 
         }
         long coinId = merchantCoinVo.getCoinId();

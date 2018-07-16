@@ -4,7 +4,7 @@ var merchantVsResource = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "channel"},
-            {"mData": "merchantId"},
+            {"mData": "merchantName"},
             {"mData": "url"},
             {"mData": "createUserName"},
             {"mData": "createTime"},
@@ -34,14 +34,11 @@ var merchantVsResource = function () {
         },{
             "aTargets": [5],
             "mRender": function (a, b, c, d) {
-                if(a==null||a.length==0){
-                    return "";
+                if(a==null||a==""){
+                    return ""
                 }else{
-                    var date = new Date(a);
-                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-
+                    return a;
                 }
-
             }
         },{
             "aTargets": [6],

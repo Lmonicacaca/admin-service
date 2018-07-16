@@ -1,7 +1,5 @@
 package com.mbr.admin.domain.merchant;
 
-import com.mbr.admin.common.domain.BaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.Date;
@@ -27,11 +25,11 @@ public class MerchantCoin {
     @Column(name = "create_user_name")
     private String createUserName; //创建者
     @Column(name = "create_time")
-    private Date createTime; //创建时间
+    private String createTime; //创建时间
     @Column(name = "update_user_name")
     private String updateUserName; //更新者
     @Column(name = "update_time")
-    private Date updateTime ;//更新时间
+    private String updateTime ;//更新时间
 
 
 
@@ -108,11 +106,11 @@ public class MerchantCoin {
         this.createUserName = createUserName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -124,11 +122,11 @@ public class MerchantCoin {
         this.updateUserName = updateUserName;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

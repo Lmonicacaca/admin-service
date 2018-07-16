@@ -7,13 +7,14 @@ public class MerchantVsResourceVo {
     private String merchantId;
     private String resourceId;
     private Integer status;
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;
+    private String updateTime;
     private String createUserName;
     private String updateUserName;
     private String channel;
     private String url;
     private String resourceIdList;
+    private String merchantName;
 
     public Long getId() {
         return id;
@@ -47,19 +48,19 @@ public class MerchantVsResourceVo {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -103,6 +104,14 @@ public class MerchantVsResourceVo {
         this.resourceIdList = resourceIdList;
     }
 
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
     @Override
     public String toString() {
         return "MerchantVsResourceVo{" +
@@ -110,13 +119,14 @@ public class MerchantVsResourceVo {
                 ", merchantId='" + merchantId + '\'' +
                 ", resourceId='" + resourceId + '\'' +
                 ", status=" + status +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
                 ", createUserName='" + createUserName + '\'' +
                 ", updateUserName='" + updateUserName + '\'' +
                 ", channel='" + channel + '\'' +
                 ", url='" + url + '\'' +
                 ", resourceIdList='" + resourceIdList + '\'' +
+                ", merchantName='" + merchantName + '\'' +
                 '}';
     }
 }

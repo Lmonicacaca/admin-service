@@ -1,5 +1,7 @@
 package com.mbr.admin.domain.merchant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.Date;
@@ -19,9 +21,9 @@ public class MerchantInfo {
     @Column(name = "address")
     private String address;
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
     @Column(name = "update_time")
-    private Date updateTime;
+    private String updateTime;
     @Column(name = "create_user_name")
     private String createUserName;
     @Column(name = "update_user_name")
@@ -89,19 +91,19 @@ public class MerchantInfo {
         this.address = address;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

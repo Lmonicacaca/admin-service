@@ -15,9 +15,9 @@ public class WithDraw {
     @Column(name = "channel")
     private Long channel;
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
     @Column(name = "update_time")
-    private Date updateTime;
+    private String updateTime;
     @Column(name = "address")
     private String address;
     @Column(name = "nonce")
@@ -57,19 +57,19 @@ public class WithDraw {
         this.channel = channel;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

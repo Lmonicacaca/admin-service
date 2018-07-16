@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantCoinDao;
@@ -42,8 +43,16 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     private ChannelRepository channelRepository;
     @Override
     public List<MerchantCoinTmp> queryList(String merchantIdSearch) {
-
-        return merchantCoinTmpDao.queryList(merchantIdSearch);
+        List<MerchantCoinTmp> merchantCoinTmpList = merchantCoinTmpDao.queryList(merchantIdSearch);
+        for(int i=0;i<merchantCoinTmpList.size();i++){
+            if(merchantCoinTmpList.get(i).getCreateTime()!=null&&merchantCoinTmpList.get(i).getCreateTime()!=""){
+                merchantCoinTmpList.get(i).setCreateTime(merchantCoinTmpList.get(i).getCreateTime().substring(0,merchantCoinTmpList.get(i).getCreateTime().length()-2));
+            }
+            if(merchantCoinTmpList.get(i).getUpdateTime()!=null&&merchantCoinTmpList.get(i).getUpdateTime()!=""){
+                merchantCoinTmpList.get(i).setUpdateTime(merchantCoinTmpList.get(i).getUpdateTime().substring(0,merchantCoinTmpList.get(i).getUpdateTime().length()-2));
+            }
+        }
+        return merchantCoinTmpList;
     }
 
     @Override
@@ -215,7 +224,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         //添加withdraw
         WithDraw withDraw = new WithDraw();
         withDraw.setId(new TimestampPkGenerator().next(getClass()));
-        withDraw.setCreateTime(new Date());
+        withDraw.setCreateTime(DateUtil.formatDateTime(new Date()));
         withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
         withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
         withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
@@ -238,7 +247,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         merchantCoin.setStatus(0);
         SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
         merchantCoin.setCreateUserName(securityUserDetails.getUsername());
-        merchantCoin.setCreateTime(new Date());
+        merchantCoin.setCreateTime(DateUtil.formatDateTime(new Date()));
         merchantCoin.setAddress(merchantCoinTmp.getRechargeAddress());
         merchantCoin.setTokenAddress(merchantCoinTmp.getTokenAddress());
         merchantCoin.setCoinName(merchantCoinTmp.getCoinName());
@@ -262,7 +271,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re3.setId(new TimestampPkGenerator().next(getClass()).toString());
         re3.setMerchantId(merchantId);
         re3.setChannel(channelId);
-        re3.setCreateTime(new Date());
+        re3.setCreateTime(DateUtil.formatDateTime(new Date()));
         re3.setCreateUserName(securityUserDetails.getUsername());
         re3.setResourceId(3L);
         re3.setStatus(0);
@@ -270,7 +279,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re4.setId(new TimestampPkGenerator().next(getClass()).toString());
         re4.setMerchantId(merchantId);
         re4.setChannel(channelId);
-        re4.setCreateTime(new Date());
+        re4.setCreateTime(DateUtil.formatDateTime(new Date()));
         re4.setCreateUserName(securityUserDetails.getUsername());
         re4.setResourceId(4L);
         re4.setStatus(0);
@@ -278,7 +287,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re11.setId(new TimestampPkGenerator().next(getClass()).toString());
         re11.setMerchantId(merchantId);
         re11.setChannel(channelId);
-        re11.setCreateTime(new Date());
+        re11.setCreateTime(DateUtil.formatDateTime(new Date()));
         re11.setCreateUserName(securityUserDetails.getUsername());
         re11.setResourceId(11L);
         re11.setStatus(0);
@@ -286,7 +295,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re12.setId(new TimestampPkGenerator().next(getClass()).toString());
         re12.setMerchantId(merchantId);
         re12.setChannel(channelId);
-        re12.setCreateTime(new Date());
+        re12.setCreateTime(DateUtil.formatDateTime(new Date()));
         re12.setCreateUserName(securityUserDetails.getUsername());
         re12.setResourceId(12L);
         re12.setStatus(0);
@@ -294,7 +303,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re22.setId(new TimestampPkGenerator().next(getClass()).toString());
         re22.setMerchantId(merchantId);
         re22.setChannel(channelId);
-        re22.setCreateTime(new Date());
+        re22.setCreateTime(DateUtil.formatDateTime(new Date()));
         re22.setCreateUserName(securityUserDetails.getUsername());
         re22.setResourceId(22L);
         re22.setStatus(0);
@@ -302,7 +311,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re23.setId(new TimestampPkGenerator().next(getClass()).toString());
         re23.setMerchantId(merchantId);
         re23.setChannel(channelId);
-        re23.setCreateTime(new Date());
+        re23.setCreateTime(DateUtil.formatDateTime(new Date()));
         re23.setCreateUserName(securityUserDetails.getUsername());
         re23.setResourceId(23L);
         re23.setStatus(0);
@@ -310,7 +319,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         re24.setId(new TimestampPkGenerator().next(getClass()).toString());
         re24.setMerchantId(merchantId);
         re24.setChannel(channelId);
-        re24.setCreateTime(new Date());
+        re24.setCreateTime(DateUtil.formatDateTime(new Date()));
         re24.setCreateUserName(securityUserDetails.getUsername());
         re24.setResourceId(24L);
         re24.setStatus(0);

@@ -1,11 +1,11 @@
 package com.mbr.admin.domain.merchant;
 
-import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Table;
 import java.util.Date;
 
-@Data
+@Table(name = "t_help")
 public class MerchantHelp {
     @Column(name = "id")
     private Long id;

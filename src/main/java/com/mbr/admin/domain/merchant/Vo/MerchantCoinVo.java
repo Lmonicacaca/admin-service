@@ -12,9 +12,9 @@ public class MerchantCoinVo {
     private String channel;
     private Integer status;
     private String createUserName; //创建者
-    private Date createTime; //创建时间
+    private String createTime; //创建时间
     private String updateUserName; //更新者
-    private Date updateTime ;//更新时间
+    private String updateTime ;//更新时间
     private String merchantName;
 
     public Long getId() {
@@ -89,11 +89,11 @@ public class MerchantCoinVo {
         this.createUserName = createUserName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -105,11 +105,11 @@ public class MerchantCoinVo {
         this.updateUserName = updateUserName;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

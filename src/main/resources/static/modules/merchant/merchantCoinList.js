@@ -71,13 +71,18 @@ var merchantCoin = function () {
             {
                 "aTargets": [8],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null){
+                   /* if(a!=null){
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
                     }else{
                         return "";
                     }
-
+*/
+                   if(a==null||a==""){
+                       return ""
+                   }else{
+                       return a;
+                   }
                 }
             },
             {
@@ -128,8 +133,7 @@ var merchantCoin = function () {
                         $("#merchantId").val(d.merchantId)
                         $("#id").val(d.id)
                         $("#createUserName").val(d.createUserName)
-                        var date = new Date(d.createTime)
-                        $("#createTime").val(date)
+                        $("#createTime").val(d.createTime)
                         var optionCoin = "<option value='" + d.coinId + "' selected='selected'>" + d.coinName + "</option>";
                         $("#coinId").empty();
                         $("#coinId").append(optionCoin);

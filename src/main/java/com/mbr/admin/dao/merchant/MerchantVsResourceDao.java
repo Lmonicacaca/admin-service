@@ -26,9 +26,9 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
 
 
     @Select("<script>" +
-            "select mvr.id,mr.status,mvr.merchant_id as merchantId,mvr.resource_id as resourceId,mvr.create_time as createTime,mvr.update_time as updateTime," +
-            "mvr.create_user_name as createUserName,mvr.update_user_name as updateUserName,mvr.channel,mr.url from merchant_resource as mr,merchant_vs_resource as mvr " +
-            "where mr.id=mvr.resource_id"+
+            "select mi.name as merchantName, mvr.id,mr.status,mvr.merchant_id as merchantId,mvr.resource_id as resourceId,mvr.create_time as createTime,mvr.update_time as updateTime," +
+            "mvr.create_user_name as createUserName,mvr.update_user_name as updateUserName,mvr.channel,mr.url from merchant_resource as mr,merchant_vs_resource as mvr,merchant_info as mi " +
+            "where mr.id=mvr.resource_id and mi.id = mvr.merchant_id"+
             "<if test=\"merchantId!=null and merchantId!=''\">" +
             "and mvr.merchant_id = #{merchantId}"+
             "</if>"+

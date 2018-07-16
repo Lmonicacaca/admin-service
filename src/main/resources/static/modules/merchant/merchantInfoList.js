@@ -104,8 +104,12 @@ var merchantInfo = function () {
             {
                 "aTargets": [9],
                 "mRender": function (a, b, c, d) {
-                    var date = new Date(a);
-                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        return a;
+                    }
+
                 }
             },
             {
@@ -126,7 +130,7 @@ var merchantInfo = function () {
     };
     var __initHandler =function () {
 
-        $("#dataTables-example tbody").on("click", "a[name='rsaPublic']", function () {
+        $("a[name='rsaPublic']").on("click", function () {
             $("#showRsa").val("");
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
@@ -152,7 +156,7 @@ var merchantInfo = function () {
         })
 
 
-        $("#dataTables-example tbody").on("click", "a[name='rsaPrivate']", function () {
+        $("a[name='rsaPrivate']").on("click", function () {
             $("#showRsa").val("");
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
@@ -199,7 +203,7 @@ var merchantInfo = function () {
     };
 
     // 编辑
-    $("#dataTables-example tbody").on("click", "a[name='edit']", function () {
+    $("#dataTables-example tbody").on("click","a[name='edit']", function () {
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
             var csrf = $("#csrfId");
@@ -212,14 +216,13 @@ var merchantInfo = function () {
                     $("#oldImg").val(d.logoBill);
                     $("#file").val("");
                     $("#name").val(d.name);
-                    $("#description").val(d.name);
+                    $("#description").val(d.description);
                     $("#address").val(d.address);
                     $("#website").val(d.website);
                     $("#rsaPublic").val(d.rsaPublic);
                     $("#rsaPrivate").val(d.rsaPrivate);
                     $("#createUserName").val(d.createUserName);
-                    var time = d.createTime;
-                    $("#createTime").val(new Date(time));
+                    $("#createTime").val(d.createTime);
                     var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                     $("#channel").empty();
                     $("#channel").append(optionChannel);

@@ -51,11 +51,17 @@ var merchantCoinTmp = function () {
         }, {
             "aTargets": [9],
             "mRender": function (a, b, c, d) {
-                if(a!=null){
-                    var date = new Date(a);
-                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                // if(a!=null){
+                //     var date = new Date(a);
+                //     return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                // }else{
+                //     return "";
+                // }
+
+                if(a==null||a==""){
+                    return ""
                 }else{
-                    return "";
+                    return a;
                 }
 
             }

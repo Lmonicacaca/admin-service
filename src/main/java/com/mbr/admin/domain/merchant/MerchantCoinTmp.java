@@ -1,5 +1,6 @@
 package com.mbr.admin.domain.merchant;
 
+
 import javax.persistence.Column;
 import javax.persistence.Table;
 import java.util.Date;
@@ -19,9 +20,9 @@ public class MerchantCoinTmp {
     @Column(name = "update_user_name")
     private String updateUserName;
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
     @Column(name = "update_time")
-    private Date updateTime;
+    private String updateTime;
     @Column(name = "recharge_address")
     private String rechargeAddress;
     @Column(name = "token_address")
@@ -81,19 +82,19 @@ public class MerchantCoinTmp {
         this.updateUserName = updateUserName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

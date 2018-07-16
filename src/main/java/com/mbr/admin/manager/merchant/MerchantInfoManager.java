@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface MerchantInfoManager {
 
-    public List<MerchantInfo> queryList(String nameSearch,String idSearch);
+    public List<MerchantInfoVo> queryList(String nameSearch,String idSearch);
 
     public List<Map<String,Object>> queryChannel();
 

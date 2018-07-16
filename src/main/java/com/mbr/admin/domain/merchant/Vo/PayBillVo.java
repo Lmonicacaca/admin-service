@@ -20,8 +20,8 @@ public class PayBillVo {
     private String txHash;
     private String fromAddr;
     private int billType;
-    private Date createTime;
-    private Date lastUpdateTime;
+    private String createTime;
+    private String lastUpdateTime;
     private String industry;
     private String merchantName;
     private String gethMessage;
@@ -156,19 +156,19 @@ public class PayBillVo {
         this.billType = billType;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getLastUpdateTime() {
+    public String getLastUpdateTime() {
         return lastUpdateTime;
     }
 
-    public void setLastUpdateTime(Date lastUpdateTime) {
+    public void setLastUpdateTime(String lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
 

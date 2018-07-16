@@ -7,8 +7,8 @@ public class WithDrawVo {
     private String merchantId;
     private Long coinId;
     private String channel;
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;
+    private String updateTime;
     private String address;
     private  String nonce;
     private Integer status;
@@ -48,19 +48,19 @@ public class WithDrawVo {
         this.channel = channel;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 

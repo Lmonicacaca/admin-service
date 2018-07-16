@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantInfoDao;
 import com.mbr.admin.dao.merchant.WithDrawDao;
@@ -37,6 +38,13 @@ public class WithDrawManagerImpl implements WithDrawManager {
                 System.out.println(coin);
                 withDrawVoList.get(i).setCoinName(coin.getCoinName());
                 withDrawVoList.get(i).setTokenAddress(coin.getTokenAddress());
+            }
+            if(withDrawVoList.get(i).getCreateTime()!=null&&withDrawVoList.get(i).getCreateTime()!=""){
+                withDrawVoList.get(i).setCreateTime(withDrawVoList.get(i).getCreateTime().substring(0,withDrawVoList.get(i).getCreateTime().length()-2));
+            }
+
+            if(withDrawVoList.get(i).getUpdateTime()!=null&&withDrawVoList.get(i).getUpdateTime()!=""){
+                withDrawVoList.get(i).setUpdateTime(withDrawVoList.get(i).getUpdateTime().substring(0,withDrawVoList.get(i).getUpdateTime().length()-2));
             }
 
         }
@@ -121,9 +129,9 @@ public class WithDrawManagerImpl implements WithDrawManager {
     public WithDraw createWithDraw(WithDraw withDraw,Long id){
         if(id!=null){
             withDraw.setId(id);
-            withDraw.setCreateTime(new Date());
+            withDraw.setCreateTime(DateUtil.formatDateTime(new Date()));
         }else{
-            withDraw.setUpdateTime(new Date());
+            withDraw.setUpdateTime(DateUtil.formatDateTime(new Date()));
         }
         withDraw.setStatus(0);
         Long channel = merchantInfoDao.selectChannelByMerchantId(withDraw.getMerchantId());

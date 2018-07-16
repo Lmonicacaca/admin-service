@@ -35,8 +35,8 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
     @ResponseBody
     public Object queryList(HttpServletRequest request,String nameSearch,String idSearch){
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<MerchantInfo> payBillList = merchantInfoManager.queryList(nameSearch,idSearch);
-        PageResultDto result = new PageResultDto<MerchantInfo>(new PageInfo<MerchantInfo>(payBillList));
+        List<MerchantInfoVo> payBillList = merchantInfoManager.queryList(nameSearch,idSearch);
+        PageResultDto result = new PageResultDto<MerchantInfoVo>(new PageInfo<MerchantInfoVo>(payBillList));
         return result;
     }
 

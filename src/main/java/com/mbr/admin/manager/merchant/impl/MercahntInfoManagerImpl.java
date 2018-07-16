@@ -2,6 +2,7 @@ package com.mbr.admin.manager.merchant.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -41,12 +43,19 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private String image_url;
 
     @Override
-    public List<MerchantInfo> queryList(String nameSearch, String idSearch) {
-        List<MerchantInfo> merchantInfoList = merchantInfoDao.queryList(nameSearch, idSearch);
+    public List<MerchantInfoVo> queryList(String nameSearch, String idSearch) {
+        List<MerchantInfoVo> merchantInfoList = merchantInfoDao.queryList(nameSearch, idSearch);
         for (int i = 0; i < merchantInfoList.size(); i++) {
             if (merchantInfoList.get(i).getLogoBill() != null && merchantInfoList.get(i).getLogoBill() != "") {
                 merchantInfoList.get(i).setLogoBill(image_url + merchantInfoList.get(i).getLogoBill());
             }
+            if(merchantInfoList.get(i).getCreateTime()!=null&&merchantInfoList.get(i).getCreateTime()!=""){
+                merchantInfoList.get(i).setCreateTime(merchantInfoList.get(i).getCreateTime().substring(0,merchantInfoList.get(i).getCreateTime().length()-2));
+            }
+            if(merchantInfoList.get(i).getUpdateTime()!=null&&merchantInfoList.get(i).getUpdateTime()!=""){
+                merchantInfoList.get(i).setUpdateTime(merchantInfoList.get(i).getUpdateTime().substring(0,merchantInfoList.get(i).getUpdateTime().length()-2));
+            }
+
         }
         return merchantInfoList;
     }
@@ -188,15 +197,16 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
             merchantInfo.setId(id);
             SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             merchantInfo.setCreateUserName(securityUserDetails.getUsername());
-            merchantInfo.setCreateTime(new Date());
+            merchantInfo.setCreateTime(DateUtil.formatDateTime(new Date()));
 
         } else {
             merchantInfo.setId(merchantInfoVo.getId().toString());
             merchantInfo.setCreateUserName(merchantInfoVo.getCreateUserName());
             SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             merchantInfo.setUpdateUserName(securityUserDetails.getUsername());
+
             merchantInfo.setCreateTime(merchantInfoVo.getCreateTime());
-            merchantInfo.setUpdateTime(new Date());
+            merchantInfo.setUpdateTime(DateUtil.formatDateTime(new Date()));
         }
         if (imgUrl != null) {
             merchantInfo.setLogoBill(imgUrl);
@@ -236,7 +246,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re3.setId(new TimestampPkGenerator().next(getClass()).toString());
         re3.setMerchantId(merchantId);
         re3.setChannel(channelId);
-        re3.setCreateTime(new Date());
+        re3.setCreateTime(DateUtil.formatDateTime(new Date()));
         re3.setCreateUserName(securityUserDetails.getUsername());
         re3.setResourceId(3L);
         re3.setStatus(0);
@@ -244,7 +254,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re4.setId(new TimestampPkGenerator().next(getClass()).toString());
         re4.setMerchantId(merchantId);
         re4.setChannel(channelId);
-        re4.setCreateTime(new Date());
+        re4.setCreateTime(DateUtil.formatDateTime(new Date()));
         re4.setCreateUserName(securityUserDetails.getUsername());
         re4.setResourceId(4L);
         re4.setStatus(0);
@@ -252,7 +262,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re11.setId(new TimestampPkGenerator().next(getClass()).toString());
         re11.setMerchantId(merchantId);
         re11.setChannel(channelId);
-        re11.setCreateTime(new Date());
+        re11.setCreateTime(DateUtil.formatDateTime(new Date()));
         re11.setCreateUserName(securityUserDetails.getUsername());
         re11.setResourceId(11L);
         re11.setStatus(0);
@@ -260,7 +270,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re12.setId(new TimestampPkGenerator().next(getClass()).toString());
         re12.setMerchantId(merchantId);
         re12.setChannel(channelId);
-        re12.setCreateTime(new Date());
+        re12.setCreateTime(DateUtil.formatDateTime(new Date()));
         re12.setCreateUserName(securityUserDetails.getUsername());
         re12.setResourceId(12L);
         re12.setStatus(0);
@@ -268,7 +278,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re22.setId(new TimestampPkGenerator().next(getClass()).toString());
         re22.setMerchantId(merchantId);
         re22.setChannel(channelId);
-        re22.setCreateTime(new Date());
+        re22.setCreateTime(DateUtil.formatDateTime(new Date()));
         re22.setCreateUserName(securityUserDetails.getUsername());
         re22.setResourceId(22L);
         re22.setStatus(0);
@@ -276,7 +286,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re23.setId(new TimestampPkGenerator().next(getClass()).toString());
         re23.setMerchantId(merchantId);
         re23.setChannel(channelId);
-        re23.setCreateTime(new Date());
+        re23.setCreateTime(DateUtil.formatDateTime(new Date()));
         re23.setCreateUserName(securityUserDetails.getUsername());
         re23.setResourceId(23L);
         re23.setStatus(0);
@@ -284,7 +294,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         re24.setId(new TimestampPkGenerator().next(getClass()).toString());
         re24.setMerchantId(merchantId);
         re24.setChannel(channelId);
-        re24.setCreateTime(new Date());
+        re24.setCreateTime(DateUtil.formatDateTime(new Date()));
         re24.setCreateUserName(securityUserDetails.getUsername());
         re24.setResourceId(24L);
         re24.setStatus(0);

@@ -3,8 +3,9 @@ package com.mbr.admin.domain.merchant;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Table;
 
-@Data
+@Table(name = "t_help_category")
 public class MerchantHelpCategory {
     @Column(name = "id")
     private Integer id;

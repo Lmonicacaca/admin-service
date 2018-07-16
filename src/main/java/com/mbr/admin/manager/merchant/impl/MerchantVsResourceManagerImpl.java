@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.merchant.impl;
 
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.dao.merchant.MerchantInfoDao;
@@ -29,7 +30,17 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
     private MerchantInfoDao merchantInfoDao;
     @Override
     public List<MerchantVsResourceVo> queryList(String merchantId) {
-        return merchantVsResourceDao.queryList(merchantId);
+
+        List<MerchantVsResourceVo> merchantVsResourceVoList = merchantVsResourceDao.queryList(merchantId);
+        for(int i=0;i<merchantVsResourceVoList.size();i++){
+            if(merchantVsResourceVoList.get(i).getCreateTime()!=null&&merchantVsResourceVoList.get(i).getCreateTime()!=""){
+                merchantVsResourceVoList.get(i).setCreateTime(merchantVsResourceVoList.get(i).getCreateTime().substring(0,merchantVsResourceVoList.get(i).getCreateTime().length()-2));
+            }
+            if(merchantVsResourceVoList.get(i).getUpdateTime()!=null&&merchantVsResourceVoList.get(i).getUpdateTime()!=""){
+                merchantVsResourceVoList.get(i).setUpdateTime(merchantVsResourceVoList.get(i).getUpdateTime().substring(0,merchantVsResourceVoList.get(i).getUpdateTime().length()-2));
+            }
+        }
+        return merchantVsResourceVoList;
     }
 
     @Override
@@ -80,7 +91,7 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
         for(int i=0;i<insertIds.length;i++){
             MerchantVsResource merchantVsResource = new MerchantVsResource();
             merchantVsResource.setId(new TimestampPkGenerator().next(getClass())+"");
-            merchantVsResource.setCreateTime(new Date());
+            merchantVsResource.setCreateTime(DateUtil.formatDateTime(new Date()));
             SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
             merchantVsResource.setCreateUserName(securityUserDetails.getUsername());
             merchantVsResource.setMerchantId(merchantVsResourceVo.getMerchantId());

@@ -37,10 +37,15 @@ var withDraw = function () {
             {
                 "aTargets": [7],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        return a;
                     }
+                    // if(a!=null||a!=""){
+                    //     var date = new Date(a);
+                    //     return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    // }
 
                 }
             }, {
@@ -100,10 +105,7 @@ var withDraw = function () {
                         var d = data.data;
                         $("#id").val(d.id);
                         $("#address").val(d.address);
-                        if(d.createTime!=null){
-                            var date = new Date(d.createTime)
-                            $("#createTime").val(date)
-                        }
+                        $("#createTime").val(d.createTime)
                         var optionMerchant= "<option value='" + d.merchantId + "' selected='selected'>" +d.merchantId+ "</option>";
                         $("#merchantId").empty();
                         $("#merchantId").append(optionMerchant);

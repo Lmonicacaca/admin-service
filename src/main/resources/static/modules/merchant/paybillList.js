@@ -74,20 +74,27 @@ var paybillList = function () {
             }, {
                 "aTargets": [6],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        return a;
+                    }
+                   /* if(a!=null||a!=""){
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }
-
+                    }else{
+                        return ""
+                    }*/
                 }
             },
             {
                 "aTargets": [7],
                 "mRender": function (a, b, c, d) {
-                    if(a!=null||a!=""){
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
-                    }
+                  if(a==null||a==""){
+                      return ""
+                  }else{
+                      return a;
+                  }
 
                 }
             },{

@@ -14,7 +14,14 @@ public class MerchantInfoVo {
     private String description;
     private String address;
     private String createUserName;
-    private Date createTime;
+    private String createTime;
+    private String logoBill;
+    private String updateTime;
+    private String updateUserName;
+    private int status;
+    private String logoIntro;
+    private Integer audit;
+
     public Long getId() {
         return id;
     }
@@ -104,12 +111,60 @@ public class MerchantInfoVo {
         this.createUserName = createUserName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getLogoBill() {
+        return logoBill;
+    }
+
+    public void setLogoBill(String logoBill) {
+        this.logoBill = logoBill;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateUserName() {
+        return updateUserName;
+    }
+
+    public void setUpdateUserName(String updateUserName) {
+        this.updateUserName = updateUserName;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getLogoIntro() {
+        return logoIntro;
+    }
+
+    public void setLogoIntro(String logoIntro) {
+        this.logoIntro = logoIntro;
+    }
+
+    public Integer getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Integer audit) {
+        this.audit = audit;
     }
 
     @Override
@@ -126,7 +181,13 @@ public class MerchantInfoVo {
                 ", description='" + description + '\'' +
                 ", address='" + address + '\'' +
                 ", createUserName='" + createUserName + '\'' +
-                ", createTime=" + createTime +
+                ", createTime='" + createTime + '\'' +
+                ", logoBill='" + logoBill + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", updateUserName='" + updateUserName + '\'' +
+                ", status=" + status +
+                ", logoIntro='" + logoIntro + '\'' +
+                ", audit=" + audit +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ package com.mbr.admin.manager.app.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.Banner;
@@ -88,7 +89,7 @@ public class BannerManagerImpl implements BannerManager {
                 orderBy = count%3==0?1:count%3;
             }
             banner.setOrderBy(orderBy);
-            banner.setCreateTime(new Date());
+            banner.setCreateTime(DateUtil.formatDateTime(new Date()));
             banner.setStatus(0);
             banner.setUrl(bannerVo.getUrl());
             banner.setType(bannerVo.getType());
@@ -99,7 +100,7 @@ public class BannerManagerImpl implements BannerManager {
             banner.setUrl(bannerVo.getUrl());
             banner.setType(bannerVo.getType());
             banner.setChannel(bannerVo.getChannel());
-            banner.setCreateTime(new Date());
+            banner.setCreateTime(DateUtil.formatDateTime(new Date()));
             banner.setStatus(0);
         }
         Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
