@@ -16,11 +16,8 @@ public interface PayBillDao extends TkMapper<PayBill> {
                 "<if test=\"merchantId!=null and merchantId!=''\">" +
                 " and merchant_id=#{merchantId}"+
                 "</if>"+
-                "<if test=\"fromAddr!=null and fromAddr!=''\">" +
-                " and from_addr=#{fromAddr}"+
-                "</if>"+
-                "<if test=\"toAddr!=null and toAddr!=''\">" +
-                " and to_addr=#{toAddr}"+
+                "<if test=\"refBizNo!=null and refBizNo!=''\">" +
+                " and ref_biz_no=#{refBizNo}"+
                 "</if>"+
                 "<if test=\"billType!=-1\">" +
                     " and bill_type=#{billType}"+
@@ -34,5 +31,5 @@ public interface PayBillDao extends TkMapper<PayBill> {
             "</where>"+
             " order by create_time desc,last_update_time desc"+
             "</script>")
-    public List<PayBillVo> queryAllPayBill(@Param(value = "merchantId") String merchantId, @Param(value = "fromAddr")String fromAddr, @Param(value = "toAddr")String toAddr, @Param(value = "billType")int billType, @Param(value = "merchantnameSearch")String merchantnameSearch, @Param(value = "status")int status);
+    public List<PayBillVo> queryAllPayBill(@Param(value = "merchantId") String merchantId,@Param(value = "refBizNo") String refBizNo, @Param(value = "billType")int billType, @Param(value = "merchantnameSearch")String merchantnameSearch, @Param(value = "status")int status);
 }

@@ -102,7 +102,7 @@ public class WithDrawManagerImpl implements WithDrawManager {
         Long id = null;
         if(withDraw.getId()==null){
             id = new TimestampPkGenerator().next(getClass());
-            WithDraw withdrawDistinct = withDrawDao.selectByMerchantIdAndCoinId(withDraw.getMerchantId(), withDraw.getCoinId());
+            WithDraw withdrawDistinct = withDrawDao.selectByMerchantIdAndCoinId(withDraw.getMerchantId(), withDraw.getCoinId(),withDraw.getAddress());
             if(withdrawDistinct!=null){
                 return "withdrawExists";
             }

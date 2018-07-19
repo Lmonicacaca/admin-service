@@ -1,8 +1,8 @@
 server:
-  port: 9300
+  port: 9302
 
-remote_url: http://47.100.47.200:9907/upload
-image_url: http://47.100.47.200:9907
+remote_url: http://47.101.47.200:9907/upload
+image_url: http://47.101.47.200:9907
 
 channel: 73088886094000
 spring:

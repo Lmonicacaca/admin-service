@@ -163,14 +163,12 @@ var paybillList = function () {
     };
     var __queryHandler =function (condition) {
         var merchantidSearch = $("#merchantidSearch").val();
-        var fromAddrSearch = $("#fromAddrSearch").val();
-        var toAddrSearch = $("#toAddrSearch").val();
+        var refBizNoSearch = $("#refBizNoSearch").val();
         var billTypeSearch = $("#billType option:selected").val();
         var statusSearch = $("#statusSearch option:selected").val();
         var merchantnameSearch = $("#merchantnameSearch").val();
         if (assertNotNullStr(merchantidSearch)) condition.merchantidSearch = merchantidSearch;
-        if (assertNotNullStr(fromAddrSearch)) condition.fromAddrSearch = fromAddrSearch;
-        if (assertNotNullStr(toAddrSearch)) condition.channelSearch = toAddrSearch;
+        if (assertNotNullStr(refBizNoSearch)) condition.refBizNoSearch = refBizNoSearch;
         if (assertNotNullStr(billTypeSearch)) condition.billTypeSearch = billTypeSearch;
         if (assertNotNullStr(statusSearch)) condition.statusSearch = statusSearch;
         if (assertNotNullStr(merchantnameSearch)) condition.merchantnameSearch = merchantnameSearch;

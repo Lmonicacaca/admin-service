@@ -95,7 +95,7 @@ public class MerchantCoinManagerImpl implements MerchantCoinManager {
         Long id = null;
         if(merchantCoinVo.getId()==null){
             id = new TimestampPkGenerator().next(getClass());
-            MerchantCoin merchantCoin = merchantCoinDao.selectByMerchantIdAndCoinId(merchantCoinVo.getMerchantId(), merchantCoinVo.getCoinId());
+            MerchantCoin merchantCoin = merchantCoinDao.selectByMerchantIdAndCoinId(merchantCoinVo.getMerchantId(), merchantCoinVo.getCoinId(),merchantCoinVo.getAddress());
             if(merchantCoin!=null){
                 return "merchantCoinExist";
             }

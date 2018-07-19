@@ -28,11 +28,11 @@ public class PayBillController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String merchantidSearch, String fromAddrSearch, String toAddrSearch,String billTypeSearch,String merchantnameSearch,String statusSearch){
+    public Object queryList(HttpServletRequest request,String merchantidSearch, String refBizNoSearch,String billTypeSearch,String merchantnameSearch,String statusSearch){
         int billType = Integer.parseInt(billTypeSearch);
         int status = Integer.parseInt(statusSearch);
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
-        List<PayBillVo> payBillList = payManager.queryAllPayBill(merchantidSearch,fromAddrSearch,toAddrSearch,billType,merchantnameSearch,status);
+        List<PayBillVo> payBillList = payManager.queryAllPayBill(merchantidSearch,refBizNoSearch,billType,merchantnameSearch,status);
         PageResultDto result = new PageResultDto<PayBillVo>(new PageInfo<PayBillVo>(payBillList));
         return result;
     }

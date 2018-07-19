@@ -23,8 +23,8 @@ public class PayBillManageImpl implements PayBillManager {
     @Resource
     private ProductRepository productRepository;
     @Override
-    public List<PayBillVo> queryAllPayBill(String merchantId, String fromAddr, String toAddr,int billType,String merchantnameSearch,int status) {
-        List<PayBillVo> payBillList = payDao.queryAllPayBill(merchantId, fromAddr, toAddr, billType, merchantnameSearch, status);
+    public List<PayBillVo> queryAllPayBill(String merchantId,  String refBizNoSearch,int billType,String merchantnameSearch,int status) {
+        List<PayBillVo> payBillList = payDao.queryAllPayBill(merchantId, refBizNoSearch, billType, merchantnameSearch, status);
         for (int i=0;i<payBillList.size();i++){
             if(payBillList.get(i).getCoinId()!=null&&payBillList.get(i).getCoinId()!=0){
                 Product coin = productRepository.findById(payBillList.get(i).getCoinId());
