@@ -14,7 +14,18 @@ var notification = function () {
             {"mData": "isRead"},
             {"mData": null}
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
+                "aTargets": [1],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else{
+                        return a;
+                    }
+                }
+            },
+            {
             "aTargets": [2],
             "mRender": function (a, b, c, d) {
                 if(a==0){

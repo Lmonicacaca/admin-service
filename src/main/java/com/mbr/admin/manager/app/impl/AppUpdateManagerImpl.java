@@ -195,7 +195,7 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
        appUpdate.setVersion(appUpdateVo.getVersion());
        appUpdate.setForce(appUpdateVo.getForce());
        appUpdate.setAppUpdateType(appUpdateVo.getAppUpdateType());
-       appUpdate.setChannel(appUpdateVo.getChannel());
+       appUpdate.setChannel(Long.parseLong(appUpdateVo.getChannel()));
        if(appUpdateVo.getAppUpdateType().equals("IOS")){
            appUpdate.setUrl(iosUrlPath);
            appUpdate.setPlistUrl(plistUrlPath);

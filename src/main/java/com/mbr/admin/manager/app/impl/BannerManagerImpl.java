@@ -93,13 +93,13 @@ public class BannerManagerImpl implements BannerManager {
             banner.setStatus(0);
             banner.setUrl(bannerVo.getUrl());
             banner.setType(bannerVo.getType());
-            banner.setChannel(bannerVo.getChannel());
+            banner.setChannel(Long.parseLong(bannerVo.getChannel()));
         }else{
             banner.setId(bannerVo.getId());
             banner.setOrderBy(bannerVo.getOrderBy());
             banner.setUrl(bannerVo.getUrl());
             banner.setType(bannerVo.getType());
-            banner.setChannel(bannerVo.getChannel());
+            banner.setChannel(Long.parseLong(bannerVo.getChannel()));
             banner.setCreateTime(DateUtil.formatDateTime(new Date()));
             banner.setStatus(0);
         }

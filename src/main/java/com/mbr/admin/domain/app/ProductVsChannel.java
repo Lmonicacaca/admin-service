@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class ProductVsChannel {
     private String id;
-    private String channel;
+    private Long channel;
     private String productId;
     private int onlineStatus;
     private int orderNo;
@@ -23,11 +23,11 @@ public class ProductVsChannel {
         this.id = id;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

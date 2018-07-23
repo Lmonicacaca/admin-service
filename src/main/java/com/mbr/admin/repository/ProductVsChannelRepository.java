@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ProductVsChannelRepository extends MongoRepository<ProductVsChannel,Long> {
 
-    ProductVsChannel findByChannelAndProductId(String channel,String productId);
+    ProductVsChannel findByChannelAndProductId(Long channel,String productId);
 }

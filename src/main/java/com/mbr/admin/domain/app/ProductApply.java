@@ -11,7 +11,7 @@ public class ProductApply {
     private String coinDescription;
     private String tokenAddress;
     private int coinDecimals;
-    private String channel;
+    private Long channel;
     private String merchantName;
     private int status;
     private Date createTime;
@@ -57,11 +57,11 @@ public class ProductApply {
         this.coinDecimals = coinDecimals;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

@@ -15,7 +15,7 @@ public class AppUpdate {
     private Date updateTime;
     private String appUpdateType;
     private String iosLogo;
-    private String channel;
+    private Long channel;
     private String plistUrl;
 
     public Long getId() {
@@ -90,11 +90,11 @@ public class AppUpdate {
         this.iosLogo = iosLogo;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 

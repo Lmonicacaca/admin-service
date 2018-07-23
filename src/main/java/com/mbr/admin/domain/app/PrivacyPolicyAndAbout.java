@@ -10,7 +10,7 @@ public class PrivacyPolicyAndAbout {
     private String content;
     private Date createTime;
     private  int type;
-    private String channel;
+    private Long channel;
     private String language;
     private String system;
 
@@ -46,11 +46,11 @@ public class PrivacyPolicyAndAbout {
         this.type = type;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 
