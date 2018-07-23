@@ -80,4 +80,10 @@ public class PrivacyPolicyAndAboutController extends BaseController {
         }
         return failed();
     }
+    @RequestMapping("queryContent")
+    @ResponseBody
+    public String queryContent(Long id){
+
+        return privacyPolicyAndAboutManager.queryContent(id);
+    }
 }

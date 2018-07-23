@@ -4637,7 +4637,7 @@ Portlets
   background: #fff;
 }
 .portlet.portlet-fullscreen > .portlet-body {
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   overflow-x: hidden;
   padding: 0 10px;
 }

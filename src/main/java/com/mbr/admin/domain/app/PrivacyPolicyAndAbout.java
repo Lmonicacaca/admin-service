@@ -12,6 +12,7 @@ public class PrivacyPolicyAndAbout {
     private  int type;
     private String channel;
     private String language;
+    private String system;
 
     public Long getId() {
         return id;
@@ -61,15 +62,24 @@ public class PrivacyPolicyAndAbout {
         this.language = language;
     }
 
+    public String getSystem() {
+        return system;
+    }
+
+    public void setSystem(String system) {
+        this.system = system;
+    }
+
     @Override
     public String toString() {
         return "PrivacyPolicyAndAbout{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
-                ", createTime='" + createTime + '\'' +
+                ", createTime=" + createTime +
                 ", type=" + type +
                 ", channel='" + channel + '\'' +
                 ", language='" + language + '\'' +
+                ", system='" + system + '\'' +
                 '}';
     }
 }

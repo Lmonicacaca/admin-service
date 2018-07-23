@@ -20,4 +20,6 @@ public interface PrivacyPolicyAndAboutManager {
     public void deletePrivacyPolicyAndAbout(Long id);
 
     public PrivacyPolicyAndAbout queryById(Long id);
+
+    public String queryContent(Long id);
 }

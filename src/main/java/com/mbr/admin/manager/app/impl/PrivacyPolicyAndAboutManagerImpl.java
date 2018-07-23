@@ -102,5 +102,11 @@ public class PrivacyPolicyAndAboutManagerImpl implements PrivacyPolicyAndAboutMa
         return privacyPolicyAndAboutRepository.findOne(id);
     }
 
+    @Override
+    public String queryContent(Long id) {
+        PrivacyPolicyAndAbout policyAndAbout = privacyPolicyAndAboutRepository.findById(id);
+        return policyAndAbout.getContent();
+    }
+
 
 }

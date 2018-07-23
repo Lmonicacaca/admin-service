@@ -4,14 +4,26 @@ var privacyPolicyAndAbout = function () {
         var aoColumns = [
             {"mData": "id"},
             {"mData": "channel"},
+            {"mData": "system"},
             {"mData": "type"},
             {"mData": "content"},
             {"mData": "language"},
             {"mData": "createTime"},
             {"mData": null}
         ];
-        var aoColumnDefs = [{
-            "aTargets": [2],
+        var aoColumnDefs = [
+            {
+                "aTargets": [2],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else{
+                        return a;
+                    }
+
+                }
+            },{
+            "aTargets": [3],
             "mRender": function (a, b, c, d) {
                 if(a==0){
                     return "隐私协议";
@@ -20,15 +32,26 @@ var privacyPolicyAndAbout = function () {
                 }
 
             }
-        },{
-            "aTargets": [5],
+        },
+            {
+                "aTargets": [4],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else{
+                        return "<a class=\"edit\" name =\"contentShow\" href=\"javascript:;\">内容</a>";
+                    }
+
+                }
+            },{
+            "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 var date = new Date(a);
                 return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
             }
         },
             {
-                "aTargets": [6],
+                "aTargets": [7],
                 "mRender": function (a, b, c, d) {
                     return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
                 }
@@ -43,6 +66,41 @@ var privacyPolicyAndAbout = function () {
 
     };
     var __initHandler =function () {
+
+        //显示内容
+        $("a[name='contentShow']").on("click", function () {
+            var table = $('#dataTables-example').DataTable();
+            var d = table.row($(this).parents('tr')).data();
+            var contentShow="";
+            $.ajax({
+                url:getRootPath()+"/privacyPolicyAndAbout/queryContent",
+                type:"get",
+                dataType:"text",
+                data:"id="+d.id,
+                async:false,
+                success:function (data) {
+                    contentShow = data;
+                }
+            })
+            $("#contentShow").html(contentShow);
+            var index=layer.open({
+                area: '800px',
+                // shade: [0.8, '#393D49'],
+                title: "内容详情",
+                type: 1,
+                content: $("#contentShow"),
+                cancel: function (index, layero) {
+                    layer.closeAll();
+                },
+                success:function(layero){
+                    // $(".layui-layer-shade").css("z-index",1);
+                }
+
+
+            });
+
+        });
+
         //删除
         $("#dataTables-example tbody").on("click", "a[name='delete']", function () {
             var table = $('#dataTables-example').DataTable();
@@ -110,11 +168,9 @@ var privacyPolicyAndAbout = function () {
                                         }
                                     });
                                 }
-                                index = 0;
                             },
                             cancel: function (i, layero) {
                                 layer.close(i);
-                                index = 0;
                             }
                         });
                     }
@@ -126,18 +182,21 @@ var privacyPolicyAndAbout = function () {
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
-            $("#content").val("");
+            KindEditor.remove('#editor');
             $("#language").val("");
             $("#channel").html("");
             $("#type").html("");
-            layer.open({
+               layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
                 title: "添加隐私协议",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
+                   offset: '0px',
+                zIndex: 1500,
                 success: function (layero, index) {
+                    loadKindeditor();
                     validateForm().resetForm();
                     loadChannel();
                     loadType();
@@ -160,6 +219,7 @@ var privacyPolicyAndAbout = function () {
                 },
                 cancel: function (index, layero) {
                     layer.close(index);
+                    KindEditor.remove('#editor');
                 }
             });
 
@@ -214,6 +274,9 @@ var privacyPolicyAndAbout = function () {
                 type: {
                     required: true
                 },
+                system: {
+                    required: true
+                },
                 content: {
                     required: true
                 },
@@ -233,7 +296,10 @@ var privacyPolicyAndAbout = function () {
                 },
                 language: {
                     required: "语言不能为空!"
-                }
+                },
+                system: {
+                    required: "系统不能为空!"
+                },
             },
             highlight: function (element) { // hightlight error inputs
                 $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
@@ -278,12 +344,94 @@ var privacyPolicyAndAbout = function () {
         var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);
         return(prePath+postPath);
     }
+    var loadKindeditor = function kedit() {
+        var keditor = KindEditor.create(
+            "#editor",
 
+            {
+
+                width: "100%", //编辑器的宽度为70%
+
+                height: "430px", //编辑器的高度为100px
+
+                pasteType:1,
+
+                filterMode: false, //不会过滤HTML代码
+
+                resizeMode: 1,//编辑器只能调整高度
+
+                uploadJson: getRootPath() + '/kindeditor/fileUpload',
+
+                fileManagerJson: getRootPath() + '/kindeditor/fileUpload',
+
+                allowUpload: true,
+
+                allowFileManager: true,
+
+                allowPreviewEmoticons: true,//显示浏览音频远程故武器按钮
+                //设置额外的请求参数
+                extraFileUploadParams: {
+                    _csrf: $("#csrfId").attr("value")
+                },
+
+                afterCreate: function () {
+
+                    var self = this;
+
+                    KindEditor.ctrl(document, 13, function () {
+
+                        self.sync();
+
+                        document.forms['example'].submit();
+
+                    });
+
+                    KindEditor.ctrl(self.edit.doc, 13, function () {
+
+                        self.sync();
+
+                        document.forms['example'].submit();
+
+                    });
+
+                },
+
+                items: [
+
+                    'source', '|', 'undo', 'redo', '|', 'preview', 'code', 'cut', 'copy', 'paste',
+
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+
+                    'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+
+                    'formatblock', 'fontname', 'fontsize', '|',  'bold',
+
+                    'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|',
+
+                    'table', 'hr', 'pagebreak',
+
+                    'anchor', 'link', 'unlink', '|', 'image', 'media', 'insertfile', 'editImage'
+
+                ],
+
+                afterBlur: function () {
+                    this.sync();
+                },//和DWZ 的 Ajax onsubmit 冲突,提交表单时 编辑器失去焦点执行填充内容
+
+                newlineTag: "br"
+
+            });
+
+
+    };
     return {
         init:function () {
             loadData();
             add();
             query();
+            // loadKindeditor();
         }
     };
 }();

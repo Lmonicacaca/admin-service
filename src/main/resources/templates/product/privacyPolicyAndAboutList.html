@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="static/assets/global/plugins/app/privacyPolicyAndAbout.css" rel="stylesheet" type="text/css"/>
     <title>APP隐私协议</title>
+    <script charset="utf-8" src="/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="/kindeditor/kindeditor-all-min.js"></script>
+    <script charset="utf-8" src="/kindeditor/plugins/media/media.js"></script>
+    <script charset="utf-8" src="/kindeditor/plugins/flash/flash.js"></script>
+    <script charset="utf-8" src="/kindeditor/lang/zh-CN.js"></script>
 </head>
 <body>
 <div class="portlet box grey-cascade" style="width: 99%">
@@ -52,6 +58,7 @@
             <tr>
                 <th>序号</th>
                 <th>渠道号</th>
+                <th>系统</th>
                 <th>类型</th>
                 <th>内容</th>
                 <th>语言</th>
@@ -64,7 +71,7 @@
     </div>
 </div>
 
-<div id="addWin" style="display: none;width: 99%" class="portlet-body form">
+<div id="addWin" style="display: none;width: 99%;height: 600px;" class="portlet-body form">
     <form role="form" th:action="@{/privacyPolicyAndAbout/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
         <input type="hidden" value="" name="id" id="id" />
         <div class="form-body">
@@ -84,12 +91,18 @@
                     </select>
                 </div>
             </div>
-
+            <div class="form-group">
+                <label class="control-label col-md-3">系统<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" data-required="1" id="system" name="system" placeholder="请输入系统" />
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-3">内容<span class="required">* </span>
                 </label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" data-required="1" id="content" name="content" placeholder="请输入内容" />
+                <div class="col-md-8 ui-dialog">
+                    <textarea id="editor" name="content"></textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -101,6 +114,10 @@
             </div>
         </div>
     </form>
+</div>
+
+<div id="contentShow">
+
 </div>
 
 <input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
