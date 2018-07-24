@@ -14,4 +14,6 @@ public interface HelpManager {
     public void deleteHelp(Long id);
 
     public Help queryById(Long id);
+
+    public List<Map<String,Object>> queryType();
 }

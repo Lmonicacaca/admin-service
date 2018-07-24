@@ -1,50 +1,40 @@
-var help = function () {
+var helpType = function () {
     var index =0;
     var loadData = function () {
         var aoColumns = [
             {"mData": "id"},
-            {"mData": "title"},
-            {"mData": "content"},
-            {"mData": "typeId"},
-            {"mData": "language"},
+            {"mData": "id"},
+            {"mData": "name"},
             {"mData": "createTime"},
             {"mData": null}
         ];
         var aoColumnDefs = [
-
             {
                 "aTargets": [3],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
                     }else{
-                        return a;
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+
                     }
-                }
-            },{
-            "aTargets": [5],
-            "mRender": function (a, b, c, d) {
-                if(a==null||a==""){
-                    return ""
-                }else{
-                    var date = new Date(a);
-                    return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
 
                 }
-            }
-        },{
-            "aTargets": [6],
+            },
+            {
+            "aTargets": [4],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
         }];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
-        initPageTable(t, "help/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initPageTable(t, "helpType/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
     };
     var __queryHandler =function (condition) {
-        var titleSearch = $("#titleSearch").val();
-        if (assertNotNullStr(titleSearch)) condition.titleSearch = titleSearch;
+        var idSearch = $("#idSearch").val();
+        if (assertNotNullStr(idSearch)) condition.idSearch = idSearch;
     };
     var __initHandler =function () {
         //删除
@@ -55,7 +45,7 @@ var help = function () {
             var csrf = $("#csrfId");
             var csrfName = csrf.attr('name');
             layer.confirm("你确定要删除该数据吗？", function (index) {
-                $.post("help/deleteHelp?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
+                $.post("helpType/deleteHelpType?" + csrfName + "=" + csrf.attr("value"), param).then(function (data) {
                     if (data.code == 200) {
                         layer.msg("删除成功");
                         var dataTable = $("#dataTables-example").dataTable();
@@ -71,16 +61,12 @@ var help = function () {
                 var csrf = $("#csrfId");
                 var csrfName = csrf.attr('name');
                 var param = {"id": d.id};
-                $.post("help/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
+                $.post("helpType/queryById?" + csrfName + "=" + csrf.attr("value"), param, function (data) {
                     if (data.code == 200) {
                         var d = data.data;
                         $("#id").val(d.id);
-                        $("#title").val(d.title);
-                        $("#content").val(d.content);
-                        $("#language").val(d.language);
-                        var optionType = "<option value='" + d.typeId + "' selected='selected'>" + d.typeId + "</option>";
-                        $("#typeId").empty();
-                        $("#typeId").append(optionType);
+                        $("#name").val(d.name);
+                        $("#createTime").val(new Date(d.createTime));
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -89,7 +75,6 @@ var help = function () {
                             content: $("#addWin"),
                             btn: ['确定'],
                             success: function (layero, index) {
-                                loadType();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -100,39 +85,36 @@ var help = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
                                 }
-                                index = 0;
                             },
                             cancel: function (i, layero) {
                                 layer.close(i);
-                                index = 0;
                             }
                         });
                     }
                 });
         });
     };
-    //添加用户
+    //添加类型
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
-            $("#title").val("");
-            $("#content").val("");
-            $("#language").val("");
+            $("#name").val("");
+            $("#createTime").val(new Date());
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
-                title: "添加APP帮助",
+                title: "添加类型",
                 type: 1,
                 content: $("#addWin"),
                 btn: ['添加', '关闭'],
                 success: function (layero, index) {
+                    $("#form")[0].reset();
                     validateForm().resetForm();
-                    loadType();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -144,7 +126,7 @@ var help = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("添加数据失败");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -164,46 +146,19 @@ var help = function () {
             dataTable.fnReloadAjax();
         });
     }
-    var loadType = function () {
-        $('#typeId').select2({
-            placeholder: "请选择类型",
-            allowClear: true,
-            ajax: {
-                url: "help/queryType",
-                cache: true,
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            }
-        });
-    };
    var validateForm = function () {
         var validate = $('#form').validate({
             errorElement: 'span', //default input error message container
             errorClass: 'help-block', // default input error message class
             focusInvalid: false, // do not focus the last invalid input
             rules: {
-                title: {
-                    required: true
-                },
-                content: {
-                    required: true
-                },
-                language: {
+                name: {
                     required: true
                 }
             },
             messages: {
-                title: {
-                    required: "标题不能为空!"
-                },
-                content: {
-                    required: "内容不能为空!"
-                },
-                language: {
-                    required: "语言不能为空!"
+                name: {
+                    required: "类型名不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

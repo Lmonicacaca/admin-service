@@ -6,10 +6,12 @@ import lombok.Data;
 @Data
 public class Help {
     private Long id;
+    private Long typeId;
     private String content;
     private String title;
     private String language;
     private String createTime;
+
 
     public Long getId() {
         return id;
@@ -49,6 +51,14 @@ public class Help {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Long typeId) {
+        this.typeId = typeId;
     }
 
     @Override

@@ -2,8 +2,10 @@ package com.mbr.admin.manager.app.impl;
 
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.Help;
+import com.mbr.admin.domain.app.HelpType;
 import com.mbr.admin.manager.app.HelpManager;
 import com.mbr.admin.repository.HelpRepository;
+import com.mbr.admin.repository.HelpTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,10 +15,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class HelpManagerImpl implements HelpManager {
@@ -24,6 +23,8 @@ public class HelpManagerImpl implements HelpManager {
     private HelpRepository helpRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private HelpTypeRepository helpTypeRepository;
     @Override
     public Map<String,Object> queryList(String title, Pageable page) {
         Query query = new Query();
@@ -77,5 +78,18 @@ public class HelpManagerImpl implements HelpManager {
     @Override
     public Help queryById(Long id) {
         return helpRepository.findOne(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryType() {
+        List<HelpType> helpTypeList = helpTypeRepository.findAll();
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(int i=0;i<helpTypeList.size();i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",helpTypeList.get(i).getId());
+            map.put("text",helpTypeList.get(i).getName());
+            list.add(map);
+        }
+        return list;
     }
 }

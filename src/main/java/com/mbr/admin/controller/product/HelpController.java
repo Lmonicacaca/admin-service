@@ -1,7 +1,5 @@
 package com.mbr.admin.controller.product;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
 import com.mbr.admin.domain.app.Help;
@@ -66,5 +64,11 @@ public class HelpController extends BaseController {
             return success(help);
         }
         return failed();
+    }
+
+    @RequestMapping("queryType")
+    @ResponseBody
+    public Object queryType(){
+        return helpManager.queryType();
     }
 }

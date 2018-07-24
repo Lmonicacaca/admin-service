@@ -129,7 +129,7 @@ var privacyPolicyAndAbout = function () {
                     if (data.code == 200) {
                         var d = data.data;
                         $("#id").val(d.id);
-                        $("#content").val(d.content);
+                        $("#content").html(d.content);
                         $("#language").val(d.language);
                         var typeName = "";
                         if(d.type==0){
