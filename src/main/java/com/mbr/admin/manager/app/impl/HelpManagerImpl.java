@@ -26,11 +26,16 @@ public class HelpManagerImpl implements HelpManager {
     @Autowired
     private HelpTypeRepository helpTypeRepository;
     @Override
-    public Map<String,Object> queryList(String title, Pageable page) {
+    public Map<String,Object> queryList(String title,String languageSearch, Pageable page) {
         Query query = new Query();
         Criteria criteria = new Criteria();
-        if(title!=null&&title!=""){
-            criteria.andOperator(Criteria.where("title").regex(title));
+        if(title!=null&&title!=""&&languageSearch!=null&&languageSearch!=""){
+            criteria.andOperator(Criteria.where("typeId" ).is(Long.parseLong(title)),Criteria.where("language").is(languageSearch));
+        }
+        else if(title!=null&&title!=""){
+            criteria.andOperator(Criteria.where("typeId").is(Long.parseLong(title)));
+        }else if(languageSearch!=null&&languageSearch!=""){
+            criteria.andOperator(Criteria.where("language").is(languageSearch));
         }
 
         List<Sort.Order> orders = new ArrayList<>();
@@ -42,7 +47,6 @@ public class HelpManagerImpl implements HelpManager {
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, Help.class);
         List<Help> list = mongoTemplate.find(query.with(page), Help.class);
-        System.out.println(list.size());
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",list);

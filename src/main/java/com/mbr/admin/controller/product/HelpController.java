@@ -30,9 +30,10 @@ public class HelpController extends BaseController {
 
     @RequestMapping("queryList")
     @ResponseBody
-    public Object queryList(HttpServletRequest request,String titleSearch){
+    public Object queryList(HttpServletRequest request,String titleSearch,String languageSearch){
+        System.out.println(titleSearch+" "+languageSearch);
         Pageable page = new PageRequest(super.getPageNo(request)-1, super.getPageSize(request));
-        Map<String, Object> map = helpManager.queryList(titleSearch, page);
+        Map<String, Object> map = helpManager.queryList(titleSearch,languageSearch, page);
         PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;
     }

@@ -41,10 +41,14 @@ var help = function () {
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
         initPageTable(t, "help/queryList?"+csrf.attr("name")+"="+csrf.attr("value"), aoColumns, aoColumnDefs, __queryHandler, __initHandler);
+        initType();
+
     };
     var __queryHandler =function (condition) {
         var titleSearch = $("#titleSearch").val();
+        var languageSearch = $("#languageSearch").val();
         if (assertNotNullStr(titleSearch)) condition.titleSearch = titleSearch;
+        if (assertNotNullStr(languageSearch)) condition.languageSearch = languageSearch;
     };
     var __initHandler =function () {
         //删除
@@ -166,6 +170,21 @@ var help = function () {
     }
     var loadType = function () {
         $('#typeId').select2({
+            placeholder: "请选择类型",
+            allowClear: true,
+            ajax: {
+                url: "help/queryType",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
+    var initType = function () {
+        $('#titleSearch').select2({
             placeholder: "请选择类型",
             allowClear: true,
             ajax: {

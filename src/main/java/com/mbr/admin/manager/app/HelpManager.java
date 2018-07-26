@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface HelpManager {
-    public Map<String,Object> queryList(String title, Pageable page);
+    public Map<String,Object> queryList(String title,String languageSearch, Pageable page);
 
     public int addOrUpdate(Help help);
 
