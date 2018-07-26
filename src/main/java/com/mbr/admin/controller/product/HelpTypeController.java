@@ -31,7 +31,7 @@ public class HelpTypeController extends BaseController {
     @RequestMapping("/queryList")
     @ResponseBody
     public Object queryList(Long idSearch, HttpServletRequest request){
-        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Pageable page = new PageRequest(super.getPageNo(request)-1, super.getPageSize(request));
         Map<String, Object> map = helpTypeManager.queryList(idSearch,page);
         PageResultDto result = result((List) map.get("list"), Long.valueOf(map.get("total").toString()));
         return result;

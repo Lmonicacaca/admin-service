@@ -32,13 +32,17 @@ public class HelpManagerImpl implements HelpManager {
         if(title!=null&&title!=""){
             criteria.andOperator(Criteria.where("title").regex(title));
         }
+
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
+        }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, Help.class);
-        if(count>page.getPageSize()){
-            query.with(page);
-
-        }
-        List<Help> list = mongoTemplate.find(query, Help.class);
+        List<Help> list = mongoTemplate.find(query.with(page), Help.class);
+        System.out.println(list.size());
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",list);

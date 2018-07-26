@@ -10,15 +10,13 @@ import com.mbr.admin.repository.HelpTypeRepository;
 import org.omg.CORBA.ARG_OUT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class HelpTypeManagerImpl implements HelpTypeManager {
@@ -35,12 +33,15 @@ public class HelpTypeManagerImpl implements HelpTypeManager {
         if(id!=null){
             c.andOperator(Criteria.where("id").is(id));
         }
-        query.addCriteria(c);
-        Long count = mongoTemplate.count(query, HelpType.class);
-        if(count>page.getPageSize()){
-            query.with(page);
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
         }
-        List<HelpType> helpTypeList = mongoTemplate.find(query, HelpType.class);
+        query.addCriteria(c);
+        long count = mongoTemplate.count(query, HelpType.class);
+        List<HelpType> helpTypeList = mongoTemplate.find(query.with(page), HelpType.class);
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",helpTypeList);

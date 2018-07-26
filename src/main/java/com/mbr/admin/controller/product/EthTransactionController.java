@@ -35,7 +35,7 @@ public class EthTransactionController extends BaseController {
         if(statusSearch.equals("999")){
             statusSearch = null;
         }
-        Pageable page = new PageRequest(super.getPageNo(request), super.getPageSize(request),new Sort(new Sort.Order(Sort.Direction.DESC,"createTime")));
+        Pageable page = new PageRequest(super.getPageNo(request)-1, super.getPageSize(request));
         Map<String, Object> map = ethTransactionManager.queryList(orderIdSearch, fromSearch, toSearch,statusSearch, page);
         return result((List) map.get("list"),Long.valueOf(map.get("total").toString()));
     }

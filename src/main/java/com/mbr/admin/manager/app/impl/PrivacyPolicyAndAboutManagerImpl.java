@@ -36,13 +36,15 @@ public class PrivacyPolicyAndAboutManagerImpl implements PrivacyPolicyAndAboutMa
             criteria.andOperator(Criteria.where("channel").is(channel));
         }
 
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
+        }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, PrivacyPolicyAndAbout.class);
-        if(count>page.getPageSize()){
-            query.with(page);
-
-        }
-        List<PrivacyPolicyAndAbout> list = mongoTemplate.find(query, PrivacyPolicyAndAbout.class);
+        List<PrivacyPolicyAndAbout> list = mongoTemplate.find(query.with(page), PrivacyPolicyAndAbout.class);
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",list);

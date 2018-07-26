@@ -48,12 +48,15 @@ public class BannerManagerImpl implements BannerManager {
             c.andOperator(Criteria.where("status").is(i));
         }
 
-        query.addCriteria(c);
-        Long count = mongoTemplate.count(query, Banner.class);
-        if(count>page.getPageSize()){
-            query.with(page);
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
         }
-        List<Banner> bannerList = mongoTemplate.find(query, Banner.class);
+        query.addCriteria(c);
+        long count = mongoTemplate.count(query, Banner.class);
+        List<Banner> bannerList = mongoTemplate.find(query.with(page), Banner.class);
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",bannerList);

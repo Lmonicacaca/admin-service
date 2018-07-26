@@ -16,10 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AuditProductManagerImpl implements AuditProductManager {
@@ -39,11 +36,14 @@ public class AuditProductManagerImpl implements AuditProductManager {
         if(channelSearch!=null&&channelSearch!=""){
             criteria.andOperator(Criteria.where("channel").is(channelSearch));
         }
-        query.addCriteria(criteria);
-        long count = mongoTemplate.count(query, ProductApply.class);
-        if(count>page.getPageSize()){
-            query.with(page);
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
         }
+        query.addCriteria(criteria);
+        long count = mongoTemplate.count(query.with(page), ProductApply.class);
         List<ProductApply> list = mongoTemplate.find(query, ProductApply.class);
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);

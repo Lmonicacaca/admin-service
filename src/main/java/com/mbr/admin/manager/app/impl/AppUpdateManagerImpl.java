@@ -11,6 +11,7 @@ import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.AppUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -41,12 +42,16 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
         if(version!=null&&version!=""){
             criteria.andOperator(Criteria.where("version").is(version));
         }
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
+        }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, AppUpdate.class);
-        if(count>page.getPageSize()){
-            query.with(page);
-        }
-        List<AppUpdate> appUpdateList = mongoTemplate.find(query, AppUpdate.class);
+
+        List<AppUpdate> appUpdateList = mongoTemplate.find(query.with(page), AppUpdate.class);
 
         for(int i=0;i<appUpdateList.size();i++){
             if(appUpdateList.get(i).getUrl()!=null&&appUpdateList.get(i).getUrl()!=""){

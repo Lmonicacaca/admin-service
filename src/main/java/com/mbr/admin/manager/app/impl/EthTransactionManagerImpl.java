@@ -43,13 +43,15 @@ public class EthTransactionManagerImpl implements EthTransactionManager {
 
         }
 
-        query.addCriteria(criteria);
-        Long count = mongoTemplate.count(query,EthTransaction.class);
-        if(count>page.getPageSize()){
-            query.with( page);
-
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
         }
-        List<EthTransaction> ethTransactionList = mongoTemplate.find(query, EthTransaction.class);
+        query.addCriteria(criteria);
+        long count = mongoTemplate.count(query, EthTransaction.class);
+        List<EthTransaction> ethTransactionList = mongoTemplate.find(query.with(page), EthTransaction.class);
         List<EthTransactionVo> list = new ArrayList<>();
         for(int i=0;i<ethTransactionList.size();i++) {
 

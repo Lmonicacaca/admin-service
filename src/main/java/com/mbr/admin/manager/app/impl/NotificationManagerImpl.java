@@ -44,13 +44,15 @@ public class NotificationManagerImpl implements NotificationManager {
         }else if(transfer!=-1 && type!=-1){
             criteria.andOperator(Criteria.where("transfer").is(transfer),Criteria.where("type").is(type));
         }
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.DESC,"createTime"));
+        Sort sort = new Sort(orders);
+        if(null!=sort){
+            query.with(sort);
+        }
         query.addCriteria(criteria);
         long count = mongoTemplate.count(query, Notification.class);
-        if(count>page.getPageSize()){
-            query.with(page);
-
-        }
-        List<Notification> notificationList = mongoTemplate.find(query, Notification.class);
+        List<Notification> notificationList = mongoTemplate.find(query.with(page), Notification.class);
         Map<String,Object> map = new HashMap<>();
         map.put("total",count);
         map.put("list",notificationList);
