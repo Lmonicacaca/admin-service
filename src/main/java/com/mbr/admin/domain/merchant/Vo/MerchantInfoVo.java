@@ -5,7 +5,7 @@ import java.util.Date;
 public class MerchantInfoVo {
     private Long id;
     private String name;
-    private String channel;
+    private Long channel;
     private String website;
     private String rsaPublic;
     private String rsaPrivate;
@@ -21,6 +21,8 @@ public class MerchantInfoVo {
     private int status;
     private String logoIntro;
     private Integer audit;
+    private String appName;
+    private Long oldChannel;
 
     public Long getId() {
         return id;
@@ -38,11 +40,11 @@ public class MerchantInfoVo {
         this.name = name;
     }
 
-    public String getChannel() {
+    public Long getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(Long channel) {
         this.channel = channel;
     }
 
@@ -167,6 +169,22 @@ public class MerchantInfoVo {
         this.audit = audit;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public Long getOldChannel() {
+        return oldChannel;
+    }
+
+    public void setOldChannel(Long oldChannel) {
+        this.oldChannel = oldChannel;
+    }
+
     @Override
     public String toString() {
         return "MerchantInfoVo{" +
@@ -188,6 +206,8 @@ public class MerchantInfoVo {
                 ", status=" + status +
                 ", logoIntro='" + logoIntro + '\'' +
                 ", audit=" + audit +
+                ", appName='" + appName + '\'' +
+                ", oldChannel=" + oldChannel +
                 '}';
     }
 }

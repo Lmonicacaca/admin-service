@@ -123,4 +123,24 @@ public class MerchantVsResourceManagerImpl implements MerchantVsResourceManager 
         }
         return list;
     }
+
+    @Override
+    public int initMerchantVsResource(String merchantId, Long channelId) {
+        String[] allMerchantResource = merchantVsResourceDao.findAllMerchantResource();
+        SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<MerchantVsResource> list = new ArrayList<>();
+        for(int i=0;i<allMerchantResource.length;i++){
+            MerchantVsResource re = new MerchantVsResource();
+            re.setId(new TimestampPkGenerator().next(getClass()).toString());
+            re.setMerchantId(merchantId);
+            re.setChannel(channelId);
+            re.setCreateTime(DateUtil.formatDateTime(new Date()));
+            re.setCreateUserName(securityUserDetails.getUsername());
+            re.setResourceId(Long.parseLong(allMerchantResource[i]));
+            re.setStatus(0);
+            list.add(re);
+        }
+        int i = merchantVsResourceDao.insertList(list);
+        return i;
+    }
 }

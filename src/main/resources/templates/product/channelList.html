@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>用户访问权限列表</title>
+    <title>渠道列表</title>
 </head>
 <body>
 <div class="portlet box grey-cascade" style="width: 99%">
@@ -19,9 +19,15 @@
         <br />
         <form class="form-horizontal">
             <div class="col-sm-4">
-                <label class="control-label col-md-4">商户号：</label>
+                <label class="control-label col-md-4">商户名：</label>
                 <div class="input-group">
-                    <input class="form-control" placeholder="商户号" name="merchantIdSearch" id="merchantIdSearch" type="text" th:autofocus="true" />
+                    <input class="form-control" placeholder="商户名" name="merchantNameSearch" id="merchantNameSearch" type="text" th:autofocus="true" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <label class="control-label col-md-4">appName：</label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="appName" name="appNameSearch" id="appNameSearch" />
                 </div>
             </div>
             <button type="button" id="query" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>查询
@@ -34,7 +40,7 @@
 <div class="portlet box grey-cascade" style="width: 99%">
     <div class="portlet-title">
         <div class="caption">
-            <i class="fa fa-globe"></i>访问权限列表
+            <i class="fa fa-globe"></i>渠道列表
         </div>
         <div class="tools">
         </div>
@@ -52,11 +58,12 @@
             <tr>
                 <th>序号</th>
                 <th>渠道号</th>
+                <th>商户号</th>
                 <th>商户名</th>
-                <th>url</th>
-                <th>创建者</th>
-                <th>创建时间</th>
+                <th>APP名</th>
                 <th>状态</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
                 <th> 操作 </th>
             </tr>
             </thead>
@@ -66,9 +73,18 @@
 </div>
 
 <div id="addWin" style="display: none;width: 99%" class="portlet-body form">
-    <form role="form" th:action="@{/merchantVsResource/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
+    <form role="form" th:action="@{/channel/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
         <input type="hidden" value="" name="id" id="id" />
+        <input type="hidden" value="" name="createTime" id="createTime" />
         <div class="form-body">
+            <div class="form-group">
+                <label class="control-label col-md-3">渠道号<span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="channel" id="channel">
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-3">商户名 <span class="required">* </span>
                 </label>
@@ -77,13 +93,11 @@
                     </select>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-3">url <span class="required">* </span>
+            <div class="form-group" id="passwordPwd">
+                <label class="control-label col-md-3">appName <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
-                    <select class="form-control" name="resourceIdList" id="resourceIdList" multiple="multiple">
-                    </select>
+                    <input type="text" class="form-control" name="appName" id="appName" placeholder="请输入appName" />
                 </div>
             </div>
         </div>
@@ -91,10 +105,10 @@
 </div>
 
 <input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-<script src="static/modules/merchant/merchantVsResourceList.js" type="text/javascript"></script>
+<script src="static/modules/product/channelList.js" type="text/javascript"></script>
 <script>
     jQuery(document).ready(function() {
-        merchantVsResource.init();
+        channel.init();
     });
 </script>
 </body>

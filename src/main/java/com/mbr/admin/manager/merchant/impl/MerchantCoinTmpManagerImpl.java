@@ -11,6 +11,7 @@ import com.mbr.admin.domain.merchant.*;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantCoinTmpManager;
 import com.mbr.admin.manager.merchant.MerchantInfoManager;
+import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
 import com.mbr.admin.repository.ChannelRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +41,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     @Resource
     private MerchantVsResourceDao merchantVsResourceDao;
     @Resource
+    private MerchantVsResourceManager merchantVsResourceManager;
+    @Resource
     private ChannelRepository channelRepository;
     @Override
     public List<MerchantCoinTmp> queryList(String merchantIdSearch) {
@@ -68,34 +71,24 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
 
     @Override
     @Transactional(rollbackFor = MerchantException.class)
-    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException {
+    public String auditMerchant(MerchantCoinTmp merchantCoinTmp) throws MerchantException {
         //查询出商户信息
         MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
+        Channel channel = createChannel(merchantCoinTmp);
         if(merchantInfo!=null){
-            //先创建渠道号
-            Channel channel = new Channel();
-            Long channelId = new TimestampPkGenerator().next(getClass());
-            Long channelNumber = new TimestampPkGenerator().next(getClass());
-            channel.setId(channelId);
-            channel.setChannel(channelNumber);
-            channel.setSystemName(merchantInfo.getName());
-            channel.setStatus(0);
-            channel.setMerchantId(merchantInfo.getId());
-            channel.setCreateTime(new Date());
             //更新临时表的审核状态以及渠道号
-            int i = merchantCoinTmpDao.updateStatusByAudit(1, merchantCoinTmp.getId(),channelNumber);
+            int i = merchantCoinTmpDao.updateStatusByAudit(1, merchantCoinTmp.getId(),channel.getChannel());
             if(i>0){
-                //更新商户的渠道号信息
-                int j = merchantInfoManager.updateChannelById(channelNumber,merchantCoinTmp.getMerchantId());
+                //更新商户表的渠道号信息
+                int j = merchantInfoManager.updateChannelById(channel.getChannel(),merchantCoinTmp.getMerchantId());
                 if(j>0){
-                    //判断merchantCoin中是否存在
+                    //判断merchantCoin中是否存在相同地址相同币种的充值记录
                     MerchantCoin merchantCoin1 = merchantCoinDao.queryCoin(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
                     int merchantCoinInsert = 0;
                     if(merchantCoin1==null){
-
-                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(createMerchantCoin(merchantCoinTmp,channelNumber));
+                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(createMerchantCoin(merchantCoinTmp,channel.getChannel()));
                     }else{
-                        merchantCoinInsert =  merchantCoinDao.updateCoin(merchantCoinTmp.getMerchantId(),channelNumber, merchantCoinTmp.getCoinId(),merchantCoinTmp.getRechargeAddress());
+                        merchantCoinInsert =  merchantCoinDao.updateCoin(merchantCoinTmp.getMerchantId(),channel.getChannel(), merchantCoinTmp.getCoinId(),merchantCoinTmp.getRechargeAddress());
                     }
 
                     if(merchantCoinInsert>0){
@@ -103,9 +96,9 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                         WithDraw withDraw1 = withDrawDao.queryWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
                         int withdrawInsert = 0;
                         if(withDraw1==null){
-                            withdrawInsert = withDrawDao.insertWithdraw(createWithdraw(merchantCoinTmp,channelNumber));
+                            withdrawInsert = withDrawDao.insertWithdraw(createWithdraw(merchantCoinTmp,channel.getChannel()));
                         }else{
-                            withdrawInsert=withDrawDao.updateWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId(),channelNumber,merchantCoinTmp.getWithdrawAddress());
+                            withdrawInsert=withDrawDao.updateWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId(),channel.getChannel(),merchantCoinTmp.getWithdrawAddress());
                         }
 
                         if(withdrawInsert>0){
@@ -114,16 +107,35 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                             int k = 0;
                             if(merchantVsResourceList.size()==0){
                                 //添加权限
-                                k= initMerchantVsResource(merchantInfo.getId(), merchantInfo.getChannel());
+                                k= merchantVsResourceManager.initMerchantVsResource(merchantInfo.getId(), merchantInfo.getChannel());
                             }else{
-                               k = merchantVsResourceDao.updateChannel(merchantCoinTmp.getMerchantId(),channelNumber);
+                               k = merchantVsResourceDao.updateChannel(merchantCoinTmp.getMerchantId(),channel.getChannel());
                             }
                            if(k>0){
-                               Channel channelInsert = channelRepository.insert(channel);
+                               List<Channel> channelList = channelRepository.findByChannelAndMerchantId(Long.parseLong(merchantCoinTmp.getOldChannel()), merchantCoinTmp.getMerchantId());
+                               Channel channelInsert = null;
+                               //如果已存在商户和渠道的对应关系记录，就修改
+                               if(channelList!=null&&channelList.size()>0){
+                                   for(int h =0;h<channelList.size();h++){
+                                       Channel channel1 = new Channel();
+                                       channel1.setId(channelList.get(h).getId());
+                                       channel1.setChannel(merchantCoinTmp.getChannel());
+                                       channel1.setMerchantId(merchantCoinTmp.getMerchantId());
+
+                                       channel1.setSystemName(merchantInfo.getName());
+                                       channel1.setStatus(0);
+                                       channel1.setCreateTime(channelList.get(h).getCreateTime());
+                                       channel1.setUpdateTime(channelList.get(h).getUpdateTime());
+                                       channelInsert = channelRepository.save(channel1);
+                                   }
+                               }else{
+                                   //不存在就新增
+                                     channelInsert = channelRepository.save(channel);
+                               }
                                if(channelInsert!=null){
                                    return "success";
                                }else{
-                                   throw new MerchantException("渠道号添加势失败");
+                                   throw new MerchantException("渠道号添加失败");
                                }
                            }else{
                                throw new MerchantException("商户资源配置失败");
@@ -147,70 +159,6 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
 
     }
 
-    @Override
-    @Transactional(rollbackFor = MerchantException.class)
-    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException {
-        //查询出商户信息
-        MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
-        if(merchantInfo!=null){
-            //更新临时表的审核状态以及渠道号
-            int i = merchantCoinTmpDao.updateStatusByAudit(1, merchantCoinTmp.getId(),merchantCoinTmp.getChannel());
-            if(i>0) {
-                //更新商户的渠道号信息
-                int j = merchantInfoManager.updateChannelById(merchantCoinTmp.getChannel(), merchantCoinTmp.getMerchantId());
-                if (j > 0) {
-                    //判断merchantCoin中是否存在
-                    MerchantCoin merchantCoin1 = merchantCoinDao.queryCoin(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
-                    int merchantCoinInsert = 0;
-                    if(merchantCoin1==null){
-                        //添加MerchantCoin
-                        merchantCoinInsert = merchantCoinDao.insertMerchantCoin(createMerchantCoin(merchantCoinTmp,null));
-                    }else{
-                        merchantCoinInsert =  merchantCoinDao.updateCoin(merchantCoinTmp.getMerchantId(),merchantCoinTmp.getChannel(), merchantCoinTmp.getCoinId(),merchantCoinTmp.getRechargeAddress());
-                    }
-
-                    if (merchantCoinInsert > 0) {
-                        //判断withDraw中是否已存在相同商户id和币id的信息
-                        WithDraw withDraw1 = withDrawDao.queryWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId());
-                        int withdrawInsert = 0;
-
-                        if(withDraw1==null){
-                            withdrawInsert = withDrawDao.insertWithdraw(createWithdraw(merchantCoinTmp,null));
-                        }else{
-                            withdrawInsert=withDrawDao.updateWithdraw(merchantCoinTmp.getMerchantId(), merchantCoinTmp.getCoinId(),merchantCoinTmp.getChannel(),merchantCoinTmp.getWithdrawAddress());
-                        }
-                        if (withdrawInsert > 0) {
-                            //查看权限表中是否存在相同数据
-                            List<MerchantVsResource> merchantVsResourceList = merchantVsResourceDao.queryMerchantVsResource(merchantCoinTmp.getMerchantId());
-                            int k = 0;
-                            if(merchantVsResourceList.size()==0){
-                                //添加权限
-                                k= initMerchantVsResource(merchantInfo.getId(), merchantInfo.getChannel());
-                            }else{
-                                k = merchantVsResourceDao.updateChannel(merchantCoinTmp.getMerchantId(),merchantCoinTmp.getChannel());
-                            }
-                            if(k>0){
-                                return "success";
-                            }else{
-                                throw new MerchantException("商户资源配置失败");
-                            }
-                        }else{
-                            throw new MerchantException("商户提现地址添加失败");
-                        }
-                    }else{
-                        throw new MerchantException("商户支付地址添加失败");
-                    }
-                }else{
-                    throw new MerchantException("更新商户渠道号失败");
-                }
-            }else {
-                throw new MerchantException("更新临时表失败");
-            }
-        }else{
-            throw new MerchantException("商户信息不存在");
-        }
-
-    }
 
     @Override
     public int auditMercahntNotPass(String id,int status) {
@@ -260,80 +208,23 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         return merchantCoin;
     }
 
-    /**
-     * 为新建的商家初始化资源
-     *
-     * @param merchantId
-     */
-    private int initMerchantVsResource(String merchantId, Long channelId) {
-        SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        final MerchantVsResource re3 = new MerchantVsResource();
-        re3.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re3.setMerchantId(merchantId);
-        re3.setChannel(channelId);
-        re3.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re3.setCreateUserName(securityUserDetails.getUsername());
-        re3.setResourceId(3L);
-        re3.setStatus(0);
-        final MerchantVsResource re4 = new MerchantVsResource();
-        re4.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re4.setMerchantId(merchantId);
-        re4.setChannel(channelId);
-        re4.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re4.setCreateUserName(securityUserDetails.getUsername());
-        re4.setResourceId(4L);
-        re4.setStatus(0);
-        final MerchantVsResource re11 = new MerchantVsResource();
-        re11.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re11.setMerchantId(merchantId);
-        re11.setChannel(channelId);
-        re11.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re11.setCreateUserName(securityUserDetails.getUsername());
-        re11.setResourceId(11L);
-        re11.setStatus(0);
-        final MerchantVsResource re12 = new MerchantVsResource();
-        re12.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re12.setMerchantId(merchantId);
-        re12.setChannel(channelId);
-        re12.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re12.setCreateUserName(securityUserDetails.getUsername());
-        re12.setResourceId(12L);
-        re12.setStatus(0);
-        final MerchantVsResource re22 = new MerchantVsResource();
-        re22.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re22.setMerchantId(merchantId);
-        re22.setChannel(channelId);
-        re22.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re22.setCreateUserName(securityUserDetails.getUsername());
-        re22.setResourceId(22L);
-        re22.setStatus(0);
-        final MerchantVsResource re23 = new MerchantVsResource();
-        re23.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re23.setMerchantId(merchantId);
-        re23.setChannel(channelId);
-        re23.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re23.setCreateUserName(securityUserDetails.getUsername());
-        re23.setResourceId(23L);
-        re23.setStatus(0);
-        final MerchantVsResource re24 = new MerchantVsResource();
-        re24.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re24.setMerchantId(merchantId);
-        re24.setChannel(channelId);
-        re24.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re24.setCreateUserName(securityUserDetails.getUsername());
-        re24.setResourceId(24L);
-        re24.setStatus(0);
-
-        final List<MerchantVsResource> list = new ArrayList<MerchantVsResource>(7);
-        list.add(re3);
-        list.add(re4);
-        list.add(re11);
-        list.add(re12);
-        list.add(re22);
-        list.add(re23);
-        list.add(re24);
-        int i = merchantVsResourceDao.insertList(list);
-        return i;
+    //创建渠道对象
+    public Channel createChannel(MerchantCoinTmp merchantCoinTmp){
+        MerchantInfo merchantInfo = merchantInfoManager.queryById(merchantCoinTmp.getMerchantId());
+        Channel channel = new Channel();
+        if(merchantCoinTmp.getChannel()==null){
+            Long channelNumber = new TimestampPkGenerator().next(getClass());
+            channel.setChannel(channelNumber);
+        }else{
+            channel.setChannel(merchantCoinTmp.getChannel());
+        }
+        Long channelId = new TimestampPkGenerator().next(getClass());
+        channel.setId(channelId);
+        channel.setSystemName(merchantInfo.getName());
+        channel.setStatus(0);
+        channel.setMerchantId(merchantInfo.getId());
+        channel.setCreateTime(new Date());
+        return channel;
     }
 
 }

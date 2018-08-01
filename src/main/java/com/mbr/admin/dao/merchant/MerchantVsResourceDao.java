@@ -48,4 +48,7 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
 
     @Select("select * from merchant_vs_resource where merchant_id=#{merchantId} and resource_id = #{resourceId}")
     public Object queryMerchantVsResourceByCondition(@Param("merchantId")String merchantId,@Param("resourceId")Long resourceId);
+
+    @Select("select id from merchant_resource")
+    public String[] findAllMerchantResource();
  }

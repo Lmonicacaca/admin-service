@@ -21,4 +21,6 @@ public interface MerchantVsResourceManager {
 
     public List<Map<String,Object>> queryMerchantId();
 
+    public int initMerchantVsResource(String merchantId, Long channelId);
+
 }

@@ -27,8 +27,8 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
     @Select("select count(*) from merchant_coin")
     public int getCount();
 
-    @Select("select * from merchant_coin where coin_id=#{coinId} and merchant_id=#{merchantId} and address = #{address}")
-    public MerchantCoin selectByMerchantIdAndCoinId(@Param(value = "merchantId") String merchantId,@Param(value = "coinId")Long coinId,@Param(value = "address")String address);
+    @Select("select * from merchant_coin where coin_id=#{coinId} and merchant_id=#{merchantId}")
+    public MerchantCoin selectByMerchantIdAndCoinId(@Param(value = "merchantId") String merchantId,@Param(value = "coinId")Long coinId);
 
     @Insert("insert into merchant_coin values(#{merchantCoin.id},#{merchantCoin.coinId},#{merchantCoin.merchantId},#{merchantCoin.status},#{merchantCoin.createUserName},null,#{merchantCoin.createTime},null,#{merchantCoin.address},#{merchantCoin.tokenAddress},#{merchantCoin.coinName},#{merchantCoin.channel})")
     public int insertMerchantCoin(@Param("merchantCoin") MerchantCoin merchantCoin);

@@ -14,6 +14,7 @@ import com.mbr.admin.domain.merchant.MerchantVsResource;
 import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantInfoManager;
+import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,8 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private ChannelManager channelManager;
     @Resource
     private FileUpload fileUpload;
+    @Resource
+    private MerchantVsResourceManager merchantVsResourceManager;
 
     @Value("${image_url}")
     private String image_url;
@@ -46,6 +49,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     public List<MerchantInfoVo> queryList(String nameSearch, String idSearch) {
         List<MerchantInfoVo> merchantInfoList = merchantInfoDao.queryList(nameSearch, idSearch);
         for (int i = 0; i < merchantInfoList.size(); i++) {
+
             if (merchantInfoList.get(i).getLogoBill() != null && merchantInfoList.get(i).getLogoBill() != "") {
                 merchantInfoList.get(i).setLogoBill(image_url + merchantInfoList.get(i).getLogoBill());
             }
@@ -129,30 +133,25 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
                 return "imgFailed";
             }
         }
-        MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
-        Channel channel = new Channel();
-        if(merchantInfo.getChannel()==null){
-            Long channelId = new TimestampPkGenerator().next(getClass());
-            Long channelNumber = new TimestampPkGenerator().next(getClass());
-            channel.setId(channelId);
-            channel.setChannel(channelNumber);
-            channel.setSystemName(merchantInfo.getName());
-            channel.setStatus(0);
-            channel.setMerchantId(merchantInfo.getId());
-            channel.setCreateTime(new Date());
-            merchantInfo.setChannel(channel.getChannel());
-            System.out.println(merchantInfo);
-        }
 
+        MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
+        Channel channel = createChannel(merchantInfo,merchantInfoVo);
+        if(merchantInfoVo.getId()==null){
+            channel.setCreateTime(new Date());
+        }else{
+            channel.setCreateTime(new Date());
+            channel.setUpdateTime(new Date());
+        }
+        merchantInfo.setChannel(channel.getChannel());
         if(merchantInfoVo.getId()==null){
             //添加商户信息
             int insert = merchantInfoDao.insert(merchantInfo);
             if (insert > 0) {
                 System.out.println("添加商户成功********************");
-                if(merchantInfoVo.getChannel()==null){
                 //为商户添加权限
-                int i = initMerchantVsResource(merchantInfo.getId(), channel.getChannel());
+                int i = merchantVsResourceManager.initMerchantVsResource(merchantInfo.getId(), channel.getChannel());
                     if(i>0){
+                        //添加渠道表信息
                         Channel insertChannel = channelManager.insertChannel(channel);
                         if(insertChannel!=null){
                             return "success";
@@ -162,24 +161,28 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
                     }else{
                         throw new MerchantException("商户权限分配失败");
                     }
-                }else{
-                    int i = initMerchantVsResource(merchantInfo.getId(), merchantInfo.getChannel());
-                    if(i>0){
-                        return "success";
-                    }else{
-                        throw new MerchantException("商户权限分配失败");
-                    }
-                }
-
             }else{
                 throw new MerchantException("添加商户失败");
             }
         }else{
-            int i = merchantInfoDao.updateById(merchantInfo);
+            //修改时需要新建一个渠道号
+            if(merchantInfoVo.getChannel()==null){
+                Long channelNumber = new TimestampPkGenerator().next(getClass());
+                merchantInfoVo.setChannel(channelNumber);
+                merchantInfo.setChannel(channelNumber);
+            }
+            //根据渠道号和商户号查询出所有的渠道信息
+            List<Channel> channelList = channelManager.queryChannelByMerchantIdAndChannel(merchantInfoVo.getOldChannel(), merchantInfoVo.getId());
+            int i = merchantInfoDao.updateById(merchantInfo);//修改商户表
             if(i>0){
-                int updateChannel = merchantVsResourceDao.updateChannel(merchantInfo.getId(), merchantInfo.getChannel());
+                int updateChannel = merchantVsResourceDao.updateChannel(merchantInfo.getId(), merchantInfo.getChannel());//修改权限表
                 if(updateChannel>0){
-                    return "success";
+                    int update = channelManager.updateChannel(channelList,merchantInfoVo);//修改渠道表，修改渠道和商户名，多条数据一起修改。
+                    if(update>0){
+                        return "success";
+                    }else{
+                        throw new MerchantException("更新渠道号失败");
+                    }
                 }else{
                     throw new MerchantException("更新权限失败");
                 }
@@ -188,7 +191,6 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
                throw new MerchantException("更新商户信息失败");
             }
         }
-
     }
 
     public MerchantInfo createMerchantInfo(MerchantInfoVo merchantInfoVo, String id, String imgUrl) {
@@ -228,11 +230,38 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         merchantInfo.setStatus(0);
         merchantInfo.setAudit(1);//已审核
         if(merchantInfoVo.getChannel()!=null&&!merchantInfoVo.getChannel().equals("")){
-            merchantInfo.setChannel(Long.parseLong(merchantInfoVo.getChannel()));
+            merchantInfo.setChannel(merchantInfoVo.getChannel());
         }
         return merchantInfo;
     }
 
+    public Channel createChannel(MerchantInfo merchantInfo,MerchantInfoVo merchantInfoVo){
+        Channel channel = new Channel();
+        if(merchantInfoVo.getId()==null){
+            //新增的情况
+            if(merchantInfo.getChannel()==null){
+                //需要新建渠道号的
+                Long channelId = new TimestampPkGenerator().next(getClass());
+                Long channelNumber = new TimestampPkGenerator().next(getClass());
+                channel.setId(channelId);
+                channel.setChannel(channelNumber);
+            }else{
+                //使用已有的渠道号
+                Long channelId = new TimestampPkGenerator().next(getClass());
+                channel.setId(channelId);
+                channel.setChannel(merchantInfo.getChannel());
+            }
+        }else{
+            //修改的情况
+            channel.setChannel(merchantInfoVo.getChannel());
+        }
+
+        channel.setSystemName(merchantInfo.getName());
+        channel.setStatus(0);
+        channel.setMerchantId(merchantInfo.getId());
+        channel.setAppName(merchantInfoVo.getAppName());
+        return channel;
+    }
 
     /**
      * 为新建的商家初始化资源
@@ -242,6 +271,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private int initMerchantVsResource(String merchantId, Long channelId) {
 
         SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         final MerchantVsResource re3 = new MerchantVsResource();
         re3.setId(new TimestampPkGenerator().next(getClass()).toString());
         re3.setMerchantId(merchantId);

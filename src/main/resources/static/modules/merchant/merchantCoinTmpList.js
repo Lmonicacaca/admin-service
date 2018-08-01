@@ -91,6 +91,7 @@ var merchantCoinTmp = function () {
                     if (data.code == 200) {
                         var d = data.data;
                         $("#id").val(d.id);
+                        $("#oldChannel").val(d.channel);
                         $("#coinId").val(d.coinId);
                         $("#merchantId").val(d.merchantId);
                         $("#createUserName").val(d.createUserName);

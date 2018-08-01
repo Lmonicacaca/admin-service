@@ -57,24 +57,15 @@ public class MerchantCoinTmpController extends BaseController {
     @ResponseBody
     public Object auditMerchant(MerchantCoinTmp merchantCoinTmp){
         System.out.println(merchantCoinTmp);
-        //判断是否有渠道号
-        if(merchantCoinTmp.getChannel()==null){
-            try{
-                merchantCoinTmpManager.auditMerchantNoChannel(merchantCoinTmp);
+        try {
+            String result = merchantCoinTmpManager.auditMerchant(merchantCoinTmp);
+            if("success".equals(result)){
                 return success();
-            }catch (MerchantException e){
-
-                return failed(e.getMessage());
+            }else{
+                return failed();
             }
-
-        }else {
-            try{
-                 merchantCoinTmpManager.auditMercahntWithChannel(merchantCoinTmp);
-                return success();
-            }catch (MerchantException e){
-                return failed(e.getMessage());
-            }
-
+        }catch (MerchantException e){
+            return failed(e.getMessage());
         }
     }
     @RequestMapping("auditFailed")

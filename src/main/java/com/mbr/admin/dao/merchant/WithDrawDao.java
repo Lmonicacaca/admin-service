@@ -44,7 +44,7 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
     @Update("update withdraw set create_time=#{withDraw.createTime},address = #{withDraw.address},update_time=#{withDraw.updateTime},merchant_id=#{withDraw.merchantId},coin_id=#{withDraw.coinId},status=#{withDraw.status},channel=#{withDraw.channel} where id=#{withDraw.id}")
     public int updateById(@Param("withDraw")WithDraw withDraw);
 
-    @Select("select * from withdraw where merchant_id=#{merchantId} and coin_id=#{coinId} and address=#{address}")
-    public WithDraw selectByMerchantIdAndCoinId(@Param("merchantId")String merchantId,@Param("coinId")Long coinId,@Param("address")String address);
+    @Select("select * from withdraw where merchant_id=#{merchantId} and coin_id=#{coinId}")
+    public WithDraw selectByMerchantIdAndCoinId(@Param("merchantId")String merchantId,@Param("coinId")Long coinId);
 
 }

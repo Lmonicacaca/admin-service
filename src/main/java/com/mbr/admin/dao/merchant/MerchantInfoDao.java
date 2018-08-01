@@ -27,7 +27,7 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
     public List<MerchantInfoVo> queryList(@Param("nameSearch") String nameSearch, @Param("idSearch")String idSearch);
 
     //修改商户表的渠道号
-    @Update("update merchant_info set channel = #{channel},status=1 where id=#{id}")
+    @Update("update merchant_info set channel = #{channel},audit=1 where id=#{id}")
     public int updateMerchantInfoChannel(@Param("channel") Long channel,@Param("id")String id);
 
     @Delete("delete from merchant_info where id=#{id}")
@@ -55,4 +55,6 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
     @Select("select channel from merchant_info where id=#{id}")
     public Long selectChannelByMerchantId(@Param("id")String id);
 
+    @Select("select name from merchant_info where id=#{id}")
+    public String selectNameById(@Param("id")String id);
 }

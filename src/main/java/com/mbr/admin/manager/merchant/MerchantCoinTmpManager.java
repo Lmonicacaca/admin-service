@@ -14,9 +14,8 @@ public interface MerchantCoinTmpManager {
 
     public MerchantCoinTmp queryById(String id);
 
-    public Object auditMerchantNoChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException;
+    public String auditMerchant(MerchantCoinTmp merchantCoinTmp) throws MerchantException;
 
-    public Object auditMercahntWithChannel(MerchantCoinTmp merchantCoinTmp) throws MerchantException;
 
     public int auditMercahntNotPass(String id,int status);
 

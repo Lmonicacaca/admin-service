@@ -33,7 +33,7 @@ public class MerchantCoinTmp {
     private Long channel;
     @Column(name = "withdraw_address")
     private String withdrawAddress;
-
+    private String oldChannel;
     public String getId() {
         return id;
     }
@@ -138,6 +138,14 @@ public class MerchantCoinTmp {
         this.withdrawAddress = withdrawAddress;
     }
 
+    public String getOldChannel() {
+        return oldChannel;
+    }
+
+    public void setOldChannel(String oldChannel) {
+        this.oldChannel = oldChannel;
+    }
+
     @Override
     public String toString() {
         return "MerchantCoinTmp{" +
@@ -147,13 +155,14 @@ public class MerchantCoinTmp {
                 ", status=" + status +
                 ", createUserName='" + createUserName + '\'' +
                 ", updateUserName='" + updateUserName + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
                 ", rechargeAddress='" + rechargeAddress + '\'' +
                 ", tokenAddress='" + tokenAddress + '\'' +
                 ", coinName='" + coinName + '\'' +
-                ", channel='" + channel + '\'' +
+                ", channel=" + channel +
                 ", withdrawAddress='" + withdrawAddress + '\'' +
+                ", oldChannel='" + oldChannel + '\'' +
                 '}';
     }
 }

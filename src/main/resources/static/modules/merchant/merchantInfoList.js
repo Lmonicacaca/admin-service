@@ -214,8 +214,10 @@ var merchantInfo = function () {
                     var d = data.data;
                     $("#id").val(d.id);
                     $("#oldImg").val(d.logoBill);
+                    $("#oldChannel").val(d.channel);
                     $("#file").val("");
                     $("#name").val(d.name);
+                    $("#showAppName").css("display","none");
                     $("#description").val(d.description);
                     $("#address").val(d.address);
                     $("#website").val(d.website);
@@ -275,6 +277,7 @@ var merchantInfo = function () {
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
+            $("#appName").val("");
             $("#name").val("");
             $("#oldImage").val("");
             $("#channel").html("");
@@ -285,6 +288,7 @@ var merchantInfo = function () {
             $("#createUserName").val("");
             $("#createTime").val(new Date());
             $("#file").val("");
+            $("#showAppName").css("display","block");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -367,6 +371,9 @@ var merchantInfo = function () {
                 name: {
                     required: true
                 },
+                appName:{
+                    required: true
+                },
                 rsaPublic: {
                     required: true
                 }
@@ -374,6 +381,9 @@ var merchantInfo = function () {
             messages: {
                 name: {
                     required: "商户名不能为空!"
+                },
+                appName:{
+                    required: "app名不能为空!"
                 },
                 rsaPublic: {
                     required: "商户公钥不能为空!"

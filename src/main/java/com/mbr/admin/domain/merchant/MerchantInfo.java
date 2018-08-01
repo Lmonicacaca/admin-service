@@ -180,6 +180,7 @@ public class MerchantInfo {
         this.audit = audit;
     }
 
+
     @Override
     public String toString() {
         return "MerchantInfo{" +
@@ -189,8 +190,8 @@ public class MerchantInfo {
                 ", description='" + description + '\'' +
                 ", website='" + website + '\'' +
                 ", address='" + address + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
                 ", createUserName='" + createUserName + '\'' +
                 ", updateUserName='" + updateUserName + '\'' +
                 ", status=" + status +
@@ -198,7 +199,7 @@ public class MerchantInfo {
                 ", rsaPublic='" + rsaPublic + '\'' +
                 ", rsaPrivate='" + rsaPrivate + '\'' +
                 ", isShow=" + isShow +
-                ", channel='" + channel + '\'' +
+                ", channel=" + channel +
                 ", audit=" + audit +
                 '}';
     }

@@ -80,6 +80,7 @@
     <form role="form" th:action="@{/merchantInfo/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate">
         <input type="hidden"  id="id" name="id" value=""/>
         <input type="hidden"  id="oldImg" name="oldImg" value=""/>
+        <input type="hidden"  id="oldChannel" name="oldChannel" value=""/>
         <input type="hidden"  id="createUserName" name="createUserName" value=""/>
         <input type="hidden"  id="createTime" name="createTime" value=""/>
         <div class="form-group">
@@ -87,6 +88,13 @@
             </label>
             <div class="col-md-8">
                 <input type="text" class="form-control" data-required="1" id="name" name="name" placeholder="请输入商户名" />
+            </div>
+        </div>
+        <div class="form-group" style="display: block" id="showAppName">
+            <label class="control-label col-md-3">APP名 <span class="required">* </span>
+            </label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" data-required="1" id="appName" name="appName" placeholder="请输入APP名" />
             </div>
         </div>
         <div class="form-group">
