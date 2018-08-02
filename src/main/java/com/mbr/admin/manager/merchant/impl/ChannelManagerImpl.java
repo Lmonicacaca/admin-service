@@ -95,8 +95,8 @@ public class ChannelManagerImpl implements ChannelManager {
 
     @Override
     public List<Map<String, Object>> queryMerchantId() {
+        List<Map<String,Object>> list = new ArrayList<>();
         List<MerchantInfo> merchantInfoList = merchantInfoDao.selectAll();
-        List<Map<String, Object>> list = new ArrayList<>();
         for(int i=0;i<merchantInfoList.size();i++){
             Map<String,Object> map = new HashMap<>();
             map.put("id",merchantInfoList.get(i).getId());
@@ -118,13 +118,23 @@ public class ChannelManagerImpl implements ChannelManager {
                 throw new MerchantException("该商户已有渠道号，请勿重复添加！");
             }
 
-        }
-        Channel insert = channelRepository.save(channel);
-        if(insert!=null){
+            Channel insert = channelRepository.save(channel);
+            if(insert!=null){
+                return "success";
+            }else{
+                throw new MerchantException("添加失败，请重新添加");
+            }
+        } else{
+            List<Channel> channelList = channelRepository.findByChannel(channelVo.getChannel());
+            for(int i=0;i<channelList.size();i++){
+                channelList.get(i).setAppName(channelVo.getAppName());
+                System.out.println(channelList.get(i));
+              channelRepository.save(channelList.get(i));
+            }
             return "success";
-        }else{
-            throw new MerchantException("添加失败，请重新添加");
         }
+
+
     }
 
     @Override
@@ -138,9 +148,16 @@ public class ChannelManagerImpl implements ChannelManager {
         Query query = new Query();
         Criteria criteria = new Criteria();
         Update update = new Update();
+        List<Channel> channelListAppName = channelRepository.findByChannel(merchantInfoVo.getChannel());
+        String appName = "";
+        if( channelListAppName!=null&&channelListAppName.size()>0){
+            appName = channelListAppName.get(0).getAppName();
+        }
+
         for(int i=0;i<channelList.size();i++){
             update.set("channel",merchantInfoVo.getChannel());
             update.set("systemName",merchantInfoVo.getName());
+            update.set("appName",appName);
             criteria.andOperator(Criteria.where("id").is(channelList.get(i).getId()));
             query.addCriteria(criteria);
             WriteResult upsert = mongoTemplate.upsert(query, update, Channel.class);
@@ -165,10 +182,16 @@ public class ChannelManagerImpl implements ChannelManager {
             Long channelId = new TimestampPkGenerator().next(getClass());
             channel.setId(channelId);
             channel.setCreateTime(new Date());
+            List<Channel> channelList = channelRepository.findByChannel(channelVo.getChannel());
+            String appName = channelList.get(0).getAppName();
+            if(appName!=null&&!appName.equals("")){
+                channel.setAppName(appName);
+            }
         }else{
             channel.setId(channelVo.getId());
             channel.setCreateTime(new Date());
             channel.setUpdateTime(new Date());
+            channel.setAppName(channelVo.getAppName());
         }
         if(channelVo.getChannel()==null){
             Long channelNumber = new TimestampPkGenerator().next(getClass());
@@ -181,7 +204,7 @@ public class ChannelManagerImpl implements ChannelManager {
         String merchantName = merchantInfoDao.selectNameById(channelVo.getMerchantId());
         channel.setMerchantId(channelVo.getMerchantId());
         channel.setSystemName(merchantName);
-        channel.setAppName(channelVo.getAppName());
+
         return channel;
     }
 

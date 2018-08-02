@@ -122,10 +122,10 @@ var channel = function () {
                         var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
-                        var optionMerchant = "<option value='" + d.merchantId + "' selected='selected'>" + d.systemName + "</option>";
-                        $("#merchantId").empty();
-                        $("#merchantId").append(optionMerchant);
                         $("#appName").val(d.appName);
+                        $("#showAppName").css("display","block");
+                        $("#showMerchantId").css("display","none");
+                        $("#merchantId").html("");
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -135,7 +135,6 @@ var channel = function () {
                             btn: ['确定'],
                             success: function (layero, index) {
                                 loadChannel();
-                                loadMerchantId();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -151,11 +150,9 @@ var channel = function () {
                                         }
                                     });
                                 }
-                                index = 0;
                             },
                             cancel: function (i, layero) {
                                 layer.close(i);
-                                index = 0;
                             }
                         });
                     }
@@ -168,7 +165,9 @@ var channel = function () {
             $("#id").val("");
             $("#channel").html("");
             $("#merchantId").html("");
+            $("#showMerchantId").css("display","block");
             $("#appName").val("");
+            $("#showAppName").css("display","none");
             $("#createTime").val(new Date());
             layer.open({
                 area: '800px',
@@ -181,7 +180,7 @@ var channel = function () {
                     $("#form")[0].reset();
                     validateForm().resetForm();
                     loadChannel();
-                    loadMerchantId();
+                    loadMerchant();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -228,9 +227,9 @@ var channel = function () {
             }
         });
     };
-    var loadMerchantId = function () {
+    var loadMerchant = function () {
         $('#merchantId').select2({
-            placeholder: "请选择商户号",
+            placeholder: "请选择商户",
             allowClear: true,
             ajax: {
                 url: "channel/queryMerchantId",
@@ -252,7 +251,7 @@ var channel = function () {
                 channel:{
                     required: true
                 },
-                merchantId: {
+                merchantId:{
                     required: true
                 },
                 appName: {
@@ -263,7 +262,7 @@ var channel = function () {
                 channel:{
                     required: "渠道号不能为空!"
                 },
-                merchantId: {
+                merchantId:{
                     required: "商户号不能为空!"
                 },
                 appName: {

@@ -16,6 +16,7 @@ import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantInfoManager;
 import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
+import com.mbr.admin.repository.ChannelRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private MerchantVsResourceDao merchantVsResourceDao;
     @Resource
     private ChannelManager channelManager;
+    @Resource
+    private ChannelRepository channelRepository;
     @Resource
     private FileUpload fileUpload;
     @Resource
@@ -136,12 +139,6 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
 
         MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
         Channel channel = createChannel(merchantInfo,merchantInfoVo);
-        if(merchantInfoVo.getId()==null){
-            channel.setCreateTime(new Date());
-        }else{
-            channel.setCreateTime(new Date());
-            channel.setUpdateTime(new Date());
-        }
         merchantInfo.setChannel(channel.getChannel());
         if(merchantInfoVo.getId()==null){
             //添加商户信息
@@ -173,6 +170,7 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
             }
             //根据渠道号和商户号查询出所有的渠道信息
             List<Channel> channelList = channelManager.queryChannelByMerchantIdAndChannel(merchantInfoVo.getOldChannel(), merchantInfoVo.getId());
+
             int i = merchantInfoDao.updateById(merchantInfo);//修改商户表
             if(i>0){
                 int updateChannel = merchantVsResourceDao.updateChannel(merchantInfo.getId(), merchantInfo.getChannel());//修改权限表
@@ -245,100 +243,27 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
                 Long channelNumber = new TimestampPkGenerator().next(getClass());
                 channel.setId(channelId);
                 channel.setChannel(channelNumber);
+                channel.setAppName("");
             }else{
                 //使用已有的渠道号
                 Long channelId = new TimestampPkGenerator().next(getClass());
                 channel.setId(channelId);
                 channel.setChannel(merchantInfo.getChannel());
+                List<Channel> channelList = channelRepository.findByChannel(merchantInfoVo.getChannel());
+                String appName = channelList.get(0).getAppName();
+                channel.setAppName(appName);
             }
         }else{
             //修改的情况
             channel.setChannel(merchantInfoVo.getChannel());
         }
-
+        channel.setCreateTime(new Date());
+        channel.setUpdateTime(new Date());
         channel.setSystemName(merchantInfo.getName());
         channel.setStatus(0);
         channel.setMerchantId(merchantInfo.getId());
-        channel.setAppName(merchantInfoVo.getAppName());
         return channel;
     }
 
-    /**
-     * 为新建的商家初始化资源
-     *
-     * @param merchantId
-     */
-    private int initMerchantVsResource(String merchantId, Long channelId) {
-
-        SecurityUserDetails securityUserDetails = (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        final MerchantVsResource re3 = new MerchantVsResource();
-        re3.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re3.setMerchantId(merchantId);
-        re3.setChannel(channelId);
-        re3.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re3.setCreateUserName(securityUserDetails.getUsername());
-        re3.setResourceId(3L);
-        re3.setStatus(0);
-        final MerchantVsResource re4 = new MerchantVsResource();
-        re4.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re4.setMerchantId(merchantId);
-        re4.setChannel(channelId);
-        re4.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re4.setCreateUserName(securityUserDetails.getUsername());
-        re4.setResourceId(4L);
-        re4.setStatus(0);
-        final MerchantVsResource re11 = new MerchantVsResource();
-        re11.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re11.setMerchantId(merchantId);
-        re11.setChannel(channelId);
-        re11.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re11.setCreateUserName(securityUserDetails.getUsername());
-        re11.setResourceId(11L);
-        re11.setStatus(0);
-        final MerchantVsResource re12 = new MerchantVsResource();
-        re12.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re12.setMerchantId(merchantId);
-        re12.setChannel(channelId);
-        re12.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re12.setCreateUserName(securityUserDetails.getUsername());
-        re12.setResourceId(12L);
-        re12.setStatus(0);
-        final MerchantVsResource re22 = new MerchantVsResource();
-        re22.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re22.setMerchantId(merchantId);
-        re22.setChannel(channelId);
-        re22.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re22.setCreateUserName(securityUserDetails.getUsername());
-        re22.setResourceId(22L);
-        re22.setStatus(0);
-        final MerchantVsResource re23 = new MerchantVsResource();
-        re23.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re23.setMerchantId(merchantId);
-        re23.setChannel(channelId);
-        re23.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re23.setCreateUserName(securityUserDetails.getUsername());
-        re23.setResourceId(23L);
-        re23.setStatus(0);
-        final MerchantVsResource re24 = new MerchantVsResource();
-        re24.setId(new TimestampPkGenerator().next(getClass()).toString());
-        re24.setMerchantId(merchantId);
-        re24.setChannel(channelId);
-        re24.setCreateTime(DateUtil.formatDateTime(new Date()));
-        re24.setCreateUserName(securityUserDetails.getUsername());
-        re24.setResourceId(24L);
-        re24.setStatus(0);
-
-        final List<MerchantVsResource> list = new ArrayList<MerchantVsResource>(7);
-        list.add(re3);
-        list.add(re4);
-        list.add(re11);
-        list.add(re12);
-        list.add(re22);
-        list.add(re23);
-        list.add(re24);
-        int i = merchantVsResourceDao.insertList(list);
-        return i;
-    }
 
 }

@@ -21,7 +21,6 @@ public class MerchantInfoVo {
     private int status;
     private String logoIntro;
     private Integer audit;
-    private String appName;
     private Long oldChannel;
 
     public Long getId() {
@@ -169,13 +168,6 @@ public class MerchantInfoVo {
         this.audit = audit;
     }
 
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
 
     public Long getOldChannel() {
         return oldChannel;
@@ -206,7 +198,6 @@ public class MerchantInfoVo {
                 ", status=" + status +
                 ", logoIntro='" + logoIntro + '\'' +
                 ", audit=" + audit +
-                ", appName='" + appName + '\'' +
                 ", oldChannel=" + oldChannel +
                 '}';
     }

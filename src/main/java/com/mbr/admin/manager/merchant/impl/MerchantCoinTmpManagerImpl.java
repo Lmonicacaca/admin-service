@@ -119,9 +119,15 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                                    for(int h =0;h<channelList.size();h++){
                                        Channel channel1 = new Channel();
                                        channel1.setId(channelList.get(h).getId());
-                                       channel1.setChannel(merchantCoinTmp.getChannel());
+                                       channel1.setChannel(channel.getChannel());
                                        channel1.setMerchantId(merchantCoinTmp.getMerchantId());
-
+                                       //查询修改后的渠道号的appName
+                                       List<Channel> channelListAppName = channelRepository.findByChannel(merchantCoinTmp.getChannel());
+                                       String appName = "";
+                                       if( channelListAppName!=null&&channelListAppName.size()>0){
+                                           appName = channelListAppName.get(0).getAppName();
+                                       }
+                                       channel1.setAppName(appName);
                                        channel1.setSystemName(merchantInfo.getName());
                                        channel1.setStatus(0);
                                        channel1.setCreateTime(channelList.get(h).getCreateTime());
@@ -219,6 +225,12 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
             channel.setChannel(merchantCoinTmp.getChannel());
         }
         Long channelId = new TimestampPkGenerator().next(getClass());
+        List<Channel> channelList = channelRepository.findByChannel(merchantCoinTmp.getChannel());
+        String appName = "";
+        if(channelList!=null&&channelList.size()>0){
+            appName = channelList.get(0).getAppName();
+        }
+        channel.setAppName(appName);
         channel.setId(channelId);
         channel.setSystemName(merchantInfo.getName());
         channel.setStatus(0);
