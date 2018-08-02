@@ -1,0 +1,18 @@
+server:
+  port: 9302
+
+remote_url: http://47.101.47.200:9907/upload
+image_url: http://47.101.47.200:9907
+
+channel: 73088886094000
+spring:
+  http:
+    multipart:
+      max-request-size: 100Mb
+      max-file-size: 100Mb
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
+
+
+

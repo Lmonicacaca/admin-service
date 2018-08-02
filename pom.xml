@@ -55,6 +55,20 @@
 				<spring.debug>false</spring.debug>
 			</properties>
 		</profile>
+		<profile>
+			<id>pre</id>
+			<activation>
+				<!-- <activeByDefault>true</activeByDefault>-->
+			</activation>
+			<properties>
+				<spring.profiles.active>pre</spring.profiles.active>
+				<eureka.client.service-url.defaultZone>http://eureka:eureka@47.100.18.6:9902/eureka/</eureka.client.service-url.defaultZone>
+				<spring.cloud.config.uri>http://47.100.18.6:9901</spring.cloud.config.uri>
+				<spring.zipkin.base-url>http://47.100.47.200:9949/</spring.zipkin.base-url>
+				<spring.debug>true</spring.debug>
+				<logback.level>INFO</logback.level>
+			</properties>
+		</profile>
 	</profiles>
 
 	<properties>
