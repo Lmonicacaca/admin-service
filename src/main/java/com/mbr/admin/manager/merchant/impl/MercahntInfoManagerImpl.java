@@ -191,6 +191,34 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         }
     }
 
+    /**
+     * 审核商户
+     * @param merchantInfo
+     * @return
+     */
+    @Override
+    public String auditMerchant(MerchantInfo merchantInfo) {
+        //若渠道号为空，则生成新的渠道号
+        if(merchantInfo.getChannel()==null||merchantInfo.getChannel().equals("")){
+            Long channelNumber = new TimestampPkGenerator().next(getClass());
+            merchantInfo.setChannel(channelNumber);
+        }
+        //设置商户审核状态为1，表示审核通过
+        merchantInfo.setAudit(1);
+        int i = merchantInfoDao.auditMerchantInfo(merchantInfo);
+        if(i>0){
+            return "success";
+        }
+        return "failed";
+    }
+
+    /**
+     * 创建商户
+     * @param merchantInfoVo
+     * @param id
+     * @param imgUrl
+     * @return
+     */
     public MerchantInfo createMerchantInfo(MerchantInfoVo merchantInfoVo, String id, String imgUrl) {
         MerchantInfo merchantInfo = new MerchantInfo();
         if (id != null) {
@@ -233,6 +261,12 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         return merchantInfo;
     }
 
+    /**
+     * 创建渠道号
+     * @param merchantInfo
+     * @param merchantInfoVo
+     * @return
+     */
     public Channel createChannel(MerchantInfo merchantInfo,MerchantInfoVo merchantInfoVo){
         Channel channel = new Channel();
         if(merchantInfoVo.getId()==null){

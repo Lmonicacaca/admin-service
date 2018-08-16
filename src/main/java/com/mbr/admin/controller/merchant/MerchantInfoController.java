@@ -112,4 +112,21 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
         }
         return failed("查询失败");
     }
+
+
+    /**
+     * 审核商户，为商户分配渠道号
+     * @param merchantInfo
+     * @return
+     */
+    @RequestMapping("auditMerchant")
+    @ResponseBody
+    public Object auditMerchant(MerchantInfo merchantInfo){
+        System.out.println(merchantInfo);
+        String result = merchantInfoManager.auditMerchant(merchantInfo);
+        if("success".equals(result)){
+            return success();
+        }
+        return failed("审核失败");
+    }
 }

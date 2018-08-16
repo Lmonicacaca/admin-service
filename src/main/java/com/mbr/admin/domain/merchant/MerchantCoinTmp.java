@@ -10,7 +10,7 @@ public class MerchantCoinTmp {
     @Column(name = "id")
     private String id;
     @Column(name = "coin_id")
-    private String coinId;
+    private Long coinId;
     @Column(name = "merchant_id")
     private String merchantId;
     @Column(name = "status")
@@ -42,11 +42,11 @@ public class MerchantCoinTmp {
         this.id = id;
     }
 
-    public String getCoinId() {
+    public Long getCoinId() {
         return coinId;
     }
 
-    public void setCoinId(String coinId) {
+    public void setCoinId(Long coinId) {
         this.coinId = coinId;
     }
 

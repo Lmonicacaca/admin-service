@@ -156,6 +156,21 @@
     <textarea id="rsa" cols="100%" rows="8"></textarea>
 </div>
 
+<div id="auditMerchant" style="display: none;overflow-x: hidden" class="portlet-body form">
+    <form role="form" th:action="@{/merchantInfo/auditMerchant}" th:method="post" id="formAudit" class="form-horizontal form-validate">
+        <input type="hidden" value="" name="id" id="idAudit" />
+        <div class="form-body">
+            <div class="form-group">
+                <label class="control-label col-md-3">渠道号 <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="channel" id="channelAudit">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 <input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <script src="static/modules/merchant/merchantInfoList.js" type="text/javascript"></script>
 <script>

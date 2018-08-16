@@ -63,12 +63,12 @@ public class AuditProductManagerImpl implements AuditProductManager {
         productApply.setUpdateTime(new Date());
         productApplyRepository.save(productApply);
         //添加币数据到product
-        String productId = "";
+        Long productId;
         Product productSerach = productRepository.findByCoinNameAndTokenAddress(productApply.getCoinName(), productApply.getTokenAddress());
         if(productSerach==null){
             productId =  insertProduct(productApply);
         }else{
-            productId = productSerach.getId().toString();
+            productId = productSerach.getId();
         }
         if(productVsChannelRepository.findByChannelAndProductId(productApply.getChannel(),productId)==null){
             //添加币种vs渠道到对应表中
@@ -90,11 +90,11 @@ public class AuditProductManagerImpl implements AuditProductManager {
 
 
     //添加币种信息
-    public String insertProduct(ProductApply productApply){
+    public Long insertProduct(ProductApply productApply){
         Product product = new Product();
-        String  productId = "";
-        productId = new TimestampPkGenerator().next(getClass()).toString();
-        product.setId(Long.parseLong(productId));
+        Long  productId;
+        productId = new TimestampPkGenerator().next(getClass());
+        product.setId(productId);
         product.setCreateTime(new Date());
         product.setCoinName(productApply.getCoinName());
         product.setCoinType(1);
@@ -114,9 +114,9 @@ public class AuditProductManagerImpl implements AuditProductManager {
     }
 
     //添加币种vs渠道表信息
-    public void insertProductVsChannel(ProductApply productApply,String productId){
+    public void insertProductVsChannel(ProductApply productApply,Long productId){
         ProductVsChannel productVsChannel = new ProductVsChannel();
-        String pvcId = new TimestampPkGenerator().next(getClass()).toString();
+        Long pvcId = new TimestampPkGenerator().next(getClass());
         productVsChannel.setId(pvcId);
         productVsChannel.setChannel(productApply.getChannel());
         productVsChannel.setProductId(productId);

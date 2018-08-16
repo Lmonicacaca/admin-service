@@ -115,7 +115,7 @@ var merchantInfo = function () {
             {
             "aTargets": [11],
             "mRender": function (a, b, c, d) {
-                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
+                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a><a class=\"red\" name=\"audit\" href=\"javascript:;\"> 审核 </a>";
             }
         }];
         var t = $("#dataTables-example");
@@ -181,7 +181,44 @@ var merchantInfo = function () {
             })
         })
 
-
+        //审核
+        $("a[name='audit']").on("click", function () {
+            var table = $('#dataTables-example').DataTable();
+            var d = table.row($(this).parents('tr')).data();
+            $("#idAudit").val(d.id);
+            layer.open({
+                area: '800px',
+                shade: [0.8, '#393D49'],
+                title: "审核商户",
+                type: 1,
+                content: $("#auditMerchant"),
+                btn: ['通过'],
+                success: function (layero, index) {
+                    $("#formAudit")[0].reset();
+                    validateForm().resetForm();
+                    loadChannel();
+                },
+                yes: function (layero, index) {
+                    if ($("#formAudit").valid()) {
+                        $("#formAudit").ajaxSubmit({
+                            success: function (d) {
+                                if (d.code == 200) {
+                                    layer.msg("商户审核成功");
+                                    var dataTable = $("#dataTables-example").dataTable();
+                                    dataTable.fnReloadAjax();
+                                    layer.closeAll();
+                                } else {
+                                    layer.msg(d.message);
+                                }
+                            }
+                        })
+                    }
+                },
+                cancel: function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        });
 
         //删除
         $("#dataTables-example tbody").on("click", "a[name='delete']", function () {
@@ -200,10 +237,9 @@ var merchantInfo = function () {
                 });
             });
         });
-    };
 
     // 编辑
-    $("#dataTables-example tbody").on("click","a[name='edit']", function () {
+    $("a[name='edit']").on("click", function () {
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
             var csrf = $("#csrfId");
@@ -272,6 +308,8 @@ var merchantInfo = function () {
                 }
             });
     });
+    };
+
     //添加商户
     var add =function () {
         $("#add").bind("click",function () {
@@ -323,7 +361,7 @@ var merchantInfo = function () {
         })
     };
     var loadChannel = function () {
-        $('#channel').select2({
+        $('select[name="channel"]').select2({
             placeholder: "请选择渠道号",
             allowClear: true,
             ajax: {

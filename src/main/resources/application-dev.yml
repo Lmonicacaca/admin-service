@@ -11,5 +11,5 @@ spring:
       max-file-size: 100Mb
   data:
     mongodb:
-      uri: mongodb://dcpay:hYocUIctcEIzZ3XDAyw5@192.168.1.14:27017/dcpay
+      uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
 

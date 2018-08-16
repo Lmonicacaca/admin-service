@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -46,9 +47,6 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
     @Update("update merchant_info set name=#{merchantInfo.name},logo_bill = #{merchantInfo.logoBill},description=#{merchantInfo.description},website = #{merchantInfo.website},address=#{merchantInfo.address},create_time =#{merchantInfo.createTime},update_time=#{merchantInfo.updateTime},create_user_name=#{merchantInfo.createUserName},update_user_name=#{merchantInfo.updateUserName},status=#{merchantInfo.status},logo_intro=#{merchantInfo.logoIntro},rsa_public =#{merchantInfo.rsaPublic},rsa_private=#{merchantInfo.rsaPrivate},is_show=#{merchantInfo.isShow},channel=#{merchantInfo.channel} where id=#{merchantInfo.id}")
     public int updateById(@Param("merchantInfo")MerchantInfo merchantInfo);
 
-   /* @Update("update merchant_info set name=#{name} where id=#{id}")
-    public int updateNameByMerchantId(@Param("id")String id,@Param("name")String name);
-*/
     @Select("select * from merchant_info")
     public List<MerchantInfo> selectAll();
 
@@ -57,4 +55,7 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
 
     @Select("select name from merchant_info where id=#{id}")
     public String selectNameById(@Param("id")String id);
+
+    @Update("update merchant_info set audit=1,channel=#{merchantInfo.channel} where id=#{merchantInfo.id}")
+    public int auditMerchantInfo(@Param("merchantInfo") MerchantInfo merchantInfo);
 }

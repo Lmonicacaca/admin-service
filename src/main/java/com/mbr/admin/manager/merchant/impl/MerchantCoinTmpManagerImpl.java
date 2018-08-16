@@ -7,6 +7,7 @@ import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantCoinTmpDao;
 import com.mbr.admin.dao.merchant.MerchantVsResourceDao;
 import com.mbr.admin.dao.merchant.WithDrawDao;
+import com.mbr.admin.domain.app.ProductVsChannel;
 import com.mbr.admin.domain.merchant.*;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantCoinTmpManager;
@@ -14,6 +15,7 @@ import com.mbr.admin.manager.merchant.MerchantInfoManager;
 import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
 import com.mbr.admin.repository.ChannelRepository;
+import com.mbr.admin.repository.ProductVsChannelRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,8 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     private MerchantVsResourceManager merchantVsResourceManager;
     @Resource
     private ChannelRepository channelRepository;
+    @Resource
+    private ProductVsChannelRepository productVsChannelRepository;
     @Override
     public List<MerchantCoinTmp> queryList(String merchantIdSearch) {
         List<MerchantCoinTmp> merchantCoinTmpList = merchantCoinTmpDao.queryList(merchantIdSearch);
@@ -139,7 +143,31 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
                                      channelInsert = channelRepository.save(channel);
                                }
                                if(channelInsert!=null){
-                                   return "success";
+                                   //添加ProductVSChannel
+                                   //先查询是否存在相同记录
+                                   ProductVsChannel byChannelAndProductId = productVsChannelRepository.findByChannelAndProductId(channel.getChannel(), merchantCoinTmp.getCoinId());
+                                   if(byChannelAndProductId!=null){
+                                       return "success";
+                                   }else{
+                                       //若不存在就添加
+                                       ProductVsChannel productVsChannelInsert = new ProductVsChannel();
+                                       productVsChannelInsert.setChannel(channel.getChannel());
+                                       productVsChannelInsert.setProductId(merchantCoinTmp.getCoinId());
+                                       productVsChannelInsert.setOnlineStatus(0);
+                                       productVsChannelInsert.setIsForceShow(0);
+                                       productVsChannelInsert.setMerchantShow(true);
+                                       productVsChannelInsert.setCreateTime(new Date());
+                                       productVsChannelInsert.setId(new TimestampPkGenerator().next(getClass()));
+                                       int count = productVsChannelRepository.countByChannel(channel.getChannel());
+                                       productVsChannelInsert.setOrderNo(count+1);
+                                       ProductVsChannel productVsChannelSave = productVsChannelRepository.save(productVsChannelInsert);
+                                       if(productVsChannelSave!=null){
+                                           return "success";
+                                       }else{
+                                           throw new MerchantException("渠道号VS币添加失败");
+                                       }
+                                   }
+
                                }else{
                                    throw new MerchantException("渠道号添加失败");
                                }
@@ -181,7 +209,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
         withDraw.setCreateTime(DateUtil.formatDateTime(new Date()));
         withDraw.setAddress(merchantCoinTmp.getWithdrawAddress());
         withDraw.setMerchantId(merchantCoinTmp.getMerchantId());
-        withDraw.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
+        withDraw.setCoinId(merchantCoinTmp.getCoinId());
         withDraw.setStatus(0);
         if(channel==null){
             withDraw.setChannel(merchantCoinTmp.getChannel());
@@ -196,7 +224,7 @@ public class MerchantCoinTmpManagerImpl implements MerchantCoinTmpManager {
     public MerchantCoin createMerchantCoin(MerchantCoinTmp merchantCoinTmp,Long channel){
         MerchantCoin merchantCoin = new MerchantCoin();
         merchantCoin.setId(new TimestampPkGenerator().next(getClass()));
-        merchantCoin.setCoinId(Long.parseLong(merchantCoinTmp.getCoinId()));
+        merchantCoin.setCoinId(merchantCoinTmp.getCoinId());
         merchantCoin.setMerchantId(merchantCoinTmp.getMerchantId());
         merchantCoin.setStatus(0);
         SecurityUserDetails securityUserDetails =(SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();

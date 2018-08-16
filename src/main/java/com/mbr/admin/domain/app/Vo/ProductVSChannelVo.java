@@ -1,11 +1,8 @@
-package com.mbr.admin.domain.app;
-
-import lombok.Data;
+package com.mbr.admin.domain.app.Vo;
 
 import java.util.Date;
 
-@Data
-public class ProductVsChannel {
+public class ProductVSChannelVo {
     private Long id;
     private Long channel;
     private Long productId;
@@ -14,6 +11,8 @@ public class ProductVsChannel {
     private int isForceShow;
     private boolean merchantShow;
     private Date createTime;
+    private Long oldChannel;
+    private Long oldProductId;
 
     public Long getId() {
         return id;
@@ -63,7 +62,7 @@ public class ProductVsChannel {
         this.isForceShow = isForceShow;
     }
 
-    public boolean isMerchantShow() {
+    public boolean getMerchantShow() {
         return merchantShow;
     }
 
@@ -79,17 +78,35 @@ public class ProductVsChannel {
         this.createTime = createTime;
     }
 
+    public Long getOldChannel() {
+        return oldChannel;
+    }
+
+    public void setOldChannel(Long oldChannel) {
+        this.oldChannel = oldChannel;
+    }
+
+    public Long getOldProductId() {
+        return oldProductId;
+    }
+
+    public void setOldProductId(Long oldProductId) {
+        this.oldProductId = oldProductId;
+    }
+
     @Override
     public String toString() {
-        return "ProductVsChannel{" +
-                "id='" + id + '\'' +
-                ", channel='" + channel + '\'' +
-                ", productId='" + productId + '\'' +
+        return "ProductVSChannelVo{" +
+                "id=" + id +
+                ", channel=" + channel +
+                ", productId=" + productId +
                 ", onlineStatus=" + onlineStatus +
                 ", orderNo=" + orderNo +
                 ", isForceShow=" + isForceShow +
                 ", merchantShow=" + merchantShow +
                 ", createTime=" + createTime +
+                ", oldChannel=" + oldChannel +
+                ", oldProductId=" + oldProductId +
                 '}';
     }
 }
