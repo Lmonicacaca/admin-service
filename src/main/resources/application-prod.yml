@@ -1,5 +1,21 @@
 server:
   port: 9302
+remote_url: http://172.31.45.166:9920/upload
+image_url: https://api.cospay.io/upload
+
+channel: 73088886094000
+spring:
+  http:
+    multipart:
+      max-request-size: 100Mb
+      max-file-size: 100Mb
+  data:
+    mongodb:
+      host: 172.31.33.57
+      port: 27017
+      username: dcpay
+      password: hYocUIctcEIzZ3XDAyw5
+      database: dcpay
 
 
 

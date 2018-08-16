@@ -1,6 +1,9 @@
 spring:
   application:
-    #name: admin-service
+    name: pay-admin-pre
   profiles:
-    #active: @spring.profiles.active@
+    active: @spring.profiles.active@
   debug: @spring.debug@
+
+server:
+  port: 9302
