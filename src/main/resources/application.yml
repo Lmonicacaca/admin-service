@@ -1,6 +1,6 @@
 spring:
   application:
-    name: pay-admin-pre
+    name: pay-admin-${spring.profiles.active}
   profiles:
     active: @spring.profiles.active@
   debug: @spring.debug@
