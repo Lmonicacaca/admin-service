@@ -53,7 +53,8 @@
                 <th>序号</th>
                 <th>渠道号</th>
                 <th>类型</th>
-                <th>安装包</th>
+                <th>url</th>
+                <th>plistUrl</th>
                 <th>版本号</th>
                 <th>logo</th>
                 <th>备注</th>
@@ -72,6 +73,10 @@
     <form role="form" th:action="@{/appUpdate/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate" enctype="multipart/form-data">
         <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="createTime" id="createTime" />
+        <input type="hidden" value="" name="updateTime" id="updateTime" />
+        <input type="hidden" value="" name="oldUrl" id="oldUrl" />
+        <input type="hidden" value="" name="oldPlistUrl" id="oldPlistUrl" />
+        <input type="hidden" value="" name="oldIosLogo" id="oldIosLogo" />
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">渠道号
@@ -106,7 +111,7 @@
                     <input type="text" class="form-control" name="version" id="version" placeholder="请输入版本号" />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="showUrl">
                 <label class="control-label col-md-3">安装包
                 </label>
                 <div class="col-md-8">
@@ -140,6 +145,8 @@
         </div>
     </form>
 </div>
+
+
 
 <input type="hidden" id="csrfId" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <script src="static/modules/product/appUpdateList.js" type="text/javascript"></script>

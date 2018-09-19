@@ -73,14 +73,32 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
         List<AppUpdate> appUpdateList = mongoTemplate.find(query.with(page), AppUpdate.class);
 
         for(int i=0;i<appUpdateList.size();i++){
-            if(appUpdateList.get(i).getUrl()!=null&&appUpdateList.get(i).getUrl()!=""){
-                appUpdateList.get(i).setUrl(image_url+appUpdateList.get(i).getUrl());
+            String url = appUpdateList.get(i).getUrl();
+            if(url!=null&&!url.equals("")){
+                if(!url.startsWith("http")){
+                    appUpdateList.get(i).setUrl(image_url+appUpdateList.get(i).getUrl());
+                }else{
+                    appUpdateList.get(i).setUrl(appUpdateList.get(i).getUrl());
+                }
             }
-            if(appUpdateList.get(i).getPlistUrl()!=null&&appUpdateList.get(i).getPlistUrl()!=""){
-                appUpdateList.get(i).setPlistUrl(image_url+appUpdateList.get(i).getPlistUrl());
+            String plistUrl = appUpdateList.get(i).getPlistUrl();
+            if(plistUrl!=null&&!plistUrl.equals("")){
+                if(!plistUrl.startsWith("http")){
+                    appUpdateList.get(i).setPlistUrl(image_url+appUpdateList.get(i).getPlistUrl());
+
+                }else {
+                    appUpdateList.get(i).setPlistUrl(appUpdateList.get(i).getPlistUrl());
+
+                }
             }
-            if(appUpdateList.get(i).getIosLogo()!=null&&appUpdateList.get(i).getIosLogo()!=""){
-                appUpdateList.get(i).setIosLogo(image_url+appUpdateList.get(i).getIosLogo());
+            String iosLogo = appUpdateList.get(i).getIosLogo();
+            if(iosLogo!=null&&!iosLogo.equals("")){
+                if(iosLogo.startsWith("http")){
+                    appUpdateList.get(i).setIosLogo(appUpdateList.get(i).getIosLogo());
+                }else{
+                    appUpdateList.get(i).setIosLogo(image_url+appUpdateList.get(i).getIosLogo());
+
+                }
             }
         }
         Map<String,Object> map = new HashMap<>();
@@ -127,12 +145,43 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
     }
 
     @Override
-    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) {
-        //上传logo
-        String logoUrl = uploadLogoToCdn(files[1]);
-        //上传包
-
-
+    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) throws Exception {
+        if(appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
+            String systemType = appUpdateVo.getAppUpdateType();
+            String build = appUpdateVo.getAppUpdateBuild();
+            String version = appUpdateVo.getVersion();
+            String logoUrl = null;
+            String url = null;
+            if(systemType.equals("IOS")){
+                //上传logo
+                logoUrl = uploadLogoToCdn(files[1],systemType,build,version);
+                //上传包
+                url = uploadUrlToCdn(systemType, build, version, logoUrl, files[0]);
+            }else {
+                url = uploadUrlToCdn(systemType, build, version, logoUrl, files[0]);
+            }
+            String logoUrlFull = null;
+            if(logoUrl!=null){
+                logoUrlFull = upload_url+logoUrl;
+            }
+            String urlFull = upload_url+url;
+            logger.info("logoUrlFull:"+logoUrlFull);
+            logger.info("urlFull:"+urlFull);
+            AppUpdate appUpdate = createAppUpdate(appUpdateVo, urlFull, logoUrlFull);
+            logger.info(JSONObject.toJSONString(appUpdate));
+            AppUpdate insert = appUpdateRepository.insert(appUpdate);
+            if(insert!=null){
+                return "success";
+            }
+        }else{
+            System.out.println(appUpdateVo);
+            AppUpdate appUpdate = createAppUpdate(appUpdateVo, null, null);
+            System.out.println(appUpdate);
+            AppUpdate save = appUpdateRepository.save(appUpdate);
+            if(save!=null){
+                return "success";
+            }
+        }
 
         return null;
     }
@@ -172,30 +221,48 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
      * @param file
      * @return
      */
-   public String uploadLogoToCdn(MultipartFile file){
-       String fileName = file.getName();
+   public String uploadLogoToCdn(MultipartFile file,String systemType,String build,String version){
+       String fileName = file.getOriginalFilename();
+       String newFileName = systemType+"-"+build+"-"+version+"-"+fileName;
        //上传logo到阿里云
-       String logoUrl = CdnService.genSaveKey(uploadCdnLogoUrl, fileName);
+       String logoUrl = CdnService.genSaveKey(uploadCdnLogoUrl, newFileName);
        Optional<URL> cdn_plist = cdnService.put(logoUrl, file, getFileType(file.getName()));
-       System.out.println("上传图片地址："+logoUrl);
+       logger.info("上传图片地址："+logoUrl);
        return logoUrl;
    }
 
+    /**
+     * 上传包到阿里云
+     * @param systemType
+     * @param build
+     * @param version
+     * @param imgUrl
+     * @param file
+     * @return
+     * @throws Exception
+     */
    public String uploadUrlToCdn(String systemType,String build,String version,String imgUrl,MultipartFile file) throws Exception {
        String fileName = file.getOriginalFilename();
        //如果是ios则需要使用freemaker生成plist文件
        if(fileName.endsWith(".ipa")){
            createPlist(systemType,build,version,imgUrl);
-//           File file = new File(disUrl + packageName+".plist");
-//           FileInputStream inputStream = new FileInputStream(file);
-//           String plistUrl = CdnService.genSaveKey(uploadCdnUrl+appVersionVo.getBuild(), file.getName(), "app");
-//           System.out.println(plistUrl);
-//           Optional<URL> cdn_plist = cdnService.put(plistUrl, inputStream, getFileType(file.getName()));
-//           map.put("plistUrl", upload_url+plistUrl);
+           String plistFileName = systemType+"-"+build+"-"+version;
+           File plistFile = new File(disUrl + plistFileName+".plist");
+           FileInputStream inputStream = new FileInputStream(plistFile);
+           String plistUrl = CdnService.genSaveKey(uploadCdnUrl, plistFileName+".plist");
+           Optional<URL> cdn_plist = cdnService.put(plistUrl, inputStream, getFileType(file.getName()));
+           logger.info("plistUrl:"+plistUrl);
+           String ipaUrl = CdnService.genSaveKey(uploadCdnUrl, plistFileName+".ipa");
+           Optional<URL> cdn_ipa = cdnService.put(ipaUrl, file, getFileType(file.getName()));
+           logger.info("ipaUrl:"+ipaUrl);
+           return plistUrl;
        }
 
-
-       return null;
+       String apkFileName = systemType+"-"+build+"-"+version+".apk";
+       String apkUrl = CdnService.genSaveKey(uploadCdnUrl, apkFileName);
+       Optional<URL> cdn_plist = cdnService.put(apkUrl, file, getFileType(file.getName()));
+       logger.info("apkUrl"+apkUrl);
+       return apkUrl;
    }
 
     /**
@@ -229,7 +296,7 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
         FileWriter out = new FileWriter(file_file);
         Map<String, String> map = new HashMap<>();
         map.put("version", version);
-        map.put("ipaDownLoadUrl", uploadCdnUrl+systemType+"/"+build+"/"+fileName+".ipa");
+        map.put("ipaDownLoadUrl", uploadCdnUrl+fileName+".ipa");
         map.put("ipaImageUrl",imgUrl);
         logger.info(JSONObject.toJSONString(map));
         //生成模版
@@ -250,6 +317,45 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
             return "jpg";
         }
 
+    }
+
+    /**
+     * 创建更新对象
+     * @param appUpdateVo
+     * @param url
+     * @param logoUrl
+     * @return
+     */
+    public AppUpdate createAppUpdate(AppUpdateVo appUpdateVo,String url,String logoUrl){
+        AppUpdate appUpdate = new AppUpdate();
+        String systemType = appUpdateVo.getAppUpdateType();
+
+        if(appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
+            appUpdate.setId(System.currentTimeMillis());
+            appUpdate.setCreateTime(new Date());
+            if(systemType.equals("IOS")){
+                appUpdate.setPlistUrl(url);
+                appUpdate.setIosLogo(logoUrl);
+            }else{
+                appUpdate.setUrl(url);
+            }
+        }else {
+            appUpdate.setId(appUpdateVo.getId());
+            appUpdate.setCreateTime(new Date(appUpdateVo.getCreateTime()));
+            appUpdate.setUpdateTime(new Date());
+            appUpdate.setUrl(appUpdateVo.getOldUrl());
+            appUpdate.setIosLogo(appUpdateVo.getOldIosLogo());
+            appUpdate.setPlistUrl(appUpdateVo.getOldPlistUrl());
+        }
+
+        String version = appUpdateVo.getVersion();
+        appUpdate.setVersion(version);
+        appUpdate.setForce(appUpdateVo.getForce());
+        appUpdate.setContent(appUpdateVo.getContent());
+        appUpdate.setAppUpdateBuild(appUpdateVo.getAppUpdateBuild());
+        appUpdate.setAppUpdateType(systemType);
+        appUpdate.setChannel(Long.parseLong(appUpdateVo.getChannel()));
+        return appUpdate;
     }
 
 }

@@ -17,6 +17,7 @@ public class AppUpdate {
     private String iosLogo;
     private Long channel;
     private String plistUrl;
+    private String appUpdateBuild;
 
     public Long getId() {
         return id;
@@ -106,6 +107,14 @@ public class AppUpdate {
         this.plistUrl = plistUrl;
     }
 
+    public String getAppUpdateBuild() {
+        return appUpdateBuild;
+    }
+
+    public void setAppUpdateBuild(String appUpdateBuild) {
+        this.appUpdateBuild = appUpdateBuild;
+    }
+
     @Override
     public String toString() {
         return "AppUpdate{" +
@@ -118,8 +127,9 @@ public class AppUpdate {
                 ", updateTime=" + updateTime +
                 ", appUpdateType='" + appUpdateType + '\'' +
                 ", iosLogo='" + iosLogo + '\'' +
-                ", channel='" + channel + '\'' +
+                ", channel=" + channel +
                 ", plistUrl='" + plistUrl + '\'' +
+                ", appUpdateBuild='" + appUpdateBuild + '\'' +
                 '}';
     }
 }

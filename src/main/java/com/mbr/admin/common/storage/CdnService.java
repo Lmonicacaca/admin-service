@@ -35,7 +35,6 @@ public abstract class CdnService {
      * @return
      */
     public static String genSaveKey(final String mkdirs, final String fileName) {
-
        return mkdirs+fileName;
     }
 

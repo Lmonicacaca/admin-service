@@ -65,25 +65,40 @@ public class AppUpdateController extends BaseController {
     @ResponseBody
     public Object addOrUpdate(AppUpdateVo appUpdateVo,HttpServletRequest request,@RequestParam("file")MultipartFile[] multipartFiles){
         System.out.println(appUpdateVo);
-        if(multipartFiles==null){
-            return failed("请上传包和logo");
+        if (appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
+            if(multipartFiles==null||multipartFiles.length==0){
+                return failed("请上传包和logo");
+            }
+            String url = multipartFiles[0].getOriginalFilename();
+            String systemType = appUpdateVo.getAppUpdateType();
+            if(!url.endsWith(".ipa")&&!url.endsWith(".apk")){
+                return failed("上传包的格式有误，请重新上传！");
+            }
+            if(url.endsWith(".ipa")&&!systemType.equals("IOS")){
+                return failed("上传的包与系统类型不符，请重新上传！");
+            }
+            if(url.endsWith(".apk")&&!systemType.equals("Android")){
+                return failed("上传的包与系统类型不符，请重新上传！");
+            }
+            try {
+                String result = appUpdateManager.addAppUpdate(appUpdateVo, multipartFiles);
+                if(result.equals("success")){
+                    return success();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            try {
+                String result = appUpdateManager.addAppUpdate(appUpdateVo, null);
+                if("success".equals(result)){
+                    return success();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        if(multipartFiles.length<2){
-            return failed("请上传包和logo");
-        }
-        String url = multipartFiles[0].getOriginalFilename();
-        String systemType = appUpdateVo.getAppUpdateType();
-        if(!url.endsWith(".ipa")&&!url.endsWith(".apk")){
-            return failed("上传包的格式有误，请重新上传！");
-        }
-        if(url.endsWith(".ipa")&&!systemType.equals("IOS")){
-            return failed("上传的包与系统类型不符，请重新上传！");
-        }
-        if(url.endsWith(".apk")&&!systemType.equals(".apk")){
-            return failed("上传的包与系统类型不符，请重新上传！");
-        }
-        appUpdateManager.addAppUpdate(appUpdateVo,multipartFiles);
-        return null;
+            return null;
     }
 
     @RequestMapping("queryById")

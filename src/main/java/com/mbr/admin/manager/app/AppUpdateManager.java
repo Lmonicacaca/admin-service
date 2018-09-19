@@ -24,5 +24,5 @@ public interface AppUpdateManager {
 
     public List<Map<String,Object>> queryBuild();
 
-    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files);
+    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) throws Exception;
 }

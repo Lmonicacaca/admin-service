@@ -4,13 +4,17 @@ import java.util.Date;
 
 public class AppUpdateVo {
     private Long id;
-    private Date createTime;
+    private String createTime;
+    private String updateTime;
     private String channel;
     private String appUpdateType;
     private String version;
     private String content;
     private boolean force;
     private String appUpdateBuild;
+    private String oldUrl;
+    private String oldPlistUrl;
+    private String oldIosLogo;
 
 
     public Long getId() {
@@ -21,14 +25,21 @@ public class AppUpdateVo {
         this.id = id;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
 
     public String getChannel() {
         return channel;
@@ -84,17 +95,45 @@ public class AppUpdateVo {
         this.appUpdateBuild = appUpdateBuild;
     }
 
+    public String getOldUrl() {
+        return oldUrl;
+    }
+
+    public void setOldUrl(String oldUrl) {
+        this.oldUrl = oldUrl;
+    }
+
+    public String getOldPlistUrl() {
+        return oldPlistUrl;
+    }
+
+    public void setOldPlistUrl(String oldPlistUrl) {
+        this.oldPlistUrl = oldPlistUrl;
+    }
+
+    public String getOldIosLogo() {
+        return oldIosLogo;
+    }
+
+    public void setOldIosLogo(String oldIosLogo) {
+        this.oldIosLogo = oldIosLogo;
+    }
+
     @Override
     public String toString() {
         return "AppUpdateVo{" +
                 "id=" + id +
-                ", createTime=" + createTime +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
                 ", channel='" + channel + '\'' +
                 ", appUpdateType='" + appUpdateType + '\'' +
                 ", version='" + version + '\'' +
                 ", content='" + content + '\'' +
                 ", force=" + force +
                 ", appUpdateBuild='" + appUpdateBuild + '\'' +
+                ", oldUrl='" + oldUrl + '\'' +
+                ", oldPlistUrl='" + oldPlistUrl + '\'' +
+                ", oldIosLogo='" + oldIosLogo + '\'' +
                 '}';
     }
 }

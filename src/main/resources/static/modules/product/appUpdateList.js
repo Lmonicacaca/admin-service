@@ -6,6 +6,7 @@ var appUpdate = function () {
             {"mData": "channel"},
             {"mData": "appUpdateType"},
             {"mData": "url"},
+            {"mData": "plistUrl"},
             {"mData": "version"},
             {"mData": "iosLogo"},
             {"mData": "content"},
@@ -31,11 +32,21 @@ var appUpdate = function () {
                     if(a==null||a==""){
                         return "";
                     }else {
-                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>APP下载</a>"
+                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>url下载</a>"
+                    }
+                }
+            },
+            {
+                "aTargets": [4],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else {
+                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>plistUrl下载</a>"
                     }
                 }
             },{
-            "aTargets": [5],
+            "aTargets": [6],
             "mRender": function (a, b, c, d) {
                 if(a==null||a==""){
                     return "";
@@ -46,7 +57,7 @@ var appUpdate = function () {
             }
         },
             {
-                "aTargets": [8],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -58,7 +69,7 @@ var appUpdate = function () {
                 }
             },
             {
-                "aTargets": [9],
+                "aTargets": [10],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -68,7 +79,7 @@ var appUpdate = function () {
                     }
                 }
             },{
-            "aTargets": [10],
+            "aTargets": [11],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
@@ -110,7 +121,7 @@ var appUpdate = function () {
                     if (data.code == 200) {
                         var d = data.data;
                         $("#id").val(d.id);
-                        $("#oldImg").val(d.iosLogo);
+                        $("#oldIosLogo").val(d.iosLogo);
                         $("#oldPlistUrl").val(d.plistUrl);
                         $("#oldUrl").val(d.url);
                         $("#version").val(d.version);
@@ -120,6 +131,7 @@ var appUpdate = function () {
                         $("#iosLogo").val("");
                         var time = new Date(d.createTime);
                         $("#createTime").val(time);
+                        $("#updateTime").val("");
                         $("#channel").empty();
                         if(d.channel!=null&&d.channel!=""){
                             var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
@@ -131,14 +143,13 @@ var appUpdate = function () {
                         var optionType = "<option value='" + d.appUpdateType + "' selected='selected'>" + d.appUpdateType + "</option>";
                         $("#appUpdateType").empty();
                         $("#appUpdateType").append(optionType);
-                        if(d.appUpdateType=="Android"){
-                            $("#showPlistUrl").css("display","none")
-                            $("#showIosLogo").css("display","none")
-                        }
-                        if(d.appUpdateType=="IOS"){
-                            $("#showPlistUrl").css("display","block")
-                            $("#showIosLogo").css("display","block")
-                        }
+                        $("#appUpdateType").attr("disabled",true);
+                        var optionBuild = "<option value='" + d.appUpdateBuild + "' selected='selected'>" + d.appUpdateBuild + "</option>";
+                        $("#appUpdateBuild").empty();
+                        $("#appUpdateBuild").append(optionBuild);
+                        $("#appUpdateBuild").attr("disabled",true);
+                        $("#showIosLogo").css("display","none");
+                        $("#showUrl").css("display","none");
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -150,9 +161,12 @@ var appUpdate = function () {
                                 loadChannel();
                                 loadAppUpdateType();
                                 loadForce();
+                                loadAppUpdateBuild();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
+                                    $("#appUpdateType").attr("disabled",false);
+                                    $("#appUpdateBuild").attr("disabled",false);
                                     $("#form").ajaxSubmit({
                                         success: function (d) {
                                             if (d.code == 200) {
@@ -180,7 +194,8 @@ var appUpdate = function () {
     var add =function () {
         $("#add").bind("click",function () {
             $("#id").val("");
-            $("#createTime").val(new Date());
+            $("#createTime").val("");
+            $("#updateTime").val("");
             $("#channel").html("");
             $("#appUpdateType").html("");
             $("#appUpdateBuild").html("");
@@ -189,6 +204,9 @@ var appUpdate = function () {
             $("#iosLogo").val("");
             $("#content").val("");
             $("#force").html("");
+            $("#appUpdateType").attr("disabled",false);
+            $("#appUpdateBuild").attr("disabled",false);
+            $("#showUrl").css("display","block");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -209,12 +227,11 @@ var appUpdate = function () {
                         $("#form").ajaxSubmit({
                             success: function (d) {
                                 if (d.code == 200) {
-                                    layer.msg("添加数据成功");
                                     var dataTable = $("#dataTables-example").dataTable();
                                     dataTable.fnReloadAjax();
-                                    layer.closeAll();
+                                    layer.close(i);
                                 } else {
-                                    layer.msg(d.message);
+                                    layer.msg("添加失败");
                                 }
                             }
                         })
@@ -299,10 +316,8 @@ var appUpdate = function () {
 
         $("#appUpdateType").bind("change",function(){
             if($(this).val()=="Android"){
-                $("#showPlistUrl").css("display","none");
                 $("#showIosLogo").css("display","none");
             }else{
-                $("#showPlistUrl").css("display","block");
                 $("#showIosLogo").css("display","block");
             }
         })

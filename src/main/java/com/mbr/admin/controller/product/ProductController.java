@@ -51,8 +51,13 @@ public class ProductController extends BaseController{
             PageResult<Product> data = coinList.getData();
             List<Product> list = data.getList();
             for(int i =0;i<list.size();i++){
-                if(list.get(i).getCoinAvatarUrl()!=null&&list.get(i).getCoinAvatarUrl()!=""){
-                    list.get(i).setCoinAvatarUrl(image_url+list.get(i).getCoinAvatarUrl());
+                String coinAvatarUrl = list.get(i).getCoinAvatarUrl();
+                if(coinAvatarUrl!=null&&coinAvatarUrl!=""){
+                    if(coinAvatarUrl.startsWith("http")){
+                        list.get(i).setCoinAvatarUrl(list.get(i).getCoinAvatarUrl());
+                    }else{
+                        list.get(i).setCoinAvatarUrl(image_url+list.get(i).getCoinAvatarUrl());
+                    }
                 }
             }
 
