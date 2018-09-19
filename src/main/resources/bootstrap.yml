@@ -16,13 +16,15 @@ eureka:
 
 
 spring:
+  profiles:
+    active: @spring.profiles.active@
   cloud:
     config:
       profile: ${spring.profiles.active}
       label: master
-      uri: ${SPRING_CONFIG_URI:@spring.cloud.config.uri@}
+      uri: @spring.cloud.config.uri@
   application:
-    name: pay-admin-${spring.profiles.active}
+    name: @spring.service.name@-${spring.profiles.active}
   zipkin:
     base-url: @spring.zipkin.base-url@
 

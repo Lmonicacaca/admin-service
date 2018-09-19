@@ -1,9 +1,2 @@
-spring:
-  application:
-    name: pay-admin-${spring.profiles.active}
-  profiles:
-    active: @spring.profiles.active@
-  debug: @spring.debug@
-
 server:
   port: 9302

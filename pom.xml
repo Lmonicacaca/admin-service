@@ -56,11 +56,15 @@
                 <spring.profiles.active>pre</spring.profiles.active>
                 <spring.debug>true</spring.debug>
                 <logback.level>INFO</logback.level>
+                <!--<eureka.client.service-url.defaultZone>http://eureka:eureka@172.19.2.12:9902/eureka</eureka.client.service-url.defaultZone>-->
+                <!--<spring.cloud.config.uri>http://172.19.2.12:9905</spring.cloud.config.uri>-->
+                <!--<spring.zipkin.base-url>http://47.100.47.200:9949/</spring.zipkin.base-url>-->
             </properties>
         </profile>
     </profiles>
 
     <properties>
+        <spring.service.name>pay-admin</spring.service.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>

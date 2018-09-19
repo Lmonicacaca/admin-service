@@ -1,5 +1,6 @@
 package com.mbr.admin.controller.merchant;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
@@ -36,6 +37,8 @@ public class PayBillController extends BaseController {
         int status = Integer.parseInt(statusSearch);
         PageHelper.startPage(super.getPageNo(request), super.getPageSize(request));
         List<PayBillVo> payBillList = payManager.queryAllPayBill(merchantidSearch,refBizNoSearch,billType,merchantnameSearch,status);
+        PageInfo<PayBillVo> payBillVoPageInfo = new PageInfo<>(payBillList);
+        System.out.println(payBillVoPageInfo);
         PageResultDto result = new PageResultDto<PayBillVo>(new PageInfo<PayBillVo>(payBillList));
         return result;
     }

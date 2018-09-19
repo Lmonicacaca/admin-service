@@ -136,7 +136,6 @@ var merchantCoinTmp = function () {
                                 index = 0;
                                 },
                             btn2: function (i, layero) {
-                                alert(222222222)
                                 $.ajax({
                                     url:getRootPath()+"/merchantCoinTmp/auditFailed",
                                     type:"get",

@@ -25,6 +25,7 @@ public class PayBillManageImpl implements PayBillManager {
     @Override
     public List<PayBillVo> queryAllPayBill(String merchantId,  String refBizNoSearch,int billType,String merchantnameSearch,int status) {
         List<PayBillVo> payBillList = payDao.queryAllPayBill(merchantId, refBizNoSearch, billType, merchantnameSearch, status);
+
         for (int i=0;i<payBillList.size();i++){
             if(payBillList.get(i).getCoinId()!=null&&payBillList.get(i).getCoinId()!=0){
                 Product coin = productRepository.findById(payBillList.get(i).getCoinId());
@@ -37,7 +38,6 @@ public class PayBillManageImpl implements PayBillManager {
                 payBillList.get(i).setLastUpdateTime(payBillList.get(i).getLastUpdateTime().substring(0,payBillList.get(i).getLastUpdateTime().length()-2));
             }
         }
-
         return payBillList;
     }
 }
