@@ -5,16 +5,13 @@ import java.util.Date;
 public class AppUpdateVo {
     private Long id;
     private Date createTime;
-    private String oldImg;
-    private String oldUrl;
-    private String oldPlistUrl;
     private String channel;
     private String appUpdateType;
-    private String url;
-    private String plistUrl;
     private String version;
     private String content;
     private boolean force;
+    private String appUpdateBuild;
+
 
     public Long getId() {
         return id;
@@ -32,13 +29,6 @@ public class AppUpdateVo {
         this.createTime = createTime;
     }
 
-    public String getOldImg() {
-        return oldImg;
-    }
-
-    public void setOldImg(String oldImg) {
-        this.oldImg = oldImg;
-    }
 
     public String getChannel() {
         return channel;
@@ -56,21 +46,6 @@ public class AppUpdateVo {
         this.appUpdateType = appUpdateType;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getPlistUrl() {
-        return plistUrl;
-    }
-
-    public void setPlistUrl(String plistUrl) {
-        this.plistUrl = plistUrl;
-    }
 
     public String getVersion() {
         return version;
@@ -96,41 +71,30 @@ public class AppUpdateVo {
         this.force = force;
     }
 
-    public String getOldUrl() {
-        return oldUrl;
-    }
-
-    public void setOldUrl(String oldUrl) {
-        this.oldUrl = oldUrl;
-    }
-
-    public String getOldPlistUrl() {
-        return oldPlistUrl;
-    }
-
-    public void setOldPlistUrl(String oldPlistUrl) {
-        this.oldPlistUrl = oldPlistUrl;
-    }
 
     public boolean isForce() {
         return force;
     }
 
+    public String getAppUpdateBuild() {
+        return appUpdateBuild;
+    }
+
+    public void setAppUpdateBuild(String appUpdateBuild) {
+        this.appUpdateBuild = appUpdateBuild;
+    }
+
     @Override
     public String toString() {
         return "AppUpdateVo{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", createTime=" + createTime +
-                ", oldImg='" + oldImg + '\'' +
-                ", oldUrl='" + oldUrl + '\'' +
-                ", oldPlistUrl='" + oldPlistUrl + '\'' +
                 ", channel='" + channel + '\'' +
                 ", appUpdateType='" + appUpdateType + '\'' +
-                ", url='" + url + '\'' +
-                ", plistUrl='" + plistUrl + '\'' +
                 ", version='" + version + '\'' +
                 ", content='" + content + '\'' +
                 ", force=" + force +
+                ", appUpdateBuild='" + appUpdateBuild + '\'' +
                 '}';
     }
 }

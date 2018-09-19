@@ -6,7 +6,6 @@ var appUpdate = function () {
             {"mData": "channel"},
             {"mData": "appUpdateType"},
             {"mData": "url"},
-            {"mData": "plistUrl"},
             {"mData": "version"},
             {"mData": "iosLogo"},
             {"mData": "content"},
@@ -36,17 +35,7 @@ var appUpdate = function () {
                     }
                 }
             },{
-            "aTargets": [4],
-            "mRender": function (a, b, c, d) {
-                if(a==null||a==""){
-                    return "";
-                }else{
-                    return "<a class=\"edit\" href='"+a+"' title='"+a+"'>配置文件下载</a>"
-                }
-
-            }
-        },{
-            "aTargets": [6],
+            "aTargets": [5],
             "mRender": function (a, b, c, d) {
                 if(a==null||a==""){
                     return "";
@@ -57,7 +46,7 @@ var appUpdate = function () {
             }
         },
             {
-                "aTargets": [9],
+                "aTargets": [8],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -69,7 +58,7 @@ var appUpdate = function () {
                 }
             },
             {
-                "aTargets": [10],
+                "aTargets": [9],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -79,7 +68,7 @@ var appUpdate = function () {
                     }
                 }
             },{
-            "aTargets": [11],
+            "aTargets": [10],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
@@ -194,8 +183,8 @@ var appUpdate = function () {
             $("#createTime").val(new Date());
             $("#channel").html("");
             $("#appUpdateType").html("");
+            $("#appUpdateBuild").html("");
             $("#url").val("");
-            $("#plistUrl").val("");
             $("#version").val("");
             $("#iosLogo").val("");
             $("#content").val("");
@@ -213,6 +202,7 @@ var appUpdate = function () {
                     loadAppUpdateType();
                     loadForce();
                     changeType();
+                    loadAppUpdateBuild();
                 },
                 yes: function (layero, index) {
                     if ($("#form").valid()) {
@@ -274,6 +264,21 @@ var appUpdate = function () {
             }
         });
     };
+    var loadAppUpdateBuild = function () {
+        $('#appUpdateBuild').select2({
+            placeholder: "请选择",
+            allowClear: true,
+            ajax: {
+                url: "appUpdate/queryBuild",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
     var loadForce = function () {
         $('#force').select2({
             placeholder: "请选择是否强制更新",
@@ -312,10 +317,10 @@ var appUpdate = function () {
                 appUpdateType: {
                     required: true
                 },
-                url:{
+                appUpdateBuild: {
                     required: true
                 },
-                pListUrl:{
+                url:{
                     required: true
                 },
                 version: {
@@ -327,13 +332,13 @@ var appUpdate = function () {
             },
             messages: {
                 appUpdateType: {
-                    required: "类型不能为空!"
+                    required: "系统类型不能为空!"
+                },
+                appUpdateBuild: {
+                    required: "build不能为空！"
                 },
                 url:{
                     required: "安装包不能为空"
-                },
-                pListUrl:{
-                    required: "配置文件不能为空"
                 },
                 version: {
                     required: "版本号不能为空!"

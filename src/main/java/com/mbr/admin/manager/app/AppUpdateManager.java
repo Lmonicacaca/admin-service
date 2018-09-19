@@ -16,11 +16,13 @@ public interface AppUpdateManager {
 
     public List<Map<String,Object>> queryChannel();
 
-    public int addOrUpdate(AppUpdateVo appUpdateVo, HttpServletRequest request,MultipartFile[] multipartFiles);
-
     public AppUpdate queryById(Long id);
 
     public List<Map<String,Object>> queryType();
 
     public List<Map<String,Object>> queryForce();
+
+    public List<Map<String,Object>> queryBuild();
+
+    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files);
 }

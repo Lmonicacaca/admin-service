@@ -2,6 +2,7 @@ package com.mbr.admin.manager.app.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mbr.admin.common.storage.CdnService;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.AppUpdate;
@@ -9,7 +10,13 @@ import com.mbr.admin.domain.app.Vo.AppUpdateVo;
 import com.mbr.admin.manager.app.AppUpdateManager;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.repository.AppUpdateRepository;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,15 +25,27 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.net.URL;
+import java.util.*;
 
 @Service
 public class AppUpdateManagerImpl implements AppUpdateManager {
-
+    Logger logger = LoggerFactory.getLogger(AppUpdateManagerImpl.class);
+    @Value("${upload_url}")
+    private String upload_url;
+    @Value("${disUrl}")
+    private String disUrl;
+    @Value("${uploadCdnUrl}")
+    private String uploadCdnUrl;
+    @Value("${uploadCdnLogoUrl}")
+    private String uploadCdnLogoUrl;
+    @Resource
+    private CdnService cdnService;
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
@@ -80,66 +99,6 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
         return channelManager.findAllChannel();
     }
 
-    @Override
-    public int addOrUpdate(AppUpdateVo appUpdateVo, HttpServletRequest request,MultipartFile[] multipartFiles) {
-        String iosUrlPath = "";
-        String androidUrlPath = "";
-        String plistUrlPath = "";
-        String logoPath = "";
-        Map<String, MultipartFile> iosUrlMap = null;
-        Map<String, MultipartFile> androidUrlMap = null;
-        Map<String, MultipartFile> plistMap = null;
-        Map<String, MultipartFile> imgMap = null;
-        for(int i=0;i<multipartFiles.length;i++){
-            if(multipartFiles[i].getOriginalFilename().endsWith(".ipa")){
-                iosUrlMap = new HashMap<>();
-                iosUrlMap.put("file",multipartFiles[i]);
-            }else if(multipartFiles[i].getOriginalFilename().endsWith(".apk")){
-                androidUrlMap = new HashMap<>();
-                androidUrlMap.put("file",multipartFiles[i]);
-            }
-            else if(multipartFiles[i].getOriginalFilename().endsWith(".plist")){
-                plistMap = new HashMap<>();
-                plistMap.put("file",multipartFiles[i]);
-            }
-            else{
-                imgMap = new HashMap<>();
-                imgMap.put("file",multipartFiles[i]);
-            }
-
-        }
-
-        if(iosUrlMap!=null){
-
-            iosUrlPath = getSavePath(iosUrlMap);
-        }else{
-            iosUrlPath = appUpdateVo.getOldUrl();
-        }
-        if(androidUrlMap!=null){
-
-            androidUrlPath = getSavePath(androidUrlMap);
-        }else{
-            androidUrlPath = appUpdateVo.getOldUrl();
-        }
-        if(plistMap!=null){
-
-            plistUrlPath = getSavePath(plistMap);
-        }else{
-            plistUrlPath = appUpdateVo.getOldPlistUrl();
-        }
-        if(imgMap!=null){
-
-            logoPath = getSavePath(imgMap);
-        }else{
-            logoPath = appUpdateVo.getOldImg();
-        }
-        AppUpdate appUpdate = createAppUpdate(appUpdateVo, iosUrlPath, androidUrlPath, plistUrlPath, logoPath);
-        AppUpdate save = appUpdateRepository.save(appUpdate);
-        if(save!=null){
-            return 1;
-        }
-        return 0;
-    }
 
     @Override
     public AppUpdate queryById(Long id) {
@@ -148,30 +107,34 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
 
     @Override
     public List<Map<String, Object>> queryType() {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("id","IOS");
-        map1.put("text","IOS");
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("id","Android");
-        map2.put("text","Android");
-        list.add(map1);
-        list.add(map2);
-        return list;
+        Object[] ids = new Object[]{"IOS","Android"};
+        Object[] texts = new Object[]{"IOS","Android"};
+        return createListMap(ids,texts);
     }
 
     @Override
     public List<Map<String, Object>> queryForce() {
-        List<Map<String,Object>> list = new ArrayList<>();
-        Map<String,Object> map1 = new HashMap<>();
-        map1.put("id","false");
-        map1.put("text","false");
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("id","true");
-        map2.put("text","true");
-        list.add(map1);
-        list.add(map2);
-        return list;
+        Object[] ids = new Object[]{"false","true"};
+        Object[] texts = new Object[]{"false","true"};
+        return createListMap(ids,texts);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryBuild() {
+        Object[] ids = new Object[]{"release","beta"};
+        Object[] texts = new Object[]{"release","beta"};
+        return createListMap(ids,texts);
+    }
+
+    @Override
+    public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) {
+        //上传logo
+        String logoUrl = uploadLogoToCdn(files[1]);
+        //上传包
+
+
+
+        return null;
     }
 
     public String getSavePath(Map<String, MultipartFile> mapFiles){
@@ -187,27 +150,106 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
         return result;
    }
 
-   public AppUpdate createAppUpdate(AppUpdateVo appUpdateVo,String iosUrlPath,String androidUrlPath,String plistUrlPath,String logoPath){
-       AppUpdate appUpdate = new AppUpdate();
-       if(appUpdateVo.getId()==null){
-           Long id = new TimestampPkGenerator().next(getClass());
-           appUpdate.setId(id);
-       }else{
-           appUpdate.setId(appUpdateVo.getId());
-       }
-       appUpdate.setContent(appUpdateVo.getContent());
-       appUpdate.setCreateTime(appUpdateVo.getCreateTime());
-       appUpdate.setVersion(appUpdateVo.getVersion());
-       appUpdate.setForce(appUpdateVo.getForce());
-       appUpdate.setAppUpdateType(appUpdateVo.getAppUpdateType());
-       appUpdate.setChannel(Long.parseLong(appUpdateVo.getChannel()));
-       if(appUpdateVo.getAppUpdateType().equals("IOS")){
-           appUpdate.setUrl(iosUrlPath);
-           appUpdate.setPlistUrl(plistUrlPath);
-           appUpdate.setIosLogo(logoPath);
-       }else{
-           appUpdate.setUrl(androidUrlPath);
-       }
-       return appUpdate;
+    /**
+     *生成下拉列表
+     * @param ids
+     * @param texts
+     * @return
+     */
+   public List<Map<String,Object>> createListMap(Object[] ids,Object[] texts){
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(int i=0;i<ids.length;i++){
+            Map<String,Object> map = new HashMap<>();
+            map.put("id",ids[i]);
+            map.put("text",texts[i]);
+            list.add(map);
+        }
+        return list;
    }
+
+    /**
+     * 上传logo到阿里云
+     * @param file
+     * @return
+     */
+   public String uploadLogoToCdn(MultipartFile file){
+       String fileName = file.getName();
+       //上传logo到阿里云
+       String logoUrl = CdnService.genSaveKey(uploadCdnLogoUrl, fileName);
+       Optional<URL> cdn_plist = cdnService.put(logoUrl, file, getFileType(file.getName()));
+       System.out.println("上传图片地址："+logoUrl);
+       return logoUrl;
+   }
+
+   public String uploadUrlToCdn(String systemType,String build,String version,String imgUrl,MultipartFile file) throws Exception {
+       String fileName = file.getOriginalFilename();
+       //如果是ios则需要使用freemaker生成plist文件
+       if(fileName.endsWith(".ipa")){
+           createPlist(systemType,build,version,imgUrl);
+//           File file = new File(disUrl + packageName+".plist");
+//           FileInputStream inputStream = new FileInputStream(file);
+//           String plistUrl = CdnService.genSaveKey(uploadCdnUrl+appVersionVo.getBuild(), file.getName(), "app");
+//           System.out.println(plistUrl);
+//           Optional<URL> cdn_plist = cdnService.put(plistUrl, inputStream, getFileType(file.getName()));
+//           map.put("plistUrl", upload_url+plistUrl);
+       }
+
+
+       return null;
+   }
+
+    /**
+     * 使用free marker生成plist文件
+     *
+     * @throws Exception
+     */
+    public void createPlist(String systemType,String build,String version,String imgUrl) throws Exception {
+        //创建fm的配置
+        Configuration config = new Configuration();
+        //指定默认编码格式
+        config.setDefaultEncoding("UTF-8");
+        //设置模版文件的路径
+        config.setClassForTemplateLoading(AppUpdateManagerImpl.class, "/static/ftl");
+        //获得模版包
+        Template template = config.getTemplate("ipa.plist");//从参数文件中获取指定输出路径 ,路径示例：C:/Workspace/shop-test/src/main/webapp/html
+
+        //将plist文件写到磁盘中
+        String path_mkdirs = disUrl;
+        String fileName = systemType+"-"+build+"-"+version;
+        String path_file = disUrl +fileName+".plist";
+        File file_mkdirs = new File(path_mkdirs);
+        if (!file_mkdirs.exists()) {
+            file_mkdirs.mkdirs();
+        }
+        File file_file = new File(path_file);
+        if (!file_file.exists()) {
+            file_file.createNewFile();
+        }
+        //定义输出流，注意必须指定编码
+        FileWriter out = new FileWriter(file_file);
+        Map<String, String> map = new HashMap<>();
+        map.put("version", version);
+        map.put("ipaDownLoadUrl", uploadCdnUrl+systemType+"/"+build+"/"+fileName+".ipa");
+        map.put("ipaImageUrl",imgUrl);
+        logger.info(JSONObject.toJSONString(map));
+        //生成模版
+        template.process(map, out);
+
+    }
+
+
+    public String getFileType(String name) {
+
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        int idx = name.lastIndexOf('.');
+        if (idx >= 0) {
+            return name.substring(idx + 1).toLowerCase();
+        } else {
+            return "jpg";
+        }
+
+    }
+
 }

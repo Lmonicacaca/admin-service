@@ -65,31 +65,25 @@ public class AppUpdateController extends BaseController {
     @ResponseBody
     public Object addOrUpdate(AppUpdateVo appUpdateVo,HttpServletRequest request,@RequestParam("file")MultipartFile[] multipartFiles){
         System.out.println(appUpdateVo);
-        if(appUpdateVo.getAppUpdateType().equals("Android")){
-            if(multipartFiles.length>0){
-                if(!multipartFiles[0].getOriginalFilename().endsWith(".apk")){
-                    return failed("安装包格式有误！");
-                }
-            }
-
+        if(multipartFiles==null){
+            return failed("请上传包和logo");
         }
-        if(appUpdateVo.getAppUpdateType().equals("IOS")){
-            if(multipartFiles.length>0){
-                if(!multipartFiles[0].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[0].getOriginalFilename().endsWith(".plist")){
-                    return failed("安装包格式有误！");
-                }
-                if(!multipartFiles[1].getOriginalFilename().endsWith(".ipa")&&!multipartFiles[1].getOriginalFilename().endsWith(".plist")){
-                    return failed("安装包格式有误！");
-                }
-            }
-
+        if(multipartFiles.length<2){
+            return failed("请上传包和logo");
         }
-        int i = appUpdateManager.addOrUpdate(appUpdateVo, request, multipartFiles);
-        if(i>0){
-            return success();
+        String url = multipartFiles[0].getOriginalFilename();
+        String systemType = appUpdateVo.getAppUpdateType();
+        if(!url.endsWith(".ipa")&&!url.endsWith(".apk")){
+            return failed("上传包的格式有误，请重新上传！");
         }
-
-        return failed("添加或更新失败");
+        if(url.endsWith(".ipa")&&!systemType.equals("IOS")){
+            return failed("上传的包与系统类型不符，请重新上传！");
+        }
+        if(url.endsWith(".apk")&&!systemType.equals(".apk")){
+            return failed("上传的包与系统类型不符，请重新上传！");
+        }
+        appUpdateManager.addAppUpdate(appUpdateVo,multipartFiles);
+        return null;
     }
 
     @RequestMapping("queryById")
@@ -112,4 +106,11 @@ public class AppUpdateController extends BaseController {
     public Object queryForce(){
         return appUpdateManager.queryForce();
     }
+
+    @RequestMapping("queryBuild")
+    @ResponseBody
+    public Object queryBuild(){
+        return appUpdateManager.queryBuild();
+    }
+
 }

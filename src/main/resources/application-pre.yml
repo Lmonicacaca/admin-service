@@ -3,7 +3,12 @@ server:
 
 remote_url: http://47.101.47.200:9907/upload
 image_url: http://47.101.47.200:9907
+##阿里云上传地址
+upload_url: https://imgs.cdn.7coins.net/
+disUrl: /data/dcpay/plist/
 
+uploadCdnUrl: dcpay/pre/
+uploadCdnLogoUrl: dcpay/pre/logo/
 channel: 73088886094000
 spring:
   http:
@@ -15,4 +20,53 @@ spring:
       uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
 
 
+# =============================== oss mode setting start  ================================
+# Amazon aws(optional)
+amazon:
+  s3:
+    bucketName: cm-whale
+    url: https://s3.eu-central-1.amazonaws.com/cm-whale/
+  aws:
+    secretKey: lsyX+nbMCgK2JEMF/emvo5Q/TtVFfKV465H5k1ID
+    accessKey: AKIAIFZ3JK6LC6DRZJJQ
+    region: eu-central-1
+  cdn:
+    host: d1acdsu95nq6e9.cloudfront.net
 
+# Up yun (optional)
+upyun:
+  cdn:
+    accessKeyId: username
+    bucketName: default
+    accessKeySecret: 123456
+    endpoint: v0.api.upyun.com
+    savePath: /
+    host: test.cdn.wowocai.com
+    cloudfront:
+      url: http://v0.api.upyun.com/default
+    timeout: 60
+# images cdn host, Modify according to different needs
+libpixel:
+  cdn:
+    host: ${aliyun.cdn.host}
+# DiffBot
+diffBot:
+  token: e4ae98670ebe30488f058c7da1da98cc
+# aliyun cdn config (optional)
+aliyun:
+  cdn:
+    bucket: imgs-cdn
+    endpoint: oss-cn-qingdao.aliyuncs.com
+    host:  https://imgs.cdn.7coins.net
+    accesskeysecret: kW0BLOE3I5tYS8BzOuUF1g1q75rRIg
+    accesskeyid: LTAI0AlTHZhq8pOU
+# local storage
+local:
+  cdn:
+    root: /data/upload
+    host: localhost
+# global setting, oss mode : aws aliyun upyun,local
+system:
+  cdn:
+    mode: aliyun
+# =============================== oss mode setting end  ================================

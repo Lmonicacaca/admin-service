@@ -54,7 +54,6 @@
                 <th>渠道号</th>
                 <th>类型</th>
                 <th>安装包</th>
-                <th>配置文件</th>
                 <th>版本号</th>
                 <th>logo</th>
                 <th>备注</th>
@@ -73,9 +72,6 @@
     <form role="form" th:action="@{/appUpdate/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate" enctype="multipart/form-data">
         <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="createTime" id="createTime" />
-        <input type="hidden" value="" name="oldImg" id="oldImg" />
-        <input type="hidden" value="" name="oldUrl" id="oldUrl" />
-        <input type="hidden" value="" name="oldPlistUrl" id="oldPlistUrl" />
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">渠道号
@@ -86,10 +82,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">类型 <span class="required">* </span>
+                <label class="control-label col-md-3">系统类型 <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
                     <select class="form-control" name="appUpdateType" id="appUpdateType">
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">build <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="appUpdateBuild" id="appUpdateBuild">
 
                     </select>
                 </div>
@@ -106,13 +111,6 @@
                 </label>
                 <div class="col-md-8">
                     <input type="file" class="form-control" name="file" id="url" multiple="multiple"/>
-                </div>
-            </div>
-            <div class="form-group" id="showPlistUrl">
-                <label class="control-label col-md-3">配置文件
-                </label>
-                <div class="col-md-8">
-                    <input type="file" class="form-control" name="file" id="plistUrl"  multiple="multiple"/>
                 </div>
             </div>
             <div class="form-group" id="showIosLogo">
