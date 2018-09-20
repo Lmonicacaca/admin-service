@@ -5,6 +5,7 @@ var appUpdate = function () {
             {"mData": "id"},
             {"mData": "channel"},
             {"mData": "appUpdateType"},
+            {"mData": "appUpdateBuild"},
             {"mData": "url"},
             {"mData": "plistUrl"},
             {"mData": "version"},
@@ -15,7 +16,8 @@ var appUpdate = function () {
             {"mData": "updateTime"},
             {"mData": null}
         ];
-        var aoColumnDefs = [{
+        var aoColumnDefs = [
+            {
             "aTargets": [1],
             "mRender": function (a, b, c, d) {
                 if(a==null||a==""){
@@ -31,9 +33,10 @@ var appUpdate = function () {
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return "";
-                    }else {
-                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>url下载</a>"
+                    }else{
+                        return a;
                     }
+
                 }
             },
             {
@@ -42,11 +45,21 @@ var appUpdate = function () {
                     if(a==null||a==""){
                         return "";
                     }else {
+                        return "<a class=\"edit\" href='" + a + "' title='" + a + "'>url下载</a>"
+                    }
+                }
+            },
+            {
+                "aTargets": [5],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return "";
+                    }else {
                         return "<a class=\"edit\" href='" + a + "' title='" + a + "'>plistUrl下载</a>"
                     }
                 }
             },{
-            "aTargets": [6],
+            "aTargets": [7],
             "mRender": function (a, b, c, d) {
                 if(a==null||a==""){
                     return "";
@@ -57,7 +70,7 @@ var appUpdate = function () {
             }
         },
             {
-                "aTargets": [9],
+                "aTargets": [10],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -69,7 +82,7 @@ var appUpdate = function () {
                 }
             },
             {
-                "aTargets": [10],
+                "aTargets": [11],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
                         return ""
@@ -79,7 +92,7 @@ var appUpdate = function () {
                     }
                 }
             },{
-            "aTargets": [11],
+            "aTargets": [12],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
@@ -170,6 +183,7 @@ var appUpdate = function () {
                                     $("#form").ajaxSubmit({
                                         success: function (d) {
                                             if (d.code == 200) {
+                                                layer.msg("更新成功");
                                                 var dataTable = $("#dataTables-example").dataTable();
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
@@ -222,11 +236,12 @@ var appUpdate = function () {
                     changeType();
                     loadAppUpdateBuild();
                 },
-                yes: function (layero, index) {
+                yes: function (i, index) {
                     if ($("#form").valid()) {
                         $("#form").ajaxSubmit({
                             success: function (d) {
                                 if (d.code == 200) {
+                                    layer.msg("添加成功");
                                     var dataTable = $("#dataTables-example").dataTable();
                                     dataTable.fnReloadAjax();
                                     layer.close(i);

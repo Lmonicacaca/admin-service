@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mbr.admin.common.storage.CdnService;
 import com.mbr.admin.common.utils.FileUpload;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
 import com.mbr.admin.domain.app.AppUpdate;
 import com.mbr.admin.domain.app.Vo.AppUpdateVo;
@@ -147,9 +148,15 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
     @Override
     public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) throws Exception {
         if(appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
+            Long channel = Long.parseLong(appUpdateVo.getChannel());
             String systemType = appUpdateVo.getAppUpdateType();
             String build = appUpdateVo.getAppUpdateBuild();
             String version = appUpdateVo.getVersion();
+            //查询是否存在相同渠道号，相同系统名，相同build和相同版本号的包
+            AppUpdate byChannelAndAppUpdateTypeAndAppUpdateBuildAndAndVersion = appUpdateRepository.findByChannelAndAppUpdateTypeAndAppUpdateBuildAndAndVersion(channel, systemType, build, version);
+            if(byChannelAndAppUpdateTypeAndAppUpdateBuildAndAndVersion!=null){
+                throw new MerchantException("已存在相同版本，请重新上传！");
+            }
             String logoUrl = null;
             String url = null;
             if(systemType.equals("IOS")){

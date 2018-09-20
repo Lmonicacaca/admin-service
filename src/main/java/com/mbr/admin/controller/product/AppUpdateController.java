@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.app.AppUpdate;
 import com.mbr.admin.domain.app.Vo.AppUpdateVo;
 import com.mbr.admin.manager.app.AppUpdateManager;
@@ -84,21 +85,28 @@ public class AppUpdateController extends BaseController {
                 String result = appUpdateManager.addAppUpdate(appUpdateVo, multipartFiles);
                 if(result.equals("success")){
                     return success();
+                }else{
+                    return failed("添加失败");
                 }
+            } catch (MerchantException e){
+               return failed(e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                return failed("添加失败");
             }
         }else {
             try {
                 String result = appUpdateManager.addAppUpdate(appUpdateVo, null);
                 if("success".equals(result)){
                     return success();
+                }else {
+                    return failed("更新失败");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (MerchantException e){
+                return failed(e.getMessage());
+            }catch (Exception e) {
+                return failed("更新失败");
             }
         }
-            return null;
     }
 
     @RequestMapping("queryById")
