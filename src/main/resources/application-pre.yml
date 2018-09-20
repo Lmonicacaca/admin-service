@@ -18,7 +18,38 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:admin@47.100.116.120:9998/coinListenner
+  jackson:
+    default-property-inclusion: NON_NULL
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: root
+    url: jdbc:mysql://47.100.116.120:3306/db_dcpay?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly
+    driver-class-name: com.mysql.jdbc.Driver
+    #driver-class-name: net.sf.log4jdbc.DriverSpy
+    password: 1qaz2wsx
 
+
+mybatis:
+  type-aliases-package: com.mbr.admin.domain
+  mapper-locations: classpath:mapper/**/**.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+mapper:
+  mappers: com.mbr.admin.common.dao.TkMapper
+  not-empty: false
+  identity: MYSQL
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+
+aliyun_accessKeyId: LTAIaxZpXX5Fq52X
+aliyun_accessKeySecret: 29LBdgwrbwdoAwZhOMpTAvDcK4lL66
+aliyun_signName: 阿里云短信测试专用
+aliyun_templateCode: SMS_138545308
 
 # =============================== oss mode setting start  ================================
 # Amazon aws(optional)
