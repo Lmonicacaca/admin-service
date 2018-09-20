@@ -67,9 +67,10 @@ public class AppUpdateController extends BaseController {
     public Object addOrUpdate(AppUpdateVo appUpdateVo,HttpServletRequest request,@RequestParam("file")MultipartFile[] multipartFiles){
         System.out.println(appUpdateVo);
         if (appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
-            if(multipartFiles==null||multipartFiles.length==0){
+            if(multipartFiles==null||multipartFiles.length<2){
                 return failed("请上传包和logo");
             }
+
             String url = multipartFiles[0].getOriginalFilename();
             String systemType = appUpdateVo.getAppUpdateType();
             if(!url.endsWith(".ipa")&&!url.endsWith(".apk")){

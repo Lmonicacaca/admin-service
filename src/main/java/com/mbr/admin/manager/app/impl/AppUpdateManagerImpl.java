@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.security.util.Length;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -148,6 +149,7 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
     @Override
     public String addAppUpdate(AppUpdateVo appUpdateVo,MultipartFile[] files) throws Exception {
         if(appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
+            long size = files[0].getSize();//文件大小
             Long channel = Long.parseLong(appUpdateVo.getChannel());
             String systemType = appUpdateVo.getAppUpdateType();
             String build = appUpdateVo.getAppUpdateBuild();
@@ -158,23 +160,20 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
                 throw new MerchantException("已存在相同版本，请重新上传！");
             }
             String logoUrl = null;
-            String url = null;
-            if(systemType.equals("IOS")){
-                //上传logo
-                logoUrl = uploadLogoToCdn(files[1],systemType,build,version);
-                //上传包
-                url = uploadUrlToCdn(systemType, build, version, logoUrl, files[0]);
-            }else {
-                url = uploadUrlToCdn(systemType, build, version, logoUrl, files[0]);
-            }
+            Map<String,String> map = null;
+            //上传logo
+            logoUrl = uploadLogoToCdn(files[1],systemType,build,version);
+            //上传包
+            map = uploadUrlToCdn(systemType, build, version, logoUrl, files[0]);
             String logoUrlFull = null;
             if(logoUrl!=null){
                 logoUrlFull = upload_url+logoUrl;
             }
-            String urlFull = upload_url+url;
+            String plistUrlFull = upload_url+map.get("plistUrl");
+            String urlFull = upload_url+map.get("url");
             logger.info("logoUrlFull:"+logoUrlFull);
             logger.info("urlFull:"+urlFull);
-            AppUpdate appUpdate = createAppUpdate(appUpdateVo, urlFull, logoUrlFull);
+            AppUpdate appUpdate = createAppUpdate(appUpdateVo, urlFull, logoUrlFull,plistUrlFull,size);
             logger.info(JSONObject.toJSONString(appUpdate));
             AppUpdate insert = appUpdateRepository.insert(appUpdate);
             if(insert!=null){
@@ -182,7 +181,7 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
             }
         }else{
             System.out.println(appUpdateVo);
-            AppUpdate appUpdate = createAppUpdate(appUpdateVo, null, null);
+            AppUpdate appUpdate = createAppUpdate(appUpdateVo, null, null,null,0);
             System.out.println(appUpdate);
             AppUpdate save = appUpdateRepository.save(appUpdate);
             if(save!=null){
@@ -248,8 +247,9 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
      * @return
      * @throws Exception
      */
-   public String uploadUrlToCdn(String systemType,String build,String version,String imgUrl,MultipartFile file) throws Exception {
+   public Map<String,String> uploadUrlToCdn(String systemType,String build,String version,String imgUrl,MultipartFile file) throws Exception {
        String fileName = file.getOriginalFilename();
+       Map<String,String> map = new HashMap<>();
        //如果是ios则需要使用freemaker生成plist文件
        if(fileName.endsWith(".ipa")){
            createPlist(systemType,build,version,imgUrl);
@@ -262,14 +262,17 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
            String ipaUrl = CdnService.genSaveKey(uploadCdnUrl, plistFileName+".ipa");
            Optional<URL> cdn_ipa = cdnService.put(ipaUrl, file, getFileType(file.getName()));
            logger.info("ipaUrl:"+ipaUrl);
-           return plistUrl;
+           map.put("url",ipaUrl);
+           map.put("plistUrl",plistUrl);
+           return map;
        }
 
        String apkFileName = systemType+"-"+build+"-"+version+".apk";
        String apkUrl = CdnService.genSaveKey(uploadCdnUrl, apkFileName);
        Optional<URL> cdn_plist = cdnService.put(apkUrl, file, getFileType(file.getName()));
        logger.info("apkUrl"+apkUrl);
-       return apkUrl;
+       map.put("url",apkUrl);
+       return map;
    }
 
     /**
@@ -333,16 +336,19 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
      * @param logoUrl
      * @return
      */
-    public AppUpdate createAppUpdate(AppUpdateVo appUpdateVo,String url,String logoUrl){
+    public AppUpdate createAppUpdate(AppUpdateVo appUpdateVo,String url,String logoUrl,String plistUrl,long size){
         AppUpdate appUpdate = new AppUpdate();
         String systemType = appUpdateVo.getAppUpdateType();
 
         if(appUpdateVo.getId()==null||appUpdateVo.getId().equals("")){
             appUpdate.setId(System.currentTimeMillis());
             appUpdate.setCreateTime(new Date());
+            appUpdate.setSize(size);
+            appUpdate.setIosLogo(logoUrl);
             if(systemType.equals("IOS")){
-                appUpdate.setPlistUrl(url);
-                appUpdate.setIosLogo(logoUrl);
+                appUpdate.setUrl(url);
+                appUpdate.setPlistUrl(plistUrl);
+
             }else{
                 appUpdate.setUrl(url);
             }
@@ -353,6 +359,7 @@ public class AppUpdateManagerImpl implements AppUpdateManager {
             appUpdate.setUrl(appUpdateVo.getOldUrl());
             appUpdate.setIosLogo(appUpdateVo.getOldIosLogo());
             appUpdate.setPlistUrl(appUpdateVo.getOldPlistUrl());
+            appUpdate.setSize(appUpdateVo.getOldSize());
         }
 
         String version = appUpdateVo.getVersion();

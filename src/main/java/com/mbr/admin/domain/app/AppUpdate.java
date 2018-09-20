@@ -18,6 +18,7 @@ public class AppUpdate {
     private Long channel;
     private String plistUrl;
     private String appUpdateBuild;
+    private long size;
 
     public Long getId() {
         return id;
@@ -115,6 +116,14 @@ public class AppUpdate {
         this.appUpdateBuild = appUpdateBuild;
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
     @Override
     public String toString() {
         return "AppUpdate{" +
@@ -130,6 +139,7 @@ public class AppUpdate {
                 ", channel=" + channel +
                 ", plistUrl='" + plistUrl + '\'' +
                 ", appUpdateBuild='" + appUpdateBuild + '\'' +
+                ", size=" + size +
                 '}';
     }
 }

@@ -15,6 +15,8 @@ public class AppUpdateVo {
     private String oldUrl;
     private String oldPlistUrl;
     private String oldIosLogo;
+    private long size;
+    private long oldSize;
 
 
     public Long getId() {
@@ -119,6 +121,22 @@ public class AppUpdateVo {
         this.oldIosLogo = oldIosLogo;
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public long getOldSize() {
+        return oldSize;
+    }
+
+    public void setOldSize(long oldSize) {
+        this.oldSize = oldSize;
+    }
+
     @Override
     public String toString() {
         return "AppUpdateVo{" +
@@ -134,6 +152,8 @@ public class AppUpdateVo {
                 ", oldUrl='" + oldUrl + '\'' +
                 ", oldPlistUrl='" + oldPlistUrl + '\'' +
                 ", oldIosLogo='" + oldIosLogo + '\'' +
+                ", size=" + size +
+                ", oldSize=" + oldSize +
                 '}';
     }
 }

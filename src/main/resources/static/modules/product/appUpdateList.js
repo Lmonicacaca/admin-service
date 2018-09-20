@@ -10,6 +10,7 @@ var appUpdate = function () {
             {"mData": "plistUrl"},
             {"mData": "version"},
             {"mData": "iosLogo"},
+            {"mData": "size"},
             {"mData": "content"},
             {"mData": "force"},
             {"mData": "createTime"},
@@ -68,15 +69,13 @@ var appUpdate = function () {
                 }
 
             }
-        },
-            {
-                "aTargets": [10],
+        },{
+                "aTargets": [8],
                 "mRender": function (a, b, c, d) {
                     if(a==null||a==""){
-                        return ""
+                        return "";
                     }else{
-                        var date = new Date(a);
-                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                        return a;
                     }
 
                 }
@@ -90,9 +89,21 @@ var appUpdate = function () {
                         var date = new Date(a);
                         return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
                     }
+
+                }
+            },
+            {
+                "aTargets": [12],
+                "mRender": function (a, b, c, d) {
+                    if(a==null||a==""){
+                        return ""
+                    }else{
+                        var date = new Date(a);
+                        return date.getFullYear()+"-"+(date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-'+date.getDate() + ' '+date.getHours() + ':'+date.getMinutes() + ':'+date.getSeconds();
+                    }
                 }
             },{
-            "aTargets": [12],
+            "aTargets": [13],
             "mRender": function (a, b, c, d) {
                 return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
             }
@@ -137,6 +148,7 @@ var appUpdate = function () {
                         $("#oldIosLogo").val(d.iosLogo);
                         $("#oldPlistUrl").val(d.plistUrl);
                         $("#oldUrl").val(d.url);
+                        $("#oldSize").val(d.size);
                         $("#version").val(d.version);
                         $("#content").val(d.content);
                         $("#url").val("");
@@ -218,9 +230,11 @@ var appUpdate = function () {
             $("#iosLogo").val("");
             $("#content").val("");
             $("#force").html("");
+            $("#oldSize").val(0);
             $("#appUpdateType").attr("disabled",false);
             $("#appUpdateBuild").attr("disabled",false);
             $("#showUrl").css("display","block");
+            $("#showIosLogo").css("display","block");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -233,7 +247,6 @@ var appUpdate = function () {
                     loadChannel();
                     loadAppUpdateType();
                     loadForce();
-                    changeType();
                     loadAppUpdateBuild();
                 },
                 yes: function (i, index) {
@@ -246,7 +259,7 @@ var appUpdate = function () {
                                     dataTable.fnReloadAjax();
                                     layer.close(i);
                                 } else {
-                                    layer.msg("添加失败");
+                                    layer.msg(d.message);
                                 }
                             }
                         })
@@ -327,16 +340,6 @@ var appUpdate = function () {
         });
     };
 
-    var changeType = function(){
-
-        $("#appUpdateType").bind("change",function(){
-            if($(this).val()=="Android"){
-                $("#showIosLogo").css("display","none");
-            }else{
-                $("#showIosLogo").css("display","block");
-            }
-        })
-    };
 
    var validateForm = function () {
         var validate = $('#form').validate({
