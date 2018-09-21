@@ -47,11 +47,14 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
         if(id==null){
             return failed("ID不能为空");
         }
-        int result = merchantInfoManager.deleteMerchantInfo(id);
-        if(result>0){
-            return success();
-        }else{
+        try {
+            boolean result = merchantInfoManager.deleteMerchantInfo(id);
+            if(result==true){
+                return success();
+            }
             return failed();
+        } catch (MerchantException e) {
+            return failed(e.getMessage());
         }
     }
     @RequestMapping("queryRsaPublic")

@@ -23,7 +23,7 @@ public class ProductManagerImpl implements ProductManager {
         for(int i=0;i<productList.size();i++){
             Map<String,Object> map = new HashMap<>();
             map.put("id",productList.get(i).getId());
-            map.put("text",productList.get(i).getId());
+            map.put("text",productList.get(i).getCoinName());
             list.add(map);
         }
         return list;

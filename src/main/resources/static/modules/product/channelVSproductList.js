@@ -255,7 +255,7 @@ var channelVSproduct = function () {
     };
     var loadProductId = function () {
         $('select[name="productId"]').select2({
-            placeholder: "请选择币id",
+            placeholder: "请选择币种",
             allowClear: true,
             ajax: {
                 url: "productVsChannel/queryProductId",

@@ -3,6 +3,7 @@ package com.mbr.admin.manager.merchant;
 import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -14,7 +15,8 @@ public interface MerchantInfoManager {
 
     public List<Map<String,Object>> queryChannel();
 
-    public int deleteMerchantInfo(String id);
+    @Transactional
+    public boolean deleteMerchantInfo(String id) throws MerchantException;
 
     public String queryRsaPublic(String id);
 

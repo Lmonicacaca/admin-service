@@ -51,4 +51,8 @@ public interface MerchantVsResourceDao extends TkMapper<MerchantVsResource> {
 
     @Select("select id from merchant_resource")
     public String[] findAllMerchantResource();
+
+    //删除商户后删除对应的权限
+    @Delete("delete from merchant_vs_resource where merchant_id=#{merchantId} and channel=#{channel}")
+    public int deleteByMerchantIdAndChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
  }

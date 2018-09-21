@@ -18,5 +18,7 @@ public interface ChannelRepository extends MongoRepository<Channel,Long>{
 
     public List<Channel> findByChannel(Long channel);
 
+    public int deleteByMerchantIdAndChannel(String merchantId,Long channel);
+
 
 }

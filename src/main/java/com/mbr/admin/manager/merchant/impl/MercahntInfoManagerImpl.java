@@ -6,8 +6,10 @@ import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.common.utils.TimestampPkGenerator;
+import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantInfoDao;
 import com.mbr.admin.dao.merchant.MerchantVsResourceDao;
+import com.mbr.admin.dao.merchant.WithDrawDao;
 import com.mbr.admin.domain.merchant.Channel;
 import com.mbr.admin.domain.merchant.MerchantInfo;
 import com.mbr.admin.domain.merchant.MerchantVsResource;
@@ -44,6 +46,10 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private FileUpload fileUpload;
     @Resource
     private MerchantVsResourceManager merchantVsResourceManager;
+    @Resource
+    private MerchantCoinDao merchantCoinDao;
+    @Resource
+    private WithDrawDao withDrawDao;
 
     @Value("${image_url}")
     private String image_url;
@@ -74,8 +80,40 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
 
 
     @Override
-    public int deleteMerchantInfo(String id) {
-        return merchantInfoDao.deleteById(id);
+    @Transactional(rollbackFor = MerchantException.class)
+    public boolean deleteMerchantInfo(String id) throws MerchantException{
+        MerchantInfo merchantInfo = merchantInfoDao.queryById(id);
+        Long channel = merchantInfo.getChannel();
+        //删除商户
+        int deleteMerchant = merchantInfoDao.deleteById(id);
+        if(deleteMerchant>0){
+            //删除权限
+            int deleteMerchantVsResource = merchantVsResourceDao.deleteByMerchantIdAndChannel(id, channel);
+            if(deleteMerchantVsResource>0){
+                //删除充值地址和提现地址
+                int deleteCoinAddr = merchantCoinDao.deleteByMerchantIdAndChannel(id, channel);
+                if(deleteCoinAddr>0){
+                    int deleteWithDraw = withDrawDao.deleteByMerchantIdAndChannel(id, channel);
+                    if(deleteWithDraw>0){
+                        //删除商户号和渠道号
+                        int deleteChannel = channelRepository.deleteByMerchantIdAndChannel(id, channel);
+                        if(deleteChannel>0){
+                            return true;
+                        }else {
+                            throw new MerchantException("删除渠道号失败!");
+                        }
+                    }else {
+                        throw new MerchantException("删除提现地址失败！");
+                    }
+                }else {
+                    throw new MerchantException("删除充值地址失败！");
+                }
+            }else {
+                throw new MerchantException("删除权限失败！");
+            }
+        }else {
+            throw new MerchantException("删除商户失败！");
+        }
     }
 
     @Override
