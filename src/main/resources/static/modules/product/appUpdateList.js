@@ -173,6 +173,7 @@ var appUpdate = function () {
                         $("#appUpdateBuild").empty();
                         $("#appUpdateBuild").append(optionBuild);
                         $("#appUpdateBuild").attr("disabled",true);
+                        $("#version").attr("disabled",true);
                         $("#showIosLogo").css("display","none");
                         $("#showUrl").css("display","none");
                         layer.open({
@@ -192,6 +193,7 @@ var appUpdate = function () {
                                 if ($('#form').valid()) {
                                     $("#appUpdateType").attr("disabled",false);
                                     $("#appUpdateBuild").attr("disabled",false);
+                                    $("#version").attr("disabled",false);
                                     $("#form").ajaxSubmit({
                                         success: function (d) {
                                             if (d.code == 200) {
@@ -233,6 +235,7 @@ var appUpdate = function () {
             $("#oldSize").val(0);
             $("#appUpdateType").attr("disabled",false);
             $("#appUpdateBuild").attr("disabled",false);
+            $("#version").attr("disabled",false);
             $("#showUrl").css("display","block");
             $("#showIosLogo").css("display","block");
             layer.open({
