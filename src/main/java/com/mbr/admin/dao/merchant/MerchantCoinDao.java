@@ -47,5 +47,6 @@ public interface MerchantCoinDao extends TkMapper<MerchantCoin> {
 
     @Delete("delete from merchant_coin where merchant_id=#{merchantId} and channel=#{channel}")
     public int deleteByMerchantIdAndChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
-
+  @Select("select * from merchant_coin where merchant_id=#{merchantId} and channel=#{channel}")
+    public List<MerchantCoin> queryByMerchantIdAndChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
 }

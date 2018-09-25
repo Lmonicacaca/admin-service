@@ -49,4 +49,6 @@ public interface WithDrawDao extends TkMapper<WithDraw> {
 
     @Delete("delete from withdraw where merchant_id = #{merchantId} and channel = #{channel}")
     public int deleteByMerchantIdAndChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
+    @Select("select * from withdraw where merchant_id=#{merchantId} and channel = #{channel}")
+    public List<WithDraw> queryByMerchantIdAndChannel(@Param("merchantId")String merchantId,@Param("channel")Long channel);
 }

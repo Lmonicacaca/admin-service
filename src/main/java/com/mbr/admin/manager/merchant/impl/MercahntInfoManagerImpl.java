@@ -10,9 +10,7 @@ import com.mbr.admin.dao.merchant.MerchantCoinDao;
 import com.mbr.admin.dao.merchant.MerchantInfoDao;
 import com.mbr.admin.dao.merchant.MerchantVsResourceDao;
 import com.mbr.admin.dao.merchant.WithDrawDao;
-import com.mbr.admin.domain.merchant.Channel;
-import com.mbr.admin.domain.merchant.MerchantInfo;
-import com.mbr.admin.domain.merchant.MerchantVsResource;
+import com.mbr.admin.domain.merchant.*;
 import com.mbr.admin.domain.merchant.Vo.MerchantInfoVo;
 import com.mbr.admin.manager.merchant.ChannelManager;
 import com.mbr.admin.manager.merchant.MerchantInfoManager;
@@ -84,36 +82,66 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     public boolean deleteMerchantInfo(String id) throws MerchantException{
         MerchantInfo merchantInfo = merchantInfoDao.queryById(id);
         Long channel = merchantInfo.getChannel();
-        //删除商户
-        int deleteMerchant = merchantInfoDao.deleteById(id);
-        if(deleteMerchant>0){
-            //删除权限
-            int deleteMerchantVsResource = merchantVsResourceDao.deleteByMerchantIdAndChannel(id, channel);
-            if(deleteMerchantVsResource>0){
-                //删除充值地址和提现地址
-                int deleteCoinAddr = merchantCoinDao.deleteByMerchantIdAndChannel(id, channel);
-                if(deleteCoinAddr>0){
-                    int deleteWithDraw = withDrawDao.deleteByMerchantIdAndChannel(id, channel);
-                    if(deleteWithDraw>0){
-                        //删除商户号和渠道号
-                        int deleteChannel = channelRepository.deleteByMerchantIdAndChannel(id, channel);
-                        if(deleteChannel>0){
+        MerchantInfo merchantInfo1 = merchantInfoDao.queryById(id);
+        if(merchantInfo1!=null){
+            //删除商户
+            int deleteMerchant = merchantInfoDao.deleteById(id);
+            if(deleteMerchant>0){
+                List<MerchantVsResource> merchantVsResources = merchantVsResourceDao.queryByMerchantAndResource(id, channel);
+                if(merchantVsResources!=null&&merchantVsResources.size()>0){
+                    //删除权限
+                    int deleteMerchantVsResource = merchantVsResourceDao.deleteByMerchantIdAndChannel(id, channel);
+                    if(deleteMerchantVsResource>0){
+                        List<MerchantCoin> merchantCoins = merchantCoinDao.queryByMerchantIdAndChannel(id, channel);
+                        if(merchantCoins!=null&&merchantCoins.size()>0){
+                            //删除充值地址和提现地址
+                            int deleteCoinAddr = merchantCoinDao.deleteByMerchantIdAndChannel(id, channel);
+                            if(deleteCoinAddr>0){
+                                List<WithDraw> withDraws = withDrawDao.queryByMerchantIdAndChannel(id, channel);
+                                if(withDraws!=null&&withDraws.size()>0){
+                                    int deleteWithDraw = withDrawDao.deleteByMerchantIdAndChannel(id, channel);
+                                    if(deleteWithDraw>0){
+                                        List<Channel> byChannelAndMerchantId = channelRepository.findByChannelAndMerchantId(channel, id);
+                                        if(byChannelAndMerchantId!=null&&byChannelAndMerchantId.size()>0){
+                                            //删除商户号和渠道号
+                                            int deleteChannel = channelRepository.deleteByMerchantIdAndChannel(id, channel);
+                                            if(deleteChannel>0){
+                                                return true;
+                                            }else {
+                                                throw new MerchantException("删除渠道号失败!");
+                                            }
+                                        }else {
+                                            return true;
+                                        }
+
+                                    }else {
+                                        throw new MerchantException("删除提现地址失败！");
+                                    }
+                                }else {
+                                    return true;
+                                }
+
+                            }else {
+                                throw new MerchantException("删除充值地址失败！");
+                            }
+                        }else{
                             return true;
-                        }else {
-                            throw new MerchantException("删除渠道号失败!");
                         }
+
                     }else {
-                        throw new MerchantException("删除提现地址失败！");
+                        throw new MerchantException("删除权限失败！");
                     }
                 }else {
-                    throw new MerchantException("删除充值地址失败！");
+                    return true;
                 }
-            }else {
-                throw new MerchantException("删除权限失败！");
+            }else{
+                throw new MerchantException("删除商户失败！");
             }
-        }else {
-            throw new MerchantException("删除商户失败！");
+
+        }else{
+            throw new MerchantException("刪除不存在！");
         }
+
     }
 
     @Override

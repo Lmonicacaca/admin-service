@@ -58,4 +58,6 @@ public interface MerchantInfoDao extends TkMapper<MerchantInfo> {
 
     @Update("update merchant_info set audit=1,channel=#{merchantInfo.channel} where id=#{merchantInfo.id}")
     public int auditMerchantInfo(@Param("merchantInfo") MerchantInfo merchantInfo);
+
+
 }
