@@ -12,20 +12,4 @@ import java.util.Map;
 @Repository
 public interface BannerRepository extends MongoRepository<Banner,Long> {
 
-
-    //根据ID删除广告信息
-    @Override
-    public void delete(Long id);
-
-
-    //根据ID查询banner
-    public Banner queryById(Long id);
-
-    //查找当前的总记录条数
-    @Override
-    long count();
-
-    //保存或修改
-    @Override
-    <S extends Banner> S save(S s);
 }

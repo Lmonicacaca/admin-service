@@ -1,13 +1,16 @@
 package com.mbr.admin.domain.app.Vo;
 
+import lombok.Data;
+
+@Data
 public class BannerVo {
     private Long id;
-    private int orderBy;
+    private String orderBy;
     private String  url;
-//    private String file;
-    private int type;
+    private String type;
     private String channel;
-    private String simage;
+    private String createTime;
+    private String status;
 
     public Long getId() {
         return id;
@@ -17,11 +20,11 @@ public class BannerVo {
         this.id = id;
     }
 
-    public int getOrderBy() {
+    public String getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(int orderBy) {
+    public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
     }
 
@@ -33,12 +36,11 @@ public class BannerVo {
         this.url = url;
     }
 
-
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -50,23 +52,32 @@ public class BannerVo {
         this.channel = channel;
     }
 
-    public String getSimage() {
-        return simage;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setSimage(String simage) {
-        this.simage = simage;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "BannerVo{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", orderBy='" + orderBy + '\'' +
                 ", url='" + url + '\'' +
                 ", type='" + type + '\'' +
                 ", channel='" + channel + '\'' +
-                ", simage='" + simage + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

@@ -17,7 +17,7 @@ var banner = function () {
                 "aTargets": [2],
                 "mRender": function (a, b, c, d) {
                     if(a!=null&&a!=""){
-                        return "<a target='_blank' class=\"edit\" href='"+a+"'>"+a+"</a>";
+                        return "<a target='_blank' class=\"edit\" href='"+a+"'>广告链接</a>";
                     }else{
                         return "";
                     }
@@ -28,7 +28,7 @@ var banner = function () {
             "aTargets": [3],
             "mRender": function (a, b, c, d) {
                 if(a!=null&&a!=""){
-                    return "<a class=\"edit\" name =\"img\" href=\"javascript:;\">"+a+"</a>";
+                    return "<a class=\"edit\" name =\"img\" href=\"javascript:;\">广告</a>";
                 }else{
                     return "";
                 }
@@ -79,7 +79,7 @@ var banner = function () {
 
     var __initHandler =function () {
         //删除
-        $("#dataTables-example tbody").on("click", "a[name='delete']", function () {
+        $("a[name='delete']").on("click", function () {
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
             var param = {"id": d.id};
@@ -92,6 +92,8 @@ var banner = function () {
                         var dataTable = $("#dataTables-example").dataTable();
                         dataTable.fnReloadAjax();
                         layer.close(index);
+                    }else{
+                        layer.msg(d.message);
                     }
                 });
             });
@@ -188,7 +190,6 @@ var banner = function () {
         $("#add").bind("click",function () {
             $("#id").val("");
             $("#orderBy").val(0);
-            $("#simage").val("");
             $("#channel").html("");
             $("#type").html("");
             layer.open({
@@ -202,6 +203,7 @@ var banner = function () {
                     validateForm().resetForm();
                     loadType();
                     loadChannel();
+                    loadStatus();
                 },
                 yes: function (layero, index) {
                     if ($('#form').valid()) {
@@ -269,6 +271,21 @@ var banner = function () {
             }
         });
     };
+    var loadStatus = function () {
+        $('#status').select2({
+            placeholder: "请选择是否可用",
+            allowClear: true,
+            ajax: {
+                url: "banner/queryStatus",
+                cache: true,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            }
+        });
+    };
     //添加数据时验证
     var validateForm = function () {
         var validate = $('#form').validate({
@@ -286,6 +303,14 @@ var banner = function () {
                 channel:{
                     required: true
                 }
+                ,
+                status:{
+                    required: true
+                }
+                ,
+                file:{
+                    required: true
+                }
             },
             messages: {
                 url: {
@@ -297,6 +322,11 @@ var banner = function () {
                 },
                 channel:{
                     required: "渠道号不能为空!"
+                },status:{
+                    required: "是否可用不能为空!"
+                } ,
+                file:{
+                    required:"图片不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

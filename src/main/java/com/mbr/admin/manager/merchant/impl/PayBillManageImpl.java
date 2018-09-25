@@ -29,7 +29,10 @@ public class PayBillManageImpl implements PayBillManager {
         for (int i=0;i<payBillList.size();i++){
             if(payBillList.get(i).getCoinId()!=null&&payBillList.get(i).getCoinId()!=0){
                 Product coin = productRepository.findById(payBillList.get(i).getCoinId());
-                payBillList.get(i).setCoinName(coin.getCoinName());
+                if(coin!=null){
+                    payBillList.get(i).setCoinName(coin.getCoinName());
+
+                }
             }
             if(payBillList.get(i).getCreateTime()!=null&&payBillList.get(i).getCreateTime()!=""){
                 payBillList.get(i).setCreateTime(payBillList.get(i).getCreateTime().substring(0,payBillList.get(i).getCreateTime().length()-2));

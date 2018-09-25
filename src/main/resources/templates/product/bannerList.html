@@ -77,8 +77,16 @@
     <form role="form" th:action="@{/banner/addOrUpdate}" th:method="post" id="form" class="form-horizontal form-validate" enctype="multipart/form-data">
         <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="orderBy" id="orderBy" />
-        <input type="hidden" name="simage" id="simage" value="" />
+        <input type="hidden" value="" name="createTime" id="createTime" />
         <div class="form-body">
+            <div class="form-group">
+                <label class="control-label col-md-3">渠道号： <span class="required">* </span>
+                </label>
+                <div class="col-md-8">
+                    <select class="form-control" name="channel" id="channel">
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-3">url<span class="required">* </span>
                 </label>
@@ -90,7 +98,7 @@
                 <label class="control-label col-md-3">图片 <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
-                    <input type="file" name="file" style="background: transparent" accept="image/*"/><br />
+                    <input type="file" name="file" id="file" style="background: transparent" accept="image/*"/><br />
                 </div>
             </div>
             <div class="form-group" id="passwordPwd">
@@ -102,10 +110,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">渠道号： <span class="required">* </span>
+                <label class="control-label col-md-3">是否可用： <span class="required">* </span>
                 </label>
                 <div class="col-md-8">
-                    <select class="form-control" name="channel" id="channel">
+                    <select class="form-control" name="status" id="status">
                     </select>
                 </div>
             </div>

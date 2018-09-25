@@ -15,7 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -48,66 +50,43 @@ public class BannerController extends BaseController {
         return result;
     }
 
-
-    //根据id查询对应的banner
-    @RequestMapping(value="queryById",method = RequestMethod.POST)
-    @ResponseBody
-    public Object queryById(Long id){
-        if (id == null) {
-            return super.failed("广告ID 为空！");
-        }else{
-            Banner banner = bannerManager.queryById(id);
-            if(banner !=null){
-                return success(banner);
-            }else{
-                return failed("无相关记录");
-            }
-        }
-
-    }
-    //删除广告信息
-    @RequestMapping(value = "deleteBanner",method = RequestMethod.POST)
+    @RequestMapping(value="deleteBanner",method = RequestMethod.POST)
     @ResponseBody
     public Object deleteBanner(Long id){
-        if(id == null){
-            return super.failed("广告ID为空！");
+        if(id==null){
+            return failed("ID不能为空！");
         }
-        bannerManager.deleteBanner(id);
+        bannerManager.deleteById(id);
         return success();
     }
 
-    //查询广告的类型
-    @RequestMapping(value = "queryBannerType",method = RequestMethod.GET)
+    @RequestMapping(value="addOrUpdate",method = RequestMethod.POST)
     @ResponseBody
-    public List<Map<String,Object>> queryBannerType(){
-        return bannerManager.queryBannerType();
+    public Object addOrUpdate(BannerVo bannerVo, @RequestParam("file") MultipartFile multipartFile){
+        System.out.println(bannerVo);
+        System.out.println(multipartFile.getOriginalFilename());
+
+        return success();
     }
 
-
-    @RequestMapping("queryChannel")
+    @RequestMapping(value="queryChannel")
     @ResponseBody
-    public List<Map<String,Object>> queryChannel(){
-
+    public Object queryChannel(){
         return bannerManager.queryChannel();
     }
 
-    //保存或更新banner
-    @RequestMapping(value = "addOrUpdate")
+       @RequestMapping(value="queryBannerType")
     @ResponseBody
-    public Object addOrUpdate(BannerVo bannerVo, HttpServletRequest request){
-        System.out.println(bannerVo);
-        Banner saveOrUpdate = bannerManager.saveOrUpdate(request,bannerVo);
-        if(saveOrUpdate != null){
-            return success();
-        }
-        return failed("添加广告失败");
+    public Object queryBannerType(){
+
+        return bannerManager.queryBannerType();
     }
 
-    //返回图片的url
-    @RequestMapping(value = "queryUrl",method = RequestMethod.GET)
+    @RequestMapping(value="queryStatus")
     @ResponseBody
-    public String queryUrl(){
-        return image_url;
+    public Object queryStatus(){
+
+        return bannerManager.queryStatus();
     }
 
 }
