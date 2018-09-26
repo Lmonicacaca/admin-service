@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class PayBillVo {
-    private  Long id;
+    private  BigDecimal id;
     private  Long merchantId;
     private  String refBizNo;
     private  Long coinId;
@@ -28,11 +28,11 @@ public class PayBillVo {
     private Long channel;
     private String coinName;
 
-    public Long getId() {
+    public BigDecimal getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(BigDecimal id) {
         this.id = id;
     }
 

@@ -8,6 +8,7 @@ disUrl: /data/dcpay/plist/
 
 uploadCdnUrl: dcpay/prod/
 uploadCdnLogoUrl: dcpay/prod/logo/
+uploadCdnBannerUrl: dcpay/prod/banner/
 channel: 73088886094000
 spring:
   http:

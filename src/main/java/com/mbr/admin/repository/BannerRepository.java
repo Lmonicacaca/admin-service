@@ -12,4 +12,5 @@ import java.util.Map;
 @Repository
 public interface BannerRepository extends MongoRepository<Banner,Long> {
 
+    int countByType(int type);
 }

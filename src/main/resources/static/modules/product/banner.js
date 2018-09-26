@@ -28,7 +28,7 @@ var banner = function () {
             "aTargets": [3],
             "mRender": function (a, b, c, d) {
                 if(a!=null&&a!=""){
-                    return "<a class=\"edit\" name =\"img\" href=\"javascript:;\">广告</a>";
+                    return "<img src='"+a+"' style='max-width: 100px' alt='图片加载失败'/>";
                 }else{
                     return "";
                 }
@@ -135,8 +135,8 @@ var banner = function () {
                         var d = data.data;
                         $("#url").val(d.url);
                         $("#id").val(d.id);
-                        $("#orderBy").val(d.orderBy);
-                        $("#simage").val(d.image);
+                        $("#oldImage").val(d.image);
+                        $("#createTime").val(d.image);
                         var typeName="";
                         switch(d.type){
                             case 1:typeName = "余额";break;
@@ -192,6 +192,7 @@ var banner = function () {
             $("#orderBy").val(0);
             $("#channel").html("");
             $("#type").html("");
+            $("#status").html("");
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],
@@ -307,10 +308,6 @@ var banner = function () {
                 status:{
                     required: true
                 }
-                ,
-                file:{
-                    required: true
-                }
             },
             messages: {
                 url: {
@@ -324,9 +321,6 @@ var banner = function () {
                     required: "渠道号不能为空!"
                 },status:{
                     required: "是否可用不能为空!"
-                } ,
-                file:{
-                    required:"图片不能为空!"
                 }
             },
             highlight: function (element) { // hightlight error inputs

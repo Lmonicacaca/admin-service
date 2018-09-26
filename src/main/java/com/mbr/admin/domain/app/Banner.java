@@ -10,7 +10,7 @@ public class Banner {
     private String url;
     private String image;
     private int orderBy;
-    private Date createTime;
+    private String createTime;
     private int status;// 0 显示 1 不显示
     private int type;// 1 是余额，2 是 商家 3 支付
     private Long channel;//渠道号
@@ -75,11 +75,11 @@ public class Banner {
         this.orderBy = orderBy;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 

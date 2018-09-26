@@ -2,6 +2,7 @@ package com.mbr.admin.controller.product;
 
 import com.mbr.admin.common.controller.BaseController;
 import com.mbr.admin.common.dto.PageResultDto;
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.app.Banner;
 import com.mbr.admin.domain.app.Vo.BannerVo;
 import com.mbr.admin.manager.app.BannerManager;
@@ -65,7 +66,14 @@ public class BannerController extends BaseController {
     public Object addOrUpdate(BannerVo bannerVo, @RequestParam("file") MultipartFile multipartFile){
         System.out.println(bannerVo);
         System.out.println(multipartFile.getOriginalFilename());
-
+        try{
+            String result = bannerManager.addOrUpdate(bannerVo, multipartFile);
+            if("success".equals(result)){
+                return success();
+            }
+        }catch (MerchantException e){
+            return failed(e.getMessage());
+        }
         return success();
     }
 

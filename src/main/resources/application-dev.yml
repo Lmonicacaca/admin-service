@@ -9,6 +9,7 @@ uploadCdnUrl: dcpay/dev/
 
 uploadCdnLogoUrl: dcpay/dev/logo/
 
+uploadCdnBannerUrl: dcpay/dev/banner/
 channel: 73088886094000
 spring:
   http:

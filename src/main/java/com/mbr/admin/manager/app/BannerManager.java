@@ -1,5 +1,6 @@
 package com.mbr.admin.manager.app;
 
+import com.mbr.admin.common.utils.MerchantException;
 import com.mbr.admin.domain.app.Banner;
 import com.mbr.admin.domain.app.Vo.BannerVo;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,5 @@ public interface BannerManager {
 
     List<Map<String,Object>> queryStatus();
 
-    String addOrUpdate(BannerVo bannerVo, MultipartFile multipartFile);
+    String addOrUpdate(BannerVo bannerVo, MultipartFile multipartFile) throws MerchantException;
  }

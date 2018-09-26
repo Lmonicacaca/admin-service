@@ -11,6 +11,7 @@ public class BannerVo {
     private String channel;
     private String createTime;
     private String status;
+    private String oldImage;
 
     public Long getId() {
         return id;
@@ -68,6 +69,14 @@ public class BannerVo {
         this.status = status;
     }
 
+    public String getOldImage() {
+        return oldImage;
+    }
+
+    public void setOldImage(String oldImage) {
+        this.oldImage = oldImage;
+    }
+
     @Override
     public String toString() {
         return "BannerVo{" +
@@ -78,6 +87,7 @@ public class BannerVo {
                 ", channel='" + channel + '\'' +
                 ", createTime='" + createTime + '\'' +
                 ", status='" + status + '\'' +
+                ", oldImage='" + oldImage + '\'' +
                 '}';
     }
 }
