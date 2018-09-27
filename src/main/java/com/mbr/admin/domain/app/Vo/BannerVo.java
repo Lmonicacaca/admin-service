@@ -12,7 +12,8 @@ public class BannerVo {
     private String createTime;
     private String status;
     private String oldImage;
-
+    private String oldType;
+    private String oldOrderBy;
     public Long getId() {
         return id;
     }
@@ -77,6 +78,22 @@ public class BannerVo {
         this.oldImage = oldImage;
     }
 
+    public String getOldType() {
+        return oldType;
+    }
+
+    public void setOldType(String oldType) {
+        this.oldType = oldType;
+    }
+
+    public String getOldOrderBy() {
+        return oldOrderBy;
+    }
+
+    public void setOldOrderBy(String oldOrderBy) {
+        this.oldOrderBy = oldOrderBy;
+    }
+
     @Override
     public String toString() {
         return "BannerVo{" +
@@ -88,6 +105,8 @@ public class BannerVo {
                 ", createTime='" + createTime + '\'' +
                 ", status='" + status + '\'' +
                 ", oldImage='" + oldImage + '\'' +
+                ", oldType='" + oldType + '\'' +
+                ", oldOrderBy='" + oldOrderBy + '\'' +
                 '}';
     }
 }

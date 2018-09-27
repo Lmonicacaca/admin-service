@@ -46,9 +46,7 @@ public class BannerManagerImpl implements BannerManager {
         Query query = new Query();
         Criteria c = new Criteria();
         if(url!=null){
-            c.andOperator(Criteria.where("status").is(i),Criteria.where("url").is(url));
-        }else{
-            c.andOperator(Criteria.where("status").is(i));
+            c.andOperator(Criteria.where("url").is(url));
         }
 
         List<Sort.Order> orders = new ArrayList<>();
@@ -110,8 +108,15 @@ public class BannerManagerImpl implements BannerManager {
             imgUrl = uploadImage(multipartFile);
         }
         Banner banner = createBanner(bannerVo, imgUrl);
-//        bannerRepository.save(banner);
+        System.out.println(bannerVo);
+        System.out.println(banner);
+        bannerRepository.save(banner);
         return "success";
+    }
+
+    @Override
+    public Banner queryById(Long id) {
+        return bannerRepository.findOne(id);
     }
 
     public String uploadImage(MultipartFile multipartFile){
@@ -127,10 +132,9 @@ public class BannerManagerImpl implements BannerManager {
         if(bannerVo.getId()==null||bannerVo.getId().toString().equals("")){
             Long id = System.currentTimeMillis();
             banner.setId(id);
-            banner.setCreateTime(new Date().toString());
+
         }else{
             banner.setId(bannerVo.getId());
-            banner.setCreateTime(bannerVo.getCreateTime());
         }
         if(imgUrl==null){
             banner.setImage(bannerVo.getOldImage());
@@ -139,10 +143,15 @@ public class BannerManagerImpl implements BannerManager {
         }
         if(bannerVo.getType()!=null&&!bannerVo.getType().toString().equals("")){
             int count = bannerRepository.countByType(Integer.parseInt(bannerVo.getType()));
-            banner.setOrderBy(count+1);
+            if(bannerVo.getType().equals(bannerVo.getOldType())){
+                banner.setOrderBy(Integer.parseInt(bannerVo.getOldOrderBy()));
+            }else{
+                banner.setOrderBy(count+1);
+            }
         }else{
             banner.setOrderBy(1);
         }
+        banner.setCreateTime(new Date());
         banner.setChannel(Long.parseLong(bannerVo.getChannel()));
         banner.setUrl(bannerVo.getUrl());
         banner.setType(Integer.parseInt(bannerVo.getType()));

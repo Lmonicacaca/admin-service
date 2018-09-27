@@ -8,6 +8,7 @@ var banner = function () {
             {"mData": "image"},
             {"mData": "type"},
             {"mData": "orderBy"},
+            {"mData": "status"},
             {"mData": "createTime"},
             {"mData": null}
 
@@ -46,8 +47,19 @@ var banner = function () {
                 }
 
             }
-        },{
-            "aTargets": [6],
+        },
+            {
+                "aTargets": [6],
+                "mRender": function (a, b, c, d) {
+                    if(a==0){
+                        return "可用";
+                    }else{
+                        return "不可用";
+                    }
+
+                }
+            },{
+            "aTargets": [7],
             "mRender": function (a, b, c, d) {
                 if(a==null||a==""){
                     return "";
@@ -60,7 +72,7 @@ var banner = function () {
             }
         },
             {
-                "aTargets": [7],
+                "aTargets": [8],
                 "mRender": function (a, b, c, d) {
                     return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a><a class=\"red\" name=\"delete\" href=\"javascript:;\"> 删除 </a>";
                 }
@@ -136,7 +148,9 @@ var banner = function () {
                         $("#url").val(d.url);
                         $("#id").val(d.id);
                         $("#oldImage").val(d.image);
-                        $("#createTime").val(d.image);
+                        $("#oldType").val(d.type);
+                        $("#oldOrderBy").val(d.orderBy);
+                        $("#createTime").val("");
                         var typeName="";
                         switch(d.type){
                             case 1:typeName = "余额";break;
@@ -149,6 +163,15 @@ var banner = function () {
                         var optionChannel = "<option value='" + d.channel + "' selected='selected'>" + d.channel + "</option>";
                         $("#channel").empty();
                         $("#channel").append(optionChannel);
+                        var status = "";
+                        if(d.status==0){
+                            status = "可用";
+                        }else {
+                            status = "不可用";
+                        }
+                        var optionStatus = "<option value='" + d.status + "' selected='selected'>" + status + "</option>";
+                        $("#status").empty();
+                        $("#status").append(optionStatus);
                         layer.open({
                             area: '800px',
                             shade: [0.8, '#393D49'],
@@ -159,6 +182,7 @@ var banner = function () {
                             success: function (layero, index) {
                                 loadType();
                                 loadChannel();
+                                loadStatus();
                             },
                             yes: function (i, layero) {
                                 if ($('#form').valid()) {
@@ -169,7 +193,7 @@ var banner = function () {
                                                 dataTable.fnReloadAjax();
                                                 layer.close(i);
                                             } else {
-                                                layer.msg("更新数据失败");
+                                                layer.msg(d.message);
                                             }
                                         }
                                     });
@@ -179,6 +203,8 @@ var banner = function () {
                                 layer.close(i);
                             }
                         });
+                    }else{
+                        layer.msg(d.message);
                     }
                 });
         });
@@ -216,7 +242,7 @@ var banner = function () {
                                     dataTable.fnReloadAjax();
                                     layer.closeAll();
                                 } else {
-                                    layer.msg("添加失败");
+                                    layer.msg(d.message);
                                 }
                             }
                         })

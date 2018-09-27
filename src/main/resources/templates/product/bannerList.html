@@ -63,6 +63,7 @@
                 <th>图片</th>
                 <th>类型</th>
                 <th>排序</th>
+                <th>是否可用</th>
                 <th>创建时间</th>
                 <th>操作</th>
             </tr>
@@ -78,6 +79,8 @@
         <input type="hidden" value="" name="id" id="id" />
         <input type="hidden" value="" name="createTime" id="createTime" />
         <input type="hidden" value="" name="oldImage" id="oldImage" />
+        <input type="hidden" value="" name="oldType" id="oldType" />
+        <input type="hidden" value="" name="oldOrderBy" id="oldOrderBy" />
         <div class="form-body">
             <div class="form-group">
                 <label class="control-label col-md-3">渠道号： <span class="required">* </span>
@@ -95,7 +98,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">图片 <span class="required">* </span>
+                <label class="control-label col-md-3">图片
                 </label>
                 <div class="col-md-8">
                     <input type="file" name="file" id="file" style="background: transparent" /><br />

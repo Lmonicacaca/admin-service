@@ -22,4 +22,8 @@ public interface BannerManager {
     List<Map<String,Object>> queryStatus();
 
     String addOrUpdate(BannerVo bannerVo, MultipartFile multipartFile) throws MerchantException;
- }
+
+    Banner queryById(Long id);
+
+
+}

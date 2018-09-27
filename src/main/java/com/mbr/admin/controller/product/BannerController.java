@@ -63,14 +63,23 @@ public class BannerController extends BaseController {
 
     @RequestMapping(value="addOrUpdate",method = RequestMethod.POST)
     @ResponseBody
-    public Object addOrUpdate(BannerVo bannerVo, @RequestParam("file") MultipartFile multipartFile){
+    public Object addOrUpdate(BannerVo bannerVo, @RequestParam("file") MultipartFile[] multipartFile){
         System.out.println(bannerVo);
-        System.out.println(multipartFile.getOriginalFilename());
         try{
-            String result = bannerManager.addOrUpdate(bannerVo, multipartFile);
+            if(multipartFile==null||multipartFile.length==0){
+                if(bannerVo.getId()==null||bannerVo.getId()==0||bannerVo.getId().toString().equals("")){
+                    return failed("图片不能为空！");
+                }
+                String result = bannerManager.addOrUpdate(bannerVo, null);
+                if("success".equals(result)){
+                    return success();
+                }
+            }
+            String result = bannerManager.addOrUpdate(bannerVo, multipartFile[0]);
             if("success".equals(result)){
                 return success();
             }
+
         }catch (MerchantException e){
             return failed(e.getMessage());
         }
@@ -97,4 +106,16 @@ public class BannerController extends BaseController {
         return bannerManager.queryStatus();
     }
 
+    @RequestMapping(value="queryById")
+    @ResponseBody
+    public Object queryById(Long id){
+        if(id==null||id.toString().equals("")){
+            return failed("id不能为空!");
+        }
+        Banner banner = bannerManager.queryById(id);
+        if(banner!=null){
+            return success(banner);
+        }
+        return failed("广告不存在！");
+    }
 }
