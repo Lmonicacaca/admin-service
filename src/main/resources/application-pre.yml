@@ -10,6 +10,7 @@ disUrl: /data/dcpay/plist/
 uploadCdnUrl: dcpay/pre/
 uploadCdnLogoUrl: dcpay/pre/logo/
 uploadCdnBannerUrl: dcpay/pre/banner/
+uploadCdnMerchantInfoUrl: dcpay/pre/logoBill/
 channel: 73088886094000
 spring:
   http:

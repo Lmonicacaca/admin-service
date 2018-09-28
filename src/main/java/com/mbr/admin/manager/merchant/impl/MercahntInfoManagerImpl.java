@@ -2,6 +2,7 @@ package com.mbr.admin.manager.merchant.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mbr.admin.common.storage.CdnService;
 import com.mbr.admin.common.utils.DateUtil;
 import com.mbr.admin.common.utils.FileUpload;
 import com.mbr.admin.common.utils.MerchantException;
@@ -17,6 +18,7 @@ import com.mbr.admin.manager.merchant.MerchantInfoManager;
 import com.mbr.admin.manager.merchant.MerchantVsResourceManager;
 import com.mbr.admin.manager.security.SecurityUserDetails;
 import com.mbr.admin.repository.ChannelRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -51,6 +54,10 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
 
     @Value("${image_url}")
     private String image_url;
+    @Value("${uploadCdnMerchantInfoUrl}")
+    private String uploadCdnMerchantInfoUrl;
+    @Resource
+    private CdnService cdnService;
 
     @Override
     public List<MerchantInfoVo> queryList(String nameSearch, String idSearch) {
@@ -182,7 +189,6 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     @Override
     @Transactional(rollbackFor = MerchantException.class)
     public String addOrUpdate(MerchantInfoVo merchantInfoVo, HttpServletRequest request) throws MerchantException {
-
         String id = null;
         if (merchantInfoVo.getId() == null) {
             id = new TimestampPkGenerator().next(getClass()).toString();
@@ -190,17 +196,8 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         String imgUrl = null;
         Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
         if (mapFiles != null) {
-            String json = fileUpload.httpClientUploadFile(mapFiles);
-            Map map = JSONObject.toJavaObject(JSON.parseObject(json), Map.class);
-            if ((Integer) map.get("code") == 200) {
-                Map<String, String> mapRequest = (Map<String, String>) map.get("data");
-                for (Map.Entry<String, String> entry : mapRequest.entrySet()) {
-                    imgUrl = entry.getValue();
-                }
-            }
-            if (imgUrl == null) {
-                return "imgFailed";
-            }
+            MultipartFile multipartFile = mapFiles.get(0);
+
         }
 
         MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
@@ -366,4 +363,25 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     }
 
 
+    public String uploadImageToCdn(MultipartFile multipartFile){
+        if(multipartFile!=null){
+            String originalFilename = multipartFile.getOriginalFilename();
+            String imgUrl = CdnService.genSaveKey(uploadCdnMerchantInfoUrl, String.valueOf(System.currentTimeMillis()+originalFilename));
+            Optional<URL> image = cdnService.put(imgUrl, multipartFile, getFileType(multipartFile.getName()));
+        }
+        return null;
+    }
+    public String getFileType(String name) {
+
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        int idx = name.lastIndexOf('.');
+        if (idx >= 0) {
+            return name.substring(idx + 1).toLowerCase();
+        } else {
+            return "jpg";
+        }
+
+    }
 }
