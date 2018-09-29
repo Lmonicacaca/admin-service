@@ -28,7 +28,8 @@ public interface MerchantInfoManager {
 
     public List<Map<String,Object>> queryIsShow();
 
+    @Transactional
     public String addOrUpdate(MerchantInfoVo merchantInfoVo, HttpServletRequest request) throws MerchantException;
-
-    public String auditMerchant(MerchantInfo merchantInfo);
+    @Transactional
+    public String auditMerchant(MerchantInfo merchantInfo)throws MerchantException;
 }

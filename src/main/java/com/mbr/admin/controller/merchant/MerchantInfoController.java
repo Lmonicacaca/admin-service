@@ -126,10 +126,15 @@ public class MerchantInfoController extends BaseController<MerchantInfo> {
     @ResponseBody
     public Object auditMerchant(MerchantInfo merchantInfo){
         System.out.println(merchantInfo);
-        String result = merchantInfoManager.auditMerchant(merchantInfo);
-        if("success".equals(result)){
-            return success();
+        try {
+            String result = merchantInfoManager.auditMerchant(merchantInfo);
+            if("success".equals(result)){
+                return success();
+            }
+        }catch (MerchantException e){
+            return failed(e.getMessage());
         }
+
         return failed("审核失败");
     }
 }

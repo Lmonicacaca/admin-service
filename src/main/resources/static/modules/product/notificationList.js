@@ -11,8 +11,7 @@ var notification = function () {
             {"mData": "deviceId"},
             {"mData": "pushId"},
             {"mData": "createTime"},
-            {"mData": "isRead"},
-            {"mData": null}
+            {"mData": "isRead"}
         ];
         var aoColumnDefs = [
             {
@@ -100,12 +99,8 @@ var notification = function () {
                     }
 
                 }
-            },{
-            "aTargets": [10],
-            "mRender": function (a, b, c, d) {
-                return "<a class=\"edit\" name =\"edit\" href=\"javascript:;\"> 修改 </a>";
             }
-        }];
+        ];
         var t = $("#dataTables-example");
         var csrf = $("#csrfId");
         $("#typeSearch").append("<option value='-1'>请选择公告类型</option>");

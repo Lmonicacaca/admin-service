@@ -266,19 +266,38 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
      * @return
      */
     @Override
-    public String auditMerchant(MerchantInfo merchantInfo) {
+    @Transactional(rollbackFor = MerchantException.class)
+    public String auditMerchant(MerchantInfo merchantInfo) throws MerchantException{
         //若渠道号为空，则生成新的渠道号
         if(merchantInfo.getChannel()==null||merchantInfo.getChannel().equals("")){
             Long channelNumber = new TimestampPkGenerator().next(getClass());
             merchantInfo.setChannel(channelNumber);
         }
+        Long channel = merchantInfo.getChannel();
         //设置商户审核状态为1，表示审核通过
         merchantInfo.setAudit(1);
-        int i = merchantInfoDao.auditMerchantInfo(merchantInfo);
-        if(i>0){
-            return "success";
+        Channel channelObject = createChannelForAudit(merchantInfo);
+        if(channelObject==null){
+            throw new MerchantException("商户id为空，创建channel失败！");
         }
-        return "failed";
+        int auditMerchantInfo = merchantInfoDao.auditMerchantInfo(merchantInfo);
+        if (auditMerchantInfo > 0) {
+            //为商户添加权限
+            int addUrl = merchantVsResourceManager.initMerchantVsResource(merchantInfo.getId(), channel);
+            if(addUrl>0){
+                //添加渠道表信息
+                Channel insertChannelForAudit = channelManager.insertChannel(channelObject);
+                if(insertChannelForAudit!=null){
+                    return "success";
+                }else{
+                    throw new MerchantException("添加渠道号失败");
+                }
+            }else{
+                throw new MerchantException("商户权限分配失败");
+            }
+        }else{
+            throw new MerchantException("添加商户失败");
+        }
     }
 
     /**
@@ -328,6 +347,27 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
             merchantInfo.setChannel(merchantInfoVo.getChannel());
         }
         return merchantInfo;
+    }
+
+    /**
+     * 创建channel对象
+     * @param merchantInfo
+     * @return
+     */
+    public Channel createChannelForAudit(MerchantInfo merchantInfo){
+        Channel channel = new Channel();
+        Long id = System.currentTimeMillis();
+        channel.setId(id);
+        channel.setSystemName(merchantInfo.getName());
+        if(merchantInfo.getId()==null||merchantInfo.getId().equals("")){
+            return null;
+        }
+        channel.setMerchantId(merchantInfo.getId());
+        channel.setChannel(merchantInfo.getChannel());
+        channel.setStatus(0);
+        channel.setAppName(merchantInfo.getName());
+        channel.setCreateTime(new Date());
+        return channel;
     }
 
     /**
