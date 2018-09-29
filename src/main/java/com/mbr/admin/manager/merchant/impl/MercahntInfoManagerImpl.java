@@ -58,14 +58,21 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     private String uploadCdnMerchantInfoUrl;
     @Resource
     private CdnService cdnService;
+    @Value("${upload_url}")
+    private String upload_url;
 
     @Override
     public List<MerchantInfoVo> queryList(String nameSearch, String idSearch) {
         List<MerchantInfoVo> merchantInfoList = merchantInfoDao.queryList(nameSearch, idSearch);
         for (int i = 0; i < merchantInfoList.size(); i++) {
 
-            if (merchantInfoList.get(i).getLogoBill() != null && merchantInfoList.get(i).getLogoBill() != "") {
-                merchantInfoList.get(i).setLogoBill(image_url + merchantInfoList.get(i).getLogoBill());
+            String logoBill = merchantInfoList.get(i).getLogoBill();
+            if (logoBill != null && !logoBill.equals("")) {
+                if(logoBill.startsWith("http")){
+
+                }else {
+                    merchantInfoList.get(i).setLogoBill(image_url + logoBill);
+                }
             }
             if(merchantInfoList.get(i).getCreateTime()!=null&&merchantInfoList.get(i).getCreateTime()!=""){
                 merchantInfoList.get(i).setCreateTime(merchantInfoList.get(i).getCreateTime().substring(0,merchantInfoList.get(i).getCreateTime().length()-2));
@@ -196,10 +203,9 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         String imgUrl = null;
         Map<String, MultipartFile> mapFiles = fileUpload.getFile(request);
         if (mapFiles != null) {
-            MultipartFile multipartFile = mapFiles.get(0);
-
+            MultipartFile multipartFile = mapFiles.get("file");
+            imgUrl = uploadImageToCdn(multipartFile);
         }
-
         MerchantInfo merchantInfo = createMerchantInfo(merchantInfoVo, id, imgUrl);
         Channel channel = createChannel(merchantInfo,merchantInfoVo);
         merchantInfo.setChannel(channel.getChannel());
@@ -363,13 +369,20 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     }
 
 
+    /**
+     * 上传商家logo到阿里云
+     * @param multipartFile
+     * @return
+     */
     public String uploadImageToCdn(MultipartFile multipartFile){
+        String imgUrl = null;
         if(multipartFile!=null){
             String originalFilename = multipartFile.getOriginalFilename();
-            String imgUrl = CdnService.genSaveKey(uploadCdnMerchantInfoUrl, String.valueOf(System.currentTimeMillis()+originalFilename));
+            imgUrl = CdnService.genSaveKey(uploadCdnMerchantInfoUrl, String.valueOf(System.currentTimeMillis()+originalFilename));
             Optional<URL> image = cdnService.put(imgUrl, multipartFile, getFileType(multipartFile.getName()));
+            imgUrl = upload_url+imgUrl;
         }
-        return null;
+        return imgUrl;
     }
     public String getFileType(String name) {
 
