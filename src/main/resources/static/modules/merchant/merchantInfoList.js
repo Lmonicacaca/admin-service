@@ -186,6 +186,8 @@ var merchantInfo = function () {
             var table = $('#dataTables-example').DataTable();
             var d = table.row($(this).parents('tr')).data();
             $("#idAudit").val(d.id);
+            $("#nameAudit").val(d.name);
+            $("#descriptionAudit").val(d.description);
             layer.open({
                 area: '800px',
                 shade: [0.8, '#393D49'],

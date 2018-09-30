@@ -268,6 +268,13 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
     @Override
     @Transactional(rollbackFor = MerchantException.class)
     public String auditMerchant(MerchantInfo merchantInfo) throws MerchantException{
+
+        //先判断该商户是否已经审核，若已审核则不能重复审核
+
+        MerchantInfo merchantInfoVerify = merchantInfoDao.queryById(merchantInfo.getId());
+        if(merchantInfoVerify.getAudit()!=null&&merchantInfoVerify.getAudit()==1){
+            throw  new MerchantException("该商户已审核，请勿重复审核");
+        }
         //若渠道号为空，则生成新的渠道号
         if(merchantInfo.getChannel()==null||merchantInfo.getChannel().equals("")){
             Long channelNumber = new TimestampPkGenerator().next(getClass());
@@ -358,14 +365,25 @@ public class MercahntInfoManagerImpl implements MerchantInfoManager {
         Channel channel = new Channel();
         Long id = System.currentTimeMillis();
         channel.setId(id);
-        channel.setSystemName(merchantInfo.getName());
+        String merchantInfoName = merchantInfo.getName();
+        if(merchantInfoName==null){
+            channel.setSystemName("");
+        }else{
+            channel.setSystemName(merchantInfoName);
+
+        }
         if(merchantInfo.getId()==null||merchantInfo.getId().equals("")){
             return null;
         }
         channel.setMerchantId(merchantInfo.getId());
         channel.setChannel(merchantInfo.getChannel());
         channel.setStatus(0);
-        channel.setAppName(merchantInfo.getName());
+        String description = merchantInfo.getDescription();
+        if(description==null){
+            channel.setAppName("");
+        }else {
+            channel.setAppName(merchantInfo.getName());
+        }
         channel.setCreateTime(new Date());
         return channel;
     }

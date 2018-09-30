@@ -6,7 +6,7 @@ import com.mbr.admin.feign.dto.product.Product;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "pay-product-${spring.profiles.active}")
+@FeignClient(value = "pay-product-pre")
 public interface ProductFeign {
 
     @PostMapping(value = "queryByAdminForPage")
