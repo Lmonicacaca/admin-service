@@ -38,6 +38,9 @@
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
                 <logback.level>INFO</logback.level>
+                <eureka.client.service-url.defaultZone>http://eureka:eureka@127.0.0.1:9911/eureka</eureka.client.service-url.defaultZone>
+                <spring.cloud.config.uri>http://127.0.0.1:9305</spring.cloud.config.uri>
+                <spring.zipkin.base-url>http://47.100.47.200:9949/</spring.zipkin.base-url>
                 <spring.debug>false</spring.debug>
             </properties>
         </profile>
